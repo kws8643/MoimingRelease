@@ -12,3 +12,5 @@
 /captures
 .externalNativeBuild
 .cxx
+kakao_key.xml
+AndroidManifest.xml
