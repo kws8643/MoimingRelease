@@ -1,0 +1,314 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <CheckBox
+        android:id="@+id/cb_agree_all"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="26dp"
+        app:layout_constraintLeft_toLeftOf="@id/text_policy_1"
+        app:layout_constraintTop_toBottomOf="@id/text_policy_1" />
+
+
+    <ImageView
+        android:id="@+id/btn_back_policy"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="16dp"
+        android:src="@drawable/ic_app_back"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <TextView
+        android:id="@+id/text_policy_1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="32dp"
+        android:layout_marginTop="72dp"
+        android:lineSpacingExtra="6sp"
+        android:text="약관 동의가 필요합니다"
+        android:textColor="@color/moimingBlack"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:lineSpacingExtra="7sp"
+        android:text="회원가입"
+        android:textColor="@color/moimingBlack"
+        android:textSize="16sp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/text_policy_2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:lineSpacingExtra="9sp"
+        android:text="전체 동의"
+        android:textColor="@color/moimingBlack"
+        android:textSize="14sp"
+        android:textStyle="normal"
+        app:layout_constraintBottom_toBottomOf="@id/cb_agree_all"
+        app:layout_constraintLeft_toRightOf="@id/cb_agree_all"
+        app:layout_constraintTop_toTopOf="@id/cb_agree_all" />
+
+    <TextView
+        android:id="@+id/text_policy_3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:lineSpacingExtra="11sp"
+        android:text="전체 동의는 선택목적에 대한 동의를 포함하고 있으며,\n선택목적에 대한 동의를 거부해도 서비스 이용이\n가능합니다."
+        android:textColor="#a8a8a8"
+        android:textSize="12sp"
+        android:textStyle="normal"
+        app:layout_constraintLeft_toLeftOf="@id/text_policy_2"
+        app:layout_constraintTop_toBottomOf="@id/text_policy_2" />
+
+
+    <View
+        android:id="@+id/view_line_policy"
+        android:layout_width="294dp"
+        android:layout_height="1dp"
+        android:layout_marginTop="16dp"
+        android:background="#a8a8a8"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/text_policy_3" />
+
+    <TextView
+        android:id = "@+id/text_policy_4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16sp"
+        android:lineSpacingExtra="11sp"
+        android:text="모이밍 서비스 동의"
+        android:textColor="@color/moimingBlack"
+        android:textSize="12sp"
+        android:textStyle="normal"
+        app:layout_constraintLeft_toLeftOf="@id/text_policy_2"
+        app:layout_constraintTop_toBottomOf="@id/view_line_policy" />
+
+
+    <CheckBox
+        android:id ="@+id/cb_agree_1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:checked="true"
+        android:layout_marginTop="19dp"
+        app:layout_constraintLeft_toLeftOf="@id/cb_agree_all"
+        app:layout_constraintTop_toBottomOf="@id/text_policy_4"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="normal"
+        android:textSize="12sp"
+        android:layout_marginLeft="11.4dp"
+        android:textColor="#a8a8a8"
+        android:lineSpacingExtra="11sp"
+        android:text= "[필수] 이용약관 동의"
+        app:layout_constraintBottom_toBottomOf="@id/cb_agree_1"
+        app:layout_constraintTop_toTopOf="@id/cb_agree_1"
+        app:layout_constraintLeft_toRightOf="@id/cb_agree_1"
+        />
+
+    <TextView
+        android:id = "@+id/btn_view_agree1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="normal"
+        android:textSize="10sp"
+        android:textColor="#a8a8a8"
+        android:lineSpacingExtra="13sp"
+        android:gravity="end"
+        android:text="보기"
+        android:layout_marginRight="34dp"
+        app:layout_constraintTop_toTopOf="@id/cb_agree_1"
+        app:layout_constraintBottom_toBottomOf="@id/cb_agree_1"
+        app:layout_constraintRight_toRightOf="parent"
+        />
+
+    <CheckBox
+        android:id ="@+id/cb_agree_2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:layout_constraintLeft_toLeftOf="@id/cb_agree_all"
+        app:layout_constraintTop_toBottomOf="@id/cb_agree_1"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:lineSpacingExtra="11sp"
+        android:text="[필수] 만 14세 이상 확인"
+        android:textColor="#a8a8a8"
+        android:textSize="12sp"
+        android:textStyle="normal"
+        app:layout_constraintBottom_toBottomOf="@id/cb_agree_2"
+        app:layout_constraintLeft_toRightOf="@id/cb_agree_2"
+        app:layout_constraintTop_toTopOf="@id/cb_agree_2"
+        app:layout_constraintVertical_bias="0.437" />
+
+    <TextView
+        android:id = "@+id/btn_view_agree2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="normal"
+        android:textSize="10sp"
+        android:textColor="#a8a8a8"
+        android:lineSpacingExtra="13sp"
+        android:gravity="end"
+        android:text="보기"
+        android:layout_marginRight="34dp"
+        app:layout_constraintTop_toTopOf="@id/cb_agree_2"
+        app:layout_constraintBottom_toBottomOf="@id/cb_agree_2"
+        app:layout_constraintRight_toRightOf="parent"
+        />
+
+    <CheckBox
+        android:id ="@+id/cb_agree_3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:layout_constraintLeft_toLeftOf="@id/cb_agree_all"
+        app:layout_constraintTop_toBottomOf="@id/cb_agree_2"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="normal"
+        android:textSize="12sp"
+        android:layout_marginLeft="11.4dp"
+        android:textColor="#a8a8a8"
+        android:lineSpacingExtra="11sp"
+        android:text= "[필수] 개인정보 수집 및 이용 동의"
+        app:layout_constraintBottom_toBottomOf="@id/cb_agree_3"
+        app:layout_constraintTop_toTopOf="@id/cb_agree_3"
+        app:layout_constraintLeft_toRightOf="@id/cb_agree_3"
+        />
+
+    <TextView
+        android:id = "@+id/btn_view_agree3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="normal"
+        android:textSize="10sp"
+        android:textColor="#a8a8a8"
+        android:lineSpacingExtra="13sp"
+        android:gravity="end"
+        android:text="보기"
+        android:layout_marginRight="34dp"
+        app:layout_constraintTop_toTopOf="@id/cb_agree_3"
+        app:layout_constraintBottom_toBottomOf="@id/cb_agree_3"
+        app:layout_constraintRight_toRightOf="parent"
+        />
+
+    <CheckBox
+        android:id ="@+id/cb_agree_4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:layout_constraintLeft_toLeftOf="@id/cb_agree_all"
+        app:layout_constraintTop_toBottomOf="@id/cb_agree_3"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="normal"
+        android:textSize="12sp"
+        android:layout_marginLeft="11.4dp"
+        android:textColor="#a8a8a8"
+        android:lineSpacingExtra="11sp"
+        android:text= "[선택] 위치기반 서비스 이용약관 동의"
+        app:layout_constraintBottom_toBottomOf="@id/cb_agree_4"
+        app:layout_constraintTop_toTopOf="@id/cb_agree_4"
+        app:layout_constraintLeft_toRightOf="@id/cb_agree_4"
+        />
+
+    <TextView
+        android:id = "@+id/btn_view_agree4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="normal"
+        android:textSize="10sp"
+        android:textColor="#a8a8a8"
+        android:lineSpacingExtra="13sp"
+        android:gravity="end"
+        android:text="보기"
+        android:layout_marginRight="34dp"
+        app:layout_constraintTop_toTopOf="@id/cb_agree_4"
+        app:layout_constraintBottom_toBottomOf="@id/cb_agree_4"
+        app:layout_constraintRight_toRightOf="parent"
+        />
+
+    <CheckBox
+        android:id ="@+id/cb_agree_5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:layout_constraintLeft_toLeftOf="@id/cb_agree_all"
+        app:layout_constraintTop_toBottomOf="@id/cb_agree_4"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="normal"
+        android:textSize="12sp"
+        android:layout_marginLeft="11.4dp"
+        android:textColor="#a8a8a8"
+        android:lineSpacingExtra="11sp"
+        android:text= "[선택] 마케팅 알림 수신 동의"
+        app:layout_constraintBottom_toBottomOf="@id/cb_agree_5"
+        app:layout_constraintTop_toTopOf="@id/cb_agree_5"
+        app:layout_constraintLeft_toRightOf="@id/cb_agree_5"
+        />
+
+    <TextView
+        android:id = "@+id/btn_view_agree5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="normal"
+        android:textSize="10sp"
+        android:textColor="#a8a8a8"
+        android:lineSpacingExtra="13sp"
+        android:gravity="end"
+        android:text="보기"
+        android:layout_marginRight="34dp"
+        app:layout_constraintTop_toTopOf="@id/cb_agree_5"
+        app:layout_constraintBottom_toBottomOf="@id/cb_agree_5"
+        app:layout_constraintRight_toRightOf="parent"
+        />
+
+    <Button
+        android:id = "@+id/btn_finish_policy"
+        android:layout_width="328dp"
+        android:layout_height="48dp"
+        android:text = "계속하기"
+        android:textSize = "16sp"
+        android:background="@color/moimingTheme"
+        android:textColor="@color/moimingWhite"
+        android:layout_marginBottom="30dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        />
+</androidx.constraintlayout.widget.ConstraintLayout>

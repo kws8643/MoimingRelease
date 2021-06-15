@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "248831146250",
+    "project_id": "moimingrelease",
+    "storage_bucket": "moimingrelease.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:248831146250:android:e45ffefd20d415a4fa22f3",
+        "android_client_info": {
+          "package_name": "com.example.moimingrelease"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "248831146250-j10ndofega2h55vu543uuii10qsp4o5l.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.moimingrelease",
+            "certificate_hash": "779a7ce6b1eee204ab1e2cfe1771f8b996bb0b4c"
+          }
+        },
+        {
+          "client_id": "248831146250-2dalqbbqel6pp5fqifd5ge7fa3aos5cc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDLCrIH_aaksk-0wk6R2WysWcqMO5jLvEI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "248831146250-2dalqbbqel6pp5fqifd5ge7fa3aos5cc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

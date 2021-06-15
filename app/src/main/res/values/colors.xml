@@ -3,4 +3,23 @@
     <color name="colorPrimary">#6200EE</color>
     <color name="colorPrimaryDark">#3700B3</color>
     <color name="colorAccent">#03DAC5</color>
+
+    <!-- App Palette -->
+    <color name="moimingTheme">#675aff</color>
+    <color name= "moimingLightTheme">#b0aaff</color>
+
+    <!-- B/G Theme -->
+    <color name="moimingWhite">#FFFFFF</color>
+    <color name="moimingLightGray">#F6F6F8</color>
+    <color name="moimingBoldGray">#a8a8a8</color>
+    <color name="moimingBlack">#000000</color>
+
+    <!-- Text Color -->
+    <color name = "textBoldGray">#707070</color>
+
+
+
+    <!-- -->
+
+
 </resources>

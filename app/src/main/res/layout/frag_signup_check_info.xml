@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id = "@+id/img_profile"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_marginTop="16dp"
+        android:src="@drawable/ic_default_pf_img"
+        app:layout_constraintTop_toBottomOf="@id/text_confirm_1"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        />
+
+    <ImageView
+        android:id = "@+id/btn_change_pf_img"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:src="@drawable/ic_change_pf_img"
+        app:layout_constraintBottom_toBottomOf="@id/img_profile"
+        app:layout_constraintRight_toRightOf="@id/img_profile"
+        />
+
+    <Button
+        android:id="@+id/btn_finish_confirm"
+        android:layout_width="328dp"
+        android:layout_height="48dp"
+        android:layout_marginBottom="28dp"
+        android:background="@color/moimingTheme"
+        android:text="회원가입 완료"
+        android:textColor="@color/moimingWhite"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.493"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+
+    <ImageView
+        android:id="@+id/btn_back_policy"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="16dp"
+        android:src="@drawable/ic_app_back"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/text_confirm_1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="32dp"
+        android:layout_marginTop="72dp"
+        android:lineSpacingExtra="6sp"
+        android:text="회원가입을 위한\n정보를 기입해주세요"
+        android:textColor="@color/moimingBlack"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="20dp"
+        android:text="pass와 카카오로부터\n받은 정보를 확인만\n하는 페이지입니다.\n입력할게 없을 예정"
+        android:textColor="@color/moimingBlack"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:lineSpacingExtra="7sp"
+        android:text="회원가입"
+        android:textColor="@color/moimingBlack"
+        android:textSize="16sp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/text_layout_phone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:layout_constraintLeft_toLeftOf="@id/text_layout_name"
+        app:layout_constraintTop_toBottomOf="@id/text_layout_name">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/text_phone"
+            android:layout_width="296dp"
+            android:layout_height="48dp"
+            android:hint="휴대폰 번호"
+            android:inputType="number"
+            android:lineSpacingExtra="9sp"
+            android:maxLength="20"
+            android:singleLine="true"
+            android:textColor="#a8a8a8"
+            android:textSize="14sp"
+            android:textStyle="normal"
+
+            />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/text_layout_email"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:layout_constraintLeft_toLeftOf="@id/text_layout_phone"
+        app:layout_constraintTop_toBottomOf="@id/text_layout_phone"
+
+        >
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/text_email"
+            android:layout_width="296dp"
+            android:layout_height="48dp"
+            android:hint="이메일"
+            android:inputType="textEmailAddress"
+            android:lineSpacingExtra="9sp"
+            android:maxLength="100"
+            android:singleLine="true"
+            android:textColor="#a8a8a8"
+            android:textSize="14sp"
+            android:textStyle="normal" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/text_layout_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        app:layout_constraintLeft_toLeftOf="@id/text_confirm_1"
+        app:layout_constraintTop_toBottomOf="@id/img_profile">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/text_name"
+            android:layout_width="296dp"
+            android:layout_height="48dp"
+            android:hint="이름"
+            android:lineSpacingExtra="9sp"
+            android:maxLength="20"
+            android:singleLine="true"
+            android:textColor="#a8a8a8"
+            android:textSize="14sp"
+            android:textStyle="normal"
+
+            />
+    </com.google.android.material.textfield.TextInputLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

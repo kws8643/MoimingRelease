@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/btn_main_home"
+        android:enabled="true"
+        android:icon="@drawable/ic_main_home"
+        android:title="그 룹"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id = "@+id/btn_placeholder"
+        android:title = ""
+        />
+
+    <item
+        android:id="@+id/btn_main_reserve"
+        android:enabled="true"
+        android:icon="@drawable/ic_main_reserve"
+        android:title="예 약"
+        app:showAsAction="ifRoom" />
+
+</menu>

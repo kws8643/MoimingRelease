@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="kakao_validation_server_domain">https://asia-northeast3-moimingrelease.cloudfunctions.net/kakaoCustomAuth</string>
+</resources>
