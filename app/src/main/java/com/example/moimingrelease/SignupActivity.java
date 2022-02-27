@@ -11,6 +11,8 @@ import com.example.moimingrelease.fragments_signup.SignupCheckInfoFragment;
 import com.example.moimingrelease.fragments_signup.SignupPassFragment;
 import com.example.moimingrelease.fragments_signup.SignupPolicyFragment;
 
+import java.util.Map;
+
 public class SignupActivity extends AppCompatActivity {
 
     /**
@@ -20,6 +22,8 @@ public class SignupActivity extends AppCompatActivity {
      *
      * @param savedInstanceState
      */
+
+    public static final String SIGNUP_TAG = "SIGNUP_TAG";
 
     public static final int FRAGMENT_POLICY_INDEX = 1;
     public static final int FRAGMENT_PASS_INDEX = 2;
@@ -47,15 +51,15 @@ public class SignupActivity extends AppCompatActivity {
 
     }
 
-    private void receiveIntent(){
+    private void receiveIntent() {
 
-        if(getIntent() != null){
+        if (getIntent() != null) {
 
             oauthUid = getIntent().getExtras().getString("oauth_uid");
             oauthEmail = getIntent().getExtras().getString("oauth_email");
             userPfImg = getIntent().getExtras().getString("user_pf_img");
 
-        }else{
+        } else {
 
             Toast.makeText(getApplicationContext(), "카카오 정보를 받아오지 못하였습니다. 앱 종료 후 다시 시도해 주세요", Toast.LENGTH_SHORT).show();
             finish();
@@ -88,9 +92,13 @@ public class SignupActivity extends AppCompatActivity {
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.addToBackStack(null);
 
+        Bundle dataBundle = new Bundle();
+
         if (index == FRAGMENT_POLICY_INDEX) {
 
+            // TODO: 넘어갈때 Fragment 에서 Check 된 항목을 가져오는 method 생성, MAP 전달 가능 부터 확인?
             fragmentTransaction.replace(R.id.frame_signup, policyFragment).commit();
+
 
         } else if (index == FRAGMENT_PASS_INDEX) {
 
@@ -98,23 +106,35 @@ public class SignupActivity extends AppCompatActivity {
 
         } else if (index == FRAGMENT_CHECK_INFO_INDEX) { //?
 
+            Map<Integer, Boolean> policyMap = policyFragment.getAgreeMap();
+
+            dataBundle.putInt("map_size", policyMap.size());
+
+            for (int i = 0; i < policyMap.size(); i++) {
+
+                dataBundle.putBoolean(String.valueOf(i), policyMap.get(i));
+            }
+
+            checkInfoFragment.setArguments(dataBundle);
+
             fragmentTransaction.replace(R.id.frame_signup, checkInfoFragment).commit();
+
 
         }
 
     }
 
-    public String getOauthUid(){
+    public String getOauthUid() {
 
         return this.oauthUid;
     }
 
-    public String getOauthEmail(){
+    public String getOauthEmail() {
 
         return this.oauthEmail;
     }
 
-    public String getUserPfImg(){
+    public String getUserPfImg() {
         return this.userPfImg;
     }
 }

@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.UUID;
 
-public class MoimingGroupCreationRequestDTO {
+public class MoimingGroupRequestDTO {
 
     @SerializedName("group_name")
     private String groupName;
@@ -21,7 +21,7 @@ public class MoimingGroupCreationRequestDTO {
     @SerializedName("group_member_cnt")
     private Integer groupMemberCnt;
 
-    public MoimingGroupCreationRequestDTO(String groupName, String groupInfo, UUID groupCreatorUuid, String bgImg, Integer groupMemberCnt) {
+    public MoimingGroupRequestDTO(String groupName, String groupInfo, UUID groupCreatorUuid, String bgImg, Integer groupMemberCnt) {
 
         this.groupName = groupName;
         this.groupInfo = groupInfo;

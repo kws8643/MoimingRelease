@@ -46,7 +46,6 @@ public class GroupCreationInfoFragment extends Fragment {
 
                     if(inputGroupInfo.getText() != null){
 
-                        fragData.putString("group_info", inputGroupInfo.getText().toString());
 
                     }else{ // group_info 입력이 없으면 ""으로 처리. Null 방지.
 
@@ -58,7 +57,7 @@ public class GroupCreationInfoFragment extends Fragment {
                     // TODO BG IMG 에 대한 정보도 전달되어야 함.
 
 
-                    groupCreationActivity.changeFragment(GroupCreationActivity.FRAGMENT_MEMBERS_INDEX, fragData);
+//                    groupCreationActivity.changeFragment(GroupCreationActivity.FRAGMENT_MEMBERS_INDEX, fragData);
 
                 }else{
 

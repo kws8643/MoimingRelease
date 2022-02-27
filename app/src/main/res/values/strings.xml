@@ -1,3 +1,29 @@
 <resources>
     <string name="app_name">MoimingRelease</string>
+    <string name="title_activity_invite_members">InviteMembersActivity</string>
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="welcome">"Welcome !"</string>
+    <string name="invalid_username">Not a valid username</string>
+    <string name="invalid_password">Password must be >5 characters</string>
+    <string name="login_failed">"Login failed"</string>
+
+
+    <!-- DATA KEYS -->
+    <string name="session_creation_type_key">CREATE_SESSION_TYPE_KEY</string>
+    <string name="moiming_user_data_key">CURRENT_MOIMING_USER_DATA_KEY</string>
+    <string name="moiming_group_and_members_data_key">CURRENT_MOIMING_GROUP_AND_MEMBERS_DATA_KEY</string>
+    <string name="moiming_group_data_key">CURRENT_MOIMING_GROUP_DATA_KEY</string>
+    <string name="group_members_data_key">CURRENT_GROUP_MEMBERS_DATA_KEY</string>
+    <string name="moiming_user_group_lists_data_key">CURRENT_USER_GROUPS_DATA_KEY</string>
+    <string name="search_group_data_key">SEARCH_GROUP_DATA_KEY</string>
+    <string name="moiming_session_data_key">CURRENT_SESSION_DATA_KEY</string>
+    <string name="moiming_notification_data_key">NOTIFICATION_DATA_KEY</string>
+
+    <string name="session_creation_from_group_activity_flag">FROM_GROUP_ACTIVITY_FLAG</string>
+    <string name="session_creation_with_new_group_flag">SESSION_WITH_NEW_GROUP_FLAG</string>
+
+
 </resources>

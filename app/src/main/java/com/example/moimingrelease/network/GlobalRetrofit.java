@@ -10,8 +10,11 @@ public class GlobalRetrofit {
     // 싱글톤 Retrofit 객체.
     private static GlobalRetrofit INSTANCE = new GlobalRetrofit();
 
-    private static final String BASE_SERVER_URL = "http://10.0.2.2:8080/api/";
-//    private static final String BASE_SERVER_URL = "http://localhost:8080/api/";
+//                        private static final String BASE_SERVER_URL = "http://10.0.2.2:8080/"; // for amulator
+    private static final String BASE_SERVER_URL = "http://192.168.0.25:8080/"; // in Home
+//    private static final String BASE_SERVER_URL = "http://172.30.1.32:8080/"; // in Study Cafe
+//    private static final String BASE_SERVER_URL = "http://172.30.1.56:8080/"; // in Cafe
+
     private Retrofit retrofit;
 
 
@@ -36,10 +39,15 @@ public class GlobalRetrofit {
         return INSTANCE;
     }
 
-    public Retrofit getRetrofit(){
+    public Retrofit getRetrofit() {
 
         return this.retrofit;
 
+    }
+
+    public String getBaseServerUrl() {
+
+        return BASE_SERVER_URL;
     }
 
     // 전체 앱에서 활용할 Retrofit 을 만들었으니, 전체 Retrofit 이 하는

@@ -1,5 +1,8 @@
 package com.example.moimingrelease.moiming_model.moiming_vo;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
@@ -7,8 +10,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-public class MoimingGroupVO implements Serializable {
+public class MoimingGroupVO implements Serializable, Parcelable {
 
+    @SerializedName("uuid")
     private UUID uuid;
 
     @SerializedName("group_name")
@@ -35,6 +39,9 @@ public class MoimingGroupVO implements Serializable {
     @SerializedName("updated_at")
     private LocalDateTime updatedAt;
 
+    public MoimingGroupVO() {
+
+    }
 
     public UUID getUuid() {
         return uuid;
@@ -109,9 +116,9 @@ public class MoimingGroupVO implements Serializable {
     }
 
     @Override
-    public String toString(){
+    public String toString() {
 
-        return "MoimingUserVO: {\nuuid = " + uuid.toString()
+        return "MoimingGroupVO: {\nuuid = " + uuid.toString()
                 + "\ngroupName= " + groupName
                 + "\ngroupInfo= " + groupInfo
                 + "\ngroupPfImg= " + groupPfImg
@@ -123,5 +130,50 @@ public class MoimingGroupVO implements Serializable {
 
 
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+
+        dest.writeString(uuid.toString());
+        dest.writeString(groupName);
+        dest.writeString(groupInfo);
+        dest.writeString(groupPfImg);
+        dest.writeString(bgImg);
+        dest.writeInt(groupMemberCnt);
+        dest.writeString(groupCreatorUuid.toString());
+        dest.writeSerializable(createdAt);
+        dest.writeSerializable(updatedAt);
+    }
+
+    public MoimingGroupVO(Parcel in) {
+
+        uuid = UUID.fromString(in.readString());
+        groupName = in.readString();
+        groupInfo = in.readString();
+        groupPfImg = in.readString();
+        bgImg = in.readString();
+        groupMemberCnt = in.readInt();
+        groupCreatorUuid = UUID.fromString(in.readString());
+        createdAt = (LocalDateTime) in.readSerializable();
+        updatedAt = (LocalDateTime) in.readSerializable();
+
+    }
+
+    public static final Creator<MoimingGroupVO> CREATOR = new Creator<MoimingGroupVO>() {
+        @Override
+        public MoimingGroupVO createFromParcel(Parcel in) {
+            return new MoimingGroupVO(in);
+        }
+
+        @Override
+        public MoimingGroupVO[] newArray(int size) {
+            return new MoimingGroupVO[size];
+        }
+    };
 
 }

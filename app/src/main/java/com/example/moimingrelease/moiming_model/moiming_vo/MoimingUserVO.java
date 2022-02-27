@@ -1,11 +1,15 @@
 package com.example.moimingrelease.moiming_model.moiming_vo;
 
+import com.example.moimingrelease.moiming_model.response_dto.MoimingUserResponseDTO;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
+import java.util.Map;
 import java.util.UUID;
+
+import io.reactivex.rxjava3.annotations.Nullable;
 
 public class MoimingUserVO implements Serializable {
 
@@ -26,6 +30,7 @@ public class MoimingUserVO implements Serializable {
     @SerializedName("user_email")
     private String userEmail;
 
+    @Nullable
     @SerializedName("user_pf_img")
     private String userPfImg;
 
@@ -40,6 +45,14 @@ public class MoimingUserVO implements Serializable {
 
     @SerializedName("updated_at")
     private LocalDateTime updatedAt;
+
+    public String getOauthUid() {
+        return oauthUid;
+    }
+
+    public void setOauthUid(String oauthUid) {
+        this.oauthUid = oauthUid;
+    }
 
     public UUID getUuid() {
         return uuid;
@@ -122,8 +135,30 @@ public class MoimingUserVO implements Serializable {
     }
 
 
+    public static MoimingUserVO parseDataToVO(Map<String, Object> userInfo) {
+
+
+        MoimingUserResponseDTO loginUser = new MoimingUserResponseDTO();
+
+        loginUser.setUuid(UUID.fromString((String) userInfo.get("uuid")));
+        loginUser.setOauthUid(((String) userInfo.get("oauth_uid")));
+        loginUser.setOauthType(((String) userInfo.get("oauth_type")));
+        loginUser.setUserName(((String) userInfo.get("user_name")));
+        loginUser.setUserEmail(((String) userInfo.get("user_email")));
+        loginUser.setPhoneNumber(((String) userInfo.get("phone_number")));
+        loginUser.setUserPfImg(((String) userInfo.get("user_pf_img")));
+        loginUser.setBankName(((String) userInfo.get("bank_name")));
+        loginUser.setBankNumber(((String) userInfo.get("bank_number")));
+        loginUser.setCreatedAt(((String) userInfo.get("created_at")));
+        loginUser.setUpdatedAt(((String) userInfo.get("updated_at")));
+
+
+        return loginUser.convertToVO();
+    }
+
+
     @Override
-    public String toString(){
+    public String toString() {
 
         return "MoimingUserVO: {\nuuid = " + uuid.toString()
                 + "\nuserName= " + userName

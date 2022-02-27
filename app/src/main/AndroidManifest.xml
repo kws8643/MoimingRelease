@@ -9,12 +9,39 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
-        <activity android:name=".GroupCreationActivity"></activity>
-        <activity android:name=".GroupActivity" />
-        <activity android:name=".SignupActivity">
+        android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true">
+        <activity android:name=".NotificationActivity"></activity>
+        <activity android:name=".GroupMembersViewActivity" />
+        <activity android:name=".RegisterBankAccountActivity" />
+        <activity android:name=".SessionCreationPreviousFundingActivity" />
+        <activity android:name=".GroupPaymentDateSelectActivity" />
+        <activity android:name=".GroupPaymentActivity" />
+        <activity android:name=".SearchGroupActivity" />
+        <activity android:name=".SessionCreationInOldGroupActivity" />
+        <activity android:name=".InviteSessionMembersInMainActivity" />
+        <activity
+            android:name=".InviteSessionMembersInGroupActivity"
+            android:windowSoftInputMode="adjustPan" />
+        <activity android:name=".InviteGroupMembersActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
 
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="kakaolink"
+                    android:scheme="@string/kakao_scheme" />
+            </intent-filter>
         </activity>
+        <activity
+            android:name=".SessionCreationActivity"
+            android:windowSoftInputMode="adjustPan" />
+        <activity android:name=".SessionActivity" />
+        <activity android:name=".GroupCreationActivity" />
+        <activity android:name=".GroupActivity" />
+        <activity android:name=".SignupActivity" />
         <activity android:name=".SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -22,12 +49,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".LoginActivity">
-
-        </activity>
-        <activity android:name=".MainActivity">
-
-        </activity>
+        <activity android:name=".LoginActivity" />
+        <activity android:name=".MainActivity" />
         <activity android:name="com.kakao.sdk.auth.AuthCodeHandlerActivity">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -37,10 +60,25 @@
 
                 <data
                     android:host="oauth"
-                    android:scheme="kakao5795bd3d0de1ee019fd716f27caa7b07" />
+                    android:scheme="@string/kakao_scheme" />
+                <data
+                    android:host="kakaolink"
+                    android:scheme="@string/kakao_scheme" />
             </intent-filter>
         </activity>
+
+        <service
+            android:name=".network.fcm.FCMReceiveService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
     </application>
+
+    <queries>
+        <package android:name="com.kakao.talk" />
+    </queries>
 
     <uses-permission android:name="android.permission.INTERNET" />
 

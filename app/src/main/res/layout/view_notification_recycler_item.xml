@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="92dp"
+    android:background="@color/moimingNotificationTheme">
+
+    <ImageView
+        android:id="@+id/img_notification_type"
+        android:layout_width="42dp"
+        android:layout_height="42dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <TextView
+        android:id="@+id/text_notification_content"
+        android:layout_width="253dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:text="알림 내용"
+        android:textColor="@color/textDark"
+        android:textSize="14sp"
+        app:layout_constraintLeft_toRightOf="@id/img_notification_type"
+        app:layout_constraintTop_toTopOf="@id/img_notification_type" />
+
+    <TextView
+        android:id="@+id/text_notification_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:lineSpacingExtra="11sp"
+        android:text="알림 발생 날짜"
+        android:textColor="@color/moimingBoldGray"
+        android:textSize="12sp"
+        android:textStyle="normal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="@id/text_notification_content" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

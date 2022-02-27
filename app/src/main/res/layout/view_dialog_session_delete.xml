@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="280dp"
+    android:layout_height="132dp"
+    android:background="@drawable/shape_round_bg_white">
+
+    <TextView
+        android:id="@+id/text_session_delete_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="16dp"
+        android:lineSpacingExtra="7sp"
+        android:text="[정산활동이름]을 삭제하시겠습니까?"
+        android:textColor="@color/textDark"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:lineSpacingExtra="6sp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="16dp"
+        android:text="삭제된 정산활동은 다시 불러올 수 없습니다"
+        android:textColor="@color/textBoldGray"
+        android:textSize="12sp"
+        android:textStyle="normal"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/text_session_delete_title"/>
+
+    <TextView
+        android:id="@+id/btn_session_delete_cancel"
+        android:layout_width="48dp"
+        android:layout_height="32dp"
+        android:layout_marginRight="12dp"
+        android:layout_marginBottom="8dp"
+        android:gravity="center"
+        android:lineSpacingExtra="9sp"
+        android:text="취소"
+        android:textColor="@color/moimingTheme"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/btn_session_delete_confirm" />
+
+
+    <TextView
+        android:id="@+id/btn_session_delete_confirm"
+        android:layout_width="48dp"
+        android:layout_height="32dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="8dp"
+        android:gravity="center"
+        android:lineSpacingExtra="9sp"
+        android:text="확인"
+        android:textColor="@color/moimingTheme"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

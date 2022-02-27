@@ -6,6 +6,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -18,6 +19,8 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.moimingrelease.moiming_model.moiming_vo.MoimingUserVO;
+import com.example.moimingrelease.moiming_model.response_dto.MoimingUserResponseDTO;
 import com.example.moimingrelease.network.GlobalRetrofit;
 import com.example.moimingrelease.network.TransferModel;
 import com.example.moimingrelease.network.auth.AuthRetrofitService;
@@ -27,16 +30,19 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.gson.annotations.SerializedName;
 import com.kakao.sdk.auth.model.OAuthToken;
 import com.kakao.sdk.user.UserApiClient;
 import com.kakao.sdk.user.model.Account;
 import com.kakao.sdk.user.model.Profile;
 import com.kakao.sdk.user.model.User;
 
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import kotlin.Unit;
 import kotlin.jvm.functions.Function2;
@@ -48,9 +54,13 @@ import retrofit2.Response;
 public class LoginActivity extends AppCompatActivity {
 
     public final String LOGIN_TAG = "LOGIN_TAG";
+    public static String SP_TOKEN = "SP_TOKEN";
+
+    private SharedPreferences sharedPreferences;
 
     private ConstraintLayout btnKakao;
     private Button btnToSignup;
+    private FirebaseAuth firebaseAuth;
 
     private void initView() {
 
@@ -61,6 +71,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private void initParams() {
 
+        firebaseAuth = FirebaseAuth.getInstance();
 
     }
 
@@ -108,22 +119,29 @@ public class LoginActivity extends AppCompatActivity {
 
                 } else {
 
+
+                    sharedPreferences = getSharedPreferences(SP_TOKEN, MODE_PRIVATE);
+                    SharedPreferences.Editor spEditor = sharedPreferences.edit();
+
+
                     String accessToken = token.getAccessToken();
                     String refreshToken = token.getRefreshToken();
 
-                    Log.w(LOGIN_TAG, "카카오 계정 A토큰:: " + accessToken);
-                    Log.w(LOGIN_TAG, "카카오 계정 R토큰:: " + refreshToken);
 
-                    /**
-                     1. ACCESS_TOKEN 으로 로그인을 요청한다. (우리 서버에)
-                     2. 카카오 측으로 A_T 를 전달하여(REST API 통신) 유저 인증을 진행 받는다.
-                     3. 반환되는 유저 정보에 한하여
-                     **/
+                    spEditor.putString("kakao_access_token", accessToken);
+                    spEditor.putString("kakao_refresh_token", refreshToken);
 
 
+                    Log.w(LOGIN_TAG, accessToken + "\n::\n" + refreshToken);
+
+
+                    spEditor.commit();
+
+
+                    // 액토를 전달을 통한 API 서버의 인증 진행
                     AuthRetrofitService authService = GlobalRetrofit.getInstance().getRetrofit().create(AuthRetrofitService.class);
 
-                    authService.confirmKakaoToken(accessToken).enqueue(new Callback<TransferModel<Map<String, Object>>>() {
+                    authService.loginOrSignupUser(accessToken).enqueue(new Callback<TransferModel<Map<String, Object>>>() {
                         @Override
                         public void onResponse(Call<TransferModel<Map<String, Object>>> call, Response<TransferModel<Map<String, Object>>> response) {
 
@@ -132,28 +150,43 @@ public class LoginActivity extends AppCompatActivity {
                             if (response.isSuccessful()) {
 
                                 TransferModel<Map<String, Object>> authResponse = response.body();
-
                                 Map<String, Object> responseData = authResponse.getData();
 
-                                boolean isVerified = (boolean) responseData.get("isVerified");
 
-                                if (isVerified) { // 우리 유저입니다. 토큰을 받아왔을 것입니다.
+                                boolean isUser = (boolean) responseData.get("isUser");
 
-                                    Toast.makeText(getApplicationContext(), "유저 존재", Toast.LENGTH_SHORT).show();
+                                if (isUser) { // 우리 유저임을 확인
+
+                                    // 1 헤더에 있는 JWT 토큰을 꺼낸 뒤 저장한다.
+                                    String jwtToken = authResponse.getAuthentication();
+                                    Log.w(LOGIN_TAG, jwtToken);
+
+                                    SharedPreferences.Editor spEditor = sharedPreferences.edit();
+                                    spEditor.putString("jwt_token", jwtToken);
+                                    spEditor.commit();      // 참고) commit - 즉시 동기 저장, apply - 비동기 저장.
+
+                                    // 2 객체에 담겨있는 MoimingUser 데이터들을 통해서 현재 로그인한 객체를 만든다
+                                    MoimingUserVO loginUser = MoimingUserVO.parseDataToVO((Map<String, Object>) responseData.get("loginUser"));
+                                    Log.w(LOGIN_TAG, loginUser.toString());
+
+                                    //TODO: Login 시 Firebase Auth 도 받은 이메일로 로그인을 진행한다.
+                                    loginWithFirebase(loginUser);
 
 
-                                } else { // 우리 유저가 아닙니다. 회원가입 process 를 진행합니다.
+                                } else { // 우리 유저가 아님. 회원가입을 실행
 
+                                    // 1 카카오를 통해 서버단에서 전달해준 데이터들을 회원가입으로 전달해준다
                                     Intent toSignup = new Intent(LoginActivity.this, SignupActivity.class);
 
-                                    String kakaoUid = (String) responseData.get("oauth_uid");
-                                    String oauthEmail = (String) responseData.get("oauth_email");
+                                    String kakaoUid = (String) responseData.get("oauthUid");
+                                    String oauthEmail = (String) responseData.get("oauthEmail");
                                     String userPfImg = "";
 
-                                    if (responseData.get("user_pf_img") != null) {
-                                        userPfImg = (String) responseData.get("user_pf_img");
+                                    if (responseData.get("userPfImg") != null) {
+                                        userPfImg = (String) responseData.get("userPfImg");
                                     }
 
+                                    // 2 받은 데이터들을 Intent 에 담고 회원가입을 실행한다
                                     toSignup.putExtra("oauth_uid", kakaoUid);
                                     toSignup.putExtra("oauth_email", oauthEmail);
                                     toSignup.putExtra("user_pf_img", userPfImg);
@@ -161,10 +194,7 @@ public class LoginActivity extends AppCompatActivity {
                                     startActivity(toSignup);
 
                                     finish();
-
                                 }
-
-
                             } else {
 
                             }
@@ -187,6 +217,33 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
     }
+
+    private void loginWithFirebase(MoimingUserVO loginUser) { // 받아온 이메일과 oauthUid 로 진행.
+
+
+        firebaseAuth.signInWithEmailAndPassword(loginUser.getUserEmail(), loginUser.getOauthUid())
+                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull @NotNull Task<AuthResult> task) {
+
+                        if (task.isSuccessful()) {
+                            // 3 현 로그인 유저를 VO로 넘기고, MainActivity를 실행한다.
+                            Intent startMoiming = new Intent(LoginActivity.this, MainActivity.class);
+                            startMoiming.putExtra("moiming_user", loginUser);
+                            startActivity(startMoiming);
+                            finish();
+                        } else {
+
+                            Toast.makeText(getApplicationContext()
+                                    , "2차인증에 실패하였습니다, 잠시후 다시 시도하여 주세요", Toast.LENGTH_SHORT);
+
+                        }
+                    }
+                });
+
+    }
+
+
 /*
     private void firebaseAuthentication(String oauth_provider, String accessToken) {
 

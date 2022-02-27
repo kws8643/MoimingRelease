@@ -15,18 +15,15 @@ import androidx.fragment.app.Fragment;
 
 import com.example.moimingrelease.GroupActivity;
 import com.example.moimingrelease.GroupCreationActivity;
-import com.example.moimingrelease.MainActivity;
 import com.example.moimingrelease.R;
 import com.example.moimingrelease.moiming_model.moiming_vo.MoimingGroupVO;
 import com.example.moimingrelease.moiming_model.moiming_vo.MoimingUserVO;
-import com.example.moimingrelease.moiming_model.request_dto.MoimingGroupCreationRequestDTO;
-import com.example.moimingrelease.moiming_model.request_dto.UGLinkerCreationRequestDTO;
-import com.example.moimingrelease.moiming_model.response_dto.MoimingGroupResponseDTO;
+import com.example.moimingrelease.moiming_model.request_dto.UGLinkerRequestDTO;
 import com.example.moimingrelease.network.GlobalRetrofit;
-import com.example.moimingrelease.network.GroupRetrofitService;
 import com.example.moimingrelease.network.TransferModel;
 import com.example.moimingrelease.network.UGLinkerRetrofitService;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -36,7 +33,6 @@ import java.util.UUID;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.annotations.NonNull;
 import io.reactivex.rxjava3.core.Observer;
-import io.reactivex.rxjava3.core.Scheduler;
 import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
@@ -122,7 +118,7 @@ public class GroupCreationMembersFragment extends Fragment {
     private void createGroupMembers() {
 
         // 1. 현재 만드는 유저.
-        groupMembers.add(groupCreationActivity.curMoimingUser);
+//        groupMembers.add(groupCreationActivity.curMoimingUser);
 
         // 2. 체크된 친구들 불러오기.
         // check 된 친구들을 가져온 다음, 그 친구들을 각각 호출에서 MoimingUser로 만든 후에 List 에 추가해주는 For loop.
@@ -141,8 +137,9 @@ public class GroupCreationMembersFragment extends Fragment {
 
         // 1. 만들고자 하는 그룹을 생성하여 DB에 저장한다.
         // 현재 bgImg설정 null, groupMemberCnt = 1;
-        MoimingGroupCreationRequestDTO groupDTO = new MoimingGroupCreationRequestDTO(groupName, groupInfo, groupCreationActivity.curMoimingUser.getUuid(), "", 1);
-        TransferModel<MoimingGroupCreationRequestDTO> transferModel = new TransferModel<>(groupDTO);
+/*
+        MoimingGroupRequestDTO groupDTO = new MoimingGroupRequestDTO(groupName, groupInfo, groupCreationActivity.curMoimingUser.getUuid(), "", 1);
+        TransferModel<MoimingGroupRequestDTO> transferModel = new TransferModel<>(groupDTO);
 
         GroupRetrofitService groupRetrofitService = GlobalRetrofit.getInstance().getRetrofit().create(GroupRetrofitService.class);
 
@@ -161,9 +158,6 @@ public class GroupCreationMembersFragment extends Fragment {
 
                     @Override
                     public void onNext(@NonNull TransferModel<MoimingGroupResponseDTO> responseModel) {
-
-                        Toast.makeText(groupCreationActivity.getApplicationContext(), "더어덩~!", Toast.LENGTH_SHORT).show();
-
 
                         createdGroup = responseModel.getData().convertToVO();
 
@@ -186,11 +180,12 @@ public class GroupCreationMembersFragment extends Fragment {
                         createUgLinkers();
 
                     }
-                });
+                });*/
     }
 
 
-    private void createUgLinkers() {
+
+    private void createUgLinkers() { // TODO 아직 개발 미완성 : 실제 초대 Process 를 구현해야
 
         // recent_notice / notice_cnt 는 보내줘야 하는 데이터가 아니라 생성되어야 하는 데이터이다.
         // 따라서 굳이 일일이 모든 GroupMemberVO 를 하나씩 보내서 생성할 필요 없음.
@@ -207,8 +202,8 @@ public class GroupCreationMembersFragment extends Fragment {
 
         }
 
-        UGLinkerCreationRequestDTO ugLinkerDTO = new UGLinkerCreationRequestDTO(createdGroup.getUuid(), groupMemberUuids);
-        TransferModel<UGLinkerCreationRequestDTO> requestModel = new TransferModel<>(ugLinkerDTO);
+        UGLinkerRequestDTO ugLinkerDTO = new UGLinkerRequestDTO(createdGroup.getUuid(), groupMemberUuids);
+        TransferModel<UGLinkerRequestDTO> requestModel = new TransferModel<>(ugLinkerDTO);
 
         UGLinkerRetrofitService linkerRetrofitService = GlobalRetrofit.getInstance().getRetrofit().create(UGLinkerRetrofitService.class);
         linkerRetrofitService.ugLinkRequest(requestModel)
@@ -236,8 +231,8 @@ public class GroupCreationMembersFragment extends Fragment {
 
                             Intent groupIntent = new Intent(groupCreationActivity, GroupActivity.class);
 
-                            groupIntent.putExtra(MainActivity.MOIMING_USER_DATA_KEY, groupCreationActivity.curMoimingUser);
-                            groupIntent.putExtra(GroupActivity.MOIMING_GROUP_DATA_KEY, createdGroup);
+//                            groupIntent.putExtra(getResources().getString(R.string.moiming_user_data_key), groupCreationActivity.curMoimingUser);
+                            groupIntent.putExtra(getResources().getString(R.string.moiming_group_data_key), (Serializable) createdGroup);
 
                             startActivity(groupIntent);
 

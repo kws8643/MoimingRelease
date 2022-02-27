@@ -3,9 +3,13 @@ package com.example.moimingrelease.moiming_model.request_dto;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.UUID;
+
 // Create USER
 public class MoimingUserRequestDTO {
 
+    @SerializedName("user_uuid")
+    private UUID userUuid;
 
     @SerializedName("oauth_uid")
     private String oauthUid;
@@ -19,20 +23,30 @@ public class MoimingUserRequestDTO {
     @SerializedName("user_email")
     private String userEmail;
 
+    @SerializedName("bank_name")
+    private String bankName;
+
+    @SerializedName("bank_number")
+    private String bankNumber;
+
     @SerializedName("user_pf_img")
     private String userPfImg;
 
     @SerializedName("phone_number")
     private String phoneNumber;
 
-    public MoimingUserRequestDTO(String oauthUid, String oauthType, String userName, String userEmail, String userPfImg, String userPhoneNumber) {
+    public MoimingUserRequestDTO(UUID userUuid, String oauthUid, String oauthType, String userName, String userEmail
+            , String bankName, String bankNumber, String userPfImg, String userPhoneNumber) {
 
+        this.userUuid = userUuid;
         this.oauthUid = oauthUid;
         this.oauthType = oauthType;
         this.userName = userName;
         this.userEmail = userEmail;
         this.userPfImg = userPfImg;
         this.phoneNumber = userPhoneNumber;
+        this.bankName = bankName;
+        this.bankNumber = bankNumber;
 
     }
 

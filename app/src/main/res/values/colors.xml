@@ -1,25 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#6200EE</color>
+    <color name="colorPrimary">#675aff</color>
     <color name="colorPrimaryDark">#3700B3</color>
     <color name="colorAccent">#03DAC5</color>
 
     <!-- App Palette -->
     <color name="moimingTheme">#675aff</color>
+    <color name="moimingBackgroundTheme">#f6f5ff</color>
+    <color name= "moimingOrange">#ea8c00</color>
+    <color name= "moimingBackgroundThemeGray">#f5f5f5</color>
+    <color name = "moimingBackgroundLightGrayTheme">#f8f8f8</color>
     <color name= "moimingLightTheme">#b0aaff</color>
+    <color name= "moimingNotificationTheme">#efefff</color>
+    <color name = "moimingRed">#f86464</color>
 
     <!-- B/G Theme -->
     <color name="moimingWhite">#FFFFFF</color>
     <color name="moimingLightGray">#F6F6F8</color>
     <color name="moimingBoldGray">#a8a8a8</color>
-    <color name="moimingBlack">#000000</color>
+    <color name="moimingBlack">#222222</color>
+    <color name= "lightGrayBg">#E2E2E2</color>
+    <color name = "moimingMedGray">#d9d8d8</color>
 
     <!-- Text Color -->
     <color name = "textBoldGray">#707070</color>
-
-
-
-    <!-- -->
+    <color name = "textDark">#353535</color>
+    <color name = "textOtherGray">#626262</color>
+    <color name= "textRed">#e55454</color>
+    <color name= "textBlue">#566bde</color>
 
 
 </resources>

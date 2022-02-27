@@ -11,17 +11,28 @@ public class TransferModel<T> {
     @SerializedName("result_code")
     private int resultCode;
 
+    private String authentication; // 토큰들이 오가는 항목
+
     private String description;
 
     private T data;
 
-    public TransferModel(T data) { // Request 용
+    // API Request 용
+    public TransferModel(String jwtToken, T data) {
+
+        this.authentication = jwtToken;
+        this.data = data;
+
+    }
+
+    // Admin Request 용
+    public TransferModel(T data) {
 
         this.data = data;
 
     }
 
-    public TransferModel(){
+    public TransferModel() {
 
     }
 
@@ -72,12 +83,21 @@ public class TransferModel<T> {
         this.data = data;
     }
 
+    public String getAuthentication() {
+        return authentication;
+    }
+
+    public void setAuthentication(String authentication) {
+        this.authentication = authentication;
+    }
+
     @Override
     public String toString() {
 
         String jsonType = "{\n"
                 + "transaction_time:\"" + String.valueOf(transactionTime) + "\""
                 + "\nresultCode:" + String.valueOf(resultCode)
+                + "\nauthentication:" + String.valueOf(authentication)
                 + "\ndescription:\"" + description + "\""
                 + "\ndata:\n"
                 + data.toString()

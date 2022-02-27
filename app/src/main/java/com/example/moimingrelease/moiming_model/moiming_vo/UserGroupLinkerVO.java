@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
-public class UserGroupLinker implements Serializable {
+public class UserGroupLinkerVO implements Serializable {
 
     private Long id;
 
@@ -20,6 +20,12 @@ public class UserGroupLinker implements Serializable {
 
     @SerializedName("updated_at")
     private LocalDateTime updatedAt;
+
+    @SerializedName("moiming_user")
+    private MoimingUserVO moimingUser;
+
+    @SerializedName("moiming_group")
+    private MoimingGroupVO moimingGroup;
 
     public Long getId() {
         return id;
@@ -62,6 +68,19 @@ public class UserGroupLinker implements Serializable {
     }
 
 
+    public MoimingUserVO getMoimingUser() {
+        return moimingUser;
+    }
 
+    public void setMoimingUser(MoimingUserVO moimingUser) {
+        this.moimingUser = moimingUser;
+    }
 
+    public MoimingGroupVO getMoimingGroup() {
+        return moimingGroup;
+    }
+
+    public void setMoimingGroup(MoimingGroupVO moimingGroup) {
+        this.moimingGroup = moimingGroup;
+    }
 }

@@ -40,7 +40,6 @@
         >
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/input_group_name"
             android:layout_width="296dp"
             android:layout_height="48dp"
             android:hint="그룹 이름 (최대 n 자)"
@@ -64,7 +63,6 @@
         app:layout_constraintTop_toBottomOf="@id/text_layout_group_name">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/input_group_info"
             android:layout_width="296dp"
             android:layout_height="48dp"
             android:hint="그룹 설명 (최대 m자)"
@@ -106,7 +104,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="8dp"
-            android:src = "@drawable/ic_add_theme"
+            android:src = "@drawable/ic_add"
             />
 
     </LinearLayout>

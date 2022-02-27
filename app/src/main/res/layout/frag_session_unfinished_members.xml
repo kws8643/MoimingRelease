@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="24dp">
+
+    <TextView
+        android:id = "@+id/text_session_member_1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="21dp"
+        android:lineSpacingExtra="15sp"
+        android:text="완료 처리"
+        android:textColor="@color/moimingBoldGray"
+        android:textSize="8sp"
+        android:textStyle="normal"
+        app:layout_constraintBottom_toBottomOf="@id/text_moiming_members"
+        app:layout_constraintLeft_toRightOf="@id/btn_send_all_members"
+        app:layout_constraintTop_toTopOf="@id/text_moiming_members" />
+
+    <TextView
+        android:id="@+id/btn_send_all_members"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="117dp"
+        android:lineSpacingExtra="5sp"
+        android:text="일괄 송금 요청"
+        android:textColor="@color/moimingTheme"
+        android:textSize="10sp"
+        android:textStyle="normal"
+        app:layout_constraintLeft_toRightOf="@id/text_moiming_members"
+        app:layout_constraintTop_toTopOf="@id/text_moiming_members" />
+
+    <TextView
+        android:id="@+id/text_moiming_members"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="27dp"
+        android:layout_marginTop="24dp"
+        android:lineSpacingExtra="13sp"
+        android:text="모이밍 회원"
+        android:textColor="@color/textOtherGray"
+        android:textSize="10sp"
+        android:textStyle="normal"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/text_nmu_members"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:lineSpacingExtra="13sp"
+        android:text="비회원"
+        android:textColor="@color/textOtherGray"
+        android:textSize="10sp"
+        android:textStyle="normal"
+        app:layout_constraintLeft_toLeftOf="@id/text_moiming_members"
+        app:layout_constraintTop_toBottomOf="@id/session_moiming_member_status" />
+
+
+    <TextView
+        android:id = "@+id/text_session_nmu_1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:lineSpacingExtra="15sp"
+        android:text="완료 처리"
+        android:textColor="@color/moimingBoldGray"
+        android:textSize="8sp"
+        android:textStyle="normal"
+        app:layout_constraintBottom_toBottomOf="@id/text_nmu_members"
+        app:layout_constraintLeft_toRightOf="@id/btn_send_kakao_request"
+        app:layout_constraintTop_toTopOf="@id/text_nmu_members" />
+
+
+    <TextView
+        android:id="@+id/btn_send_kakao_request"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="128dp"
+        android:lineSpacingExtra="5sp"
+        android:text="카카오톡 송금 요청"
+        android:textColor="@color/moimingTheme"
+        android:textSize="10sp"
+        android:textStyle="normal"
+        app:layout_constraintLeft_toRightOf="@id/text_nmu_members"
+        app:layout_constraintTop_toTopOf="@id/text_nmu_members" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/session_moiming_member_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:overScrollMode="never"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/text_moiming_members" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/session_nmu_member_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:overScrollMode="never"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/text_nmu_members" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
