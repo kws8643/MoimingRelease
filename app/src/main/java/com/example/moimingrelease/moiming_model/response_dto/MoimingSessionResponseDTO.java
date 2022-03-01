@@ -121,4 +121,36 @@ public class MoimingSessionResponseDTO {
 
         return moimingSessionVO;
     }
+
+    public UUID getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(UUID uuid) {
+        this.uuid = uuid;
+    }
+
+    public void setSessionType(Integer sessionType) {
+        this.sessionType = sessionType;
+    }
+
+    public void setSessionName(String sessionName) {
+        this.sessionName = sessionName;
+    }
+
+    public UUID getSessionCreatorUuid() {
+        return sessionCreatorUuid;
+    }
+
+    public void setSessionCreatorUuid(UUID sessionCreatorUuid) {
+        this.sessionCreatorUuid = sessionCreatorUuid;
+    }
+
+    public Integer getSessionMemberCnt() {
+        return sessionMemberCnt;
+    }
+
+    public void setSessionMemberCnt(Integer sessionMemberCnt) {
+        this.sessionMemberCnt = sessionMemberCnt;
+    }
 }

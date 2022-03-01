@@ -19,6 +19,7 @@ public class ReceivedNotificationDTO implements Parcelable {
     @SerializedName("sent_session_name")
     private String sentSessionName;
 
+
     @SerializedName("notification")
     private NotificationResponseDTO notification;
 

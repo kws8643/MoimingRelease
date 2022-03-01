@@ -1,30 +1,40 @@
 package com.example.moimingrelease;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.widget.NestedScrollView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
 
+import com.example.moimingrelease.app_adapter.NotificationRecyclerAdapter;
 import com.example.moimingrelease.moiming_model.extras.MoimingGroupAndMembersDTO;
 import com.example.moimingrelease.moiming_model.extras.ReceivedNotificationDTO;
 import com.example.moimingrelease.moiming_model.moiming_vo.MoimingUserVO;
 
-import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class NotificationActivity extends AppCompatActivity {
 
-
-    private MoimingUserVO curUser;
+    //전달은 필요
+    private MoimingUserVO curUser; // For transferring to activity
     private List<MoimingGroupAndMembersDTO> groupAndMemberList;
-    private List<ReceivedNotificationDTO> notificationList;
+    private List<ReceivedNotificationDTO> notificationList; // 얘만 가지고 파싱 가능
 
-    private void receiveIntent(){
+
+    private NestedScrollView notiScroll;
+    private RecyclerView notificationRecycler;
+
+    private NotificationRecyclerAdapter notiAdapter;
+
+    private void receiveIntent() {
 
         Intent receivedData = getIntent();
 
-        if(receivedData!= null){
+        if (receivedData != null) {
 
             curUser = (MoimingUserVO) receivedData.getExtras().getSerializable(getResources().getString(R.string.moiming_user_data_key));
             groupAndMemberList = receivedData.getParcelableArrayListExtra(getResources().getString(R.string.search_group_data_key));
@@ -45,15 +55,65 @@ public class NotificationActivity extends AppCompatActivity {
 
         initParams();
 
-    }
-
-    private void initView(){
-
+        initRecyclerView();
 
     }
 
-    private void initParams(){
+    private void initView() {
+
+        notiScroll = findViewById(R.id.noti_scroll);
+        notiScroll.setNestedScrollingEnabled(true);
+
+        notificationRecycler = findViewById(R.id.notification_recycler);
+
+    }
+
+    private void initParams() {
 
 
     }
+
+    private void initRecyclerView() {
+
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        notificationRecycler.setLayoutManager(linearLayoutManager);
+
+        sortNotificationList();
+
+        notiAdapter = new NotificationRecyclerAdapter(this, curUser, groupAndMemberList, notificationList);
+
+        notificationRecycler.setAdapter(notiAdapter);
+
+    }
+
+
+    private void sortNotificationList() {
+
+        List<ReceivedNotificationDTO> tempList = notificationList;
+        notificationList.clear();
+
+        // 1. system Comes First
+        for (int i = 0; i < tempList.size(); i++) {
+            if (tempList.get(i).getNotification().getSentActivity().equals("system")) {
+                notificationList.add(tempList.get(i));
+                tempList.remove(i);
+                i--; // 제거 시 하나가 밀림
+            }
+        }
+
+        Collections.sort(notificationList, byDate);
+
+        // 2. Else goes as time
+        Collections.sort(tempList, byDate);
+        notificationList.addAll(tempList);
+
+    }
+
+
+    Comparator<ReceivedNotificationDTO> byDate = new Comparator<ReceivedNotificationDTO>() {
+        @Override
+        public int compare(ReceivedNotificationDTO dto1, ReceivedNotificationDTO dto2) {
+            return dto1.getNotification().getCreatedAtForm().compareTo(dto2.getNotification().getCreatedAtForm());
+        }
+    };
 }

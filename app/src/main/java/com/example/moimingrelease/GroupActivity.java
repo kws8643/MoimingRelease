@@ -64,7 +64,7 @@ public class GroupActivity extends AppCompatActivity {
     public static boolean SESSION_LIST_REFRESH_FLAG = false;
     public static boolean GROUP_INFO_REFRESH_FLAG = false;
 
-    KakaoMoimingFriends kmf = KakaoMoimingFriends.getInstance();
+    KakaoMoimingFriends kmf = KakaoMoimingFriends.getInstance();w
 
     public List<MoimingMembersDTO> groupMembers = new ArrayList<>();
     public List<SessionAndUserStatusDTO> sessionAdapterData;
@@ -424,6 +424,8 @@ public class GroupActivity extends AppCompatActivity {
 
     }
 
+    private String movingSessionUuid;
+
     private void receiveIntent() {
 
         Intent dataIntent = getIntent();
@@ -431,11 +433,12 @@ public class GroupActivity extends AppCompatActivity {
         curUser = (MoimingUserVO) dataIntent.getExtras().getSerializable(getResources().getString(R.string.moiming_user_data_key));
 
         MoimingGroupAndMembersDTO groupAndMembersData = dataIntent.getExtras().getParcelable(getResources().getString(R.string.moiming_group_and_members_data_key));
-        if(groupAndMembersData.getMoimingGroup() != null) {
+        if (groupAndMembersData.getMoimingGroup() != null) {
             curGroup = groupAndMembersData.getMoimingGroup();
-        }else{
+        } else {
             curGroup = groupAndMembersData.getMoimingGroupDto().convertToVO();
         }
+
 
         List<MoimingMembersDTO> rawData = groupAndMembersData.getMoimingMembersList();
         for (MoimingMembersDTO members : rawData) {
@@ -445,6 +448,9 @@ public class GroupActivity extends AppCompatActivity {
 
             } // 나는 뺀다.
         }
+
+
+        movingSessionUuid = dataIntent.getExtras().getString(getResources().getString(R.string.group_move_to_session_key), "");
 
         Log.w("TAG", curGroup.toString());
 
@@ -514,7 +520,7 @@ public class GroupActivity extends AppCompatActivity {
 
     }
 
-    private void getRefreshedGroupInfos(){
+    private void getRefreshedGroupInfos() {
 
         GroupRetrofitService groupRetrofit = GlobalRetrofit.getInstance().getRetrofit().create(GroupRetrofitService.class);
 
@@ -646,7 +652,37 @@ public class GroupActivity extends AppCompatActivity {
                             SESSION_LIST_REFRESH_FLAG = false;
                         }
 
+                        if(!movingSessionUuid.equals("")){
 
+                            SessionAndUserStatusDTO curMovingSession = null;
+
+                            //TODO: 해당 세션을 찾고 해당 세션으로 이동시켜야 한다.
+                            for(int i = 0; i< sessionAdapterData.size(); i++){
+
+                                if(sessionAdapterData.get(i).getMoimingSessionResponseDTO().getUuid()
+                                        .toString().equals(movingSessionUuid)){
+                                    curMovingSession = sessionAdapterData.get(i);
+                                }
+
+                            }
+
+                            if(curMovingSession != null) {
+                                Intent toSession = new Intent(GroupActivity.this, SessionActivity.class);
+
+                                toSession.putExtra("cur_user_status", curMovingSession.getCurUserStatus());
+                                toSession.putExtra(getResources().getString(R.string.moiming_user_data_key), curUser);
+                                toSession.putExtra(getResources().getString(R.string.moiming_group_data_key), (Serializable) curGroup);
+                                toSession.putExtra(GroupActivity.MOIMING_SESSION_DATA_KEY, curMovingSession.getMoimingSessionResponseDTO().convertToVO());
+
+                                startActivity(toSession);
+
+                            }else{
+
+                                Toast.makeText(getApplicationContext(), "조회할 수 없는 정산활동 입니다.", Toast.LENGTH_SHORT).show();
+                            }
+
+                            movingSessionUuid = "";
+                        }
                     }
                 });
     }
@@ -688,8 +724,7 @@ public class GroupActivity extends AppCompatActivity {
             getGroupSessions();
 
 
-
-        } else if(GROUP_INFO_REFRESH_FLAG){
+        } else if (GROUP_INFO_REFRESH_FLAG) {
 
 
             getRefreshedGroupInfos();

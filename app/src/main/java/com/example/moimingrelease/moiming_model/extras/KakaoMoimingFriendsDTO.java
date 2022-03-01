@@ -26,4 +26,5 @@ public class KakaoMoimingFriendsDTO {
     public void setKakaoId(String kakaoId) {
         this.kakaoId = kakaoId;
     }
+
 }
