@@ -11,7 +11,13 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".NotificationActivity"></activity>
+        <activity android:name=".MyPageNotificationSettingActivity"></activity>
+        <activity android:name=".UserInfoActivity" />
+        <activity android:name=".MyPageActivity" />
+        <activity
+            android:name=".GroupNoticeActivity"
+            android:windowSoftInputMode="adjustResize" />
+        <activity android:name=".NotificationActivity" />
         <activity android:name=".GroupMembersViewActivity" />
         <activity android:name=".RegisterBankAccountActivity" />
         <activity android:name=".SessionCreationPreviousFundingActivity" />

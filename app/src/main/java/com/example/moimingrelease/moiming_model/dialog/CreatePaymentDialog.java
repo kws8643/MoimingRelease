@@ -19,7 +19,9 @@ import androidx.core.content.res.ResourcesCompat;
 import com.example.moimingrelease.GroupPaymentActivity;
 import com.example.moimingrelease.GroupPaymentDateSelectActivity;
 import com.example.moimingrelease.R;
+import com.example.moimingrelease.moiming_model.extras.PaymentAndSenderDTO;
 import com.example.moimingrelease.moiming_model.moiming_vo.GroupPaymentVO;
+import com.example.moimingrelease.moiming_model.moiming_vo.MoimingUserVO;
 import com.example.moimingrelease.moiming_model.request_dto.GroupPaymentRequestDTO;
 import com.example.moimingrelease.moiming_model.response_dto.GroupPaymentResponseDTO;
 import com.example.moimingrelease.moiming_model.response_dto.MoimingGroupResponseDTO;
@@ -43,6 +45,7 @@ public class CreatePaymentDialog extends Dialog {
 
     private Context context;
 
+    private MoimingUserVO curUser;
     private String groupUuid;
 
     private ConstraintLayout btnSelectDate;
@@ -72,7 +75,7 @@ public class CreatePaymentDialog extends Dialog {
     }
 
 
-    public CreatePaymentDialog(@NonNull Context context, String groupUuid) {
+    public CreatePaymentDialog(@NonNull Context context, String groupUuid, MoimingUserVO curUser) {
 
         super(context);
         this.setCancelable(true);
@@ -81,6 +84,7 @@ public class CreatePaymentDialog extends Dialog {
 
         this.context = context;
         this.groupUuid = groupUuid;
+        this.curUser = curUser;
 
     }
 
@@ -244,9 +248,10 @@ public class CreatePaymentDialog extends Dialog {
         Integer paymentCost = Integer.parseInt(inputCost.getText().toString());
         Boolean paymentType = type;
 
+        GroupPaymentRequestDTO paymentRequest = new GroupPaymentRequestDTO(UUID.fromString(groupUuid), paymentName, paymentCost, paymentType, paymentDate.toString());
+        PaymentAndSenderDTO paymentData = new PaymentAndSenderDTO(curUser.getUuid(), paymentRequest);
 
-        GroupPaymentRequestDTO paymentRequestDTO = new GroupPaymentRequestDTO(UUID.fromString(groupUuid), paymentName, paymentCost, paymentType, paymentDate.toString());
-        TransferModel<GroupPaymentRequestDTO> requestModel = new TransferModel<>(paymentRequestDTO);
+        TransferModel<PaymentAndSenderDTO> requestModel = new TransferModel<>(paymentData);
 
         if (!isPaymentUpdating) { // 새로 추가하는 Payment 라면!
             GroupPaymentRetrofitService paymentRetrofit = GlobalRetrofit.getInstance().getRetrofit().create(GroupPaymentRetrofitService.class);
@@ -281,6 +286,8 @@ public class CreatePaymentDialog extends Dialog {
                         public void onComplete() {
 
                             isPaymentAdded = true;
+
+                            // TODO: FCM 알림을 보낸다
 
                             // 3. dialog dismiss 를 한다.
                             finish();

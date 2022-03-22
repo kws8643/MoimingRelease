@@ -8,6 +8,7 @@
     <color name="moimingTheme">#675aff</color>
     <color name="moimingBackgroundTheme">#f6f5ff</color>
     <color name= "moimingOrange">#ea8c00</color>
+    <color name = "moimingLightOrange">#fac87f</color>
     <color name= "moimingBackgroundThemeGray">#f5f5f5</color>
     <color name = "moimingBackgroundLightGrayTheme">#f8f8f8</color>
     <color name= "moimingLightTheme">#b0aaff</color>

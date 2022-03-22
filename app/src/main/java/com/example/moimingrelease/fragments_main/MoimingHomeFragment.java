@@ -142,7 +142,7 @@ public class MoimingHomeFragment extends Fragment {
                                 groupAndMemberDataList.clear();
                                 rawDataList.clear();
 
-                                getUgLinkers();
+//                                getUgLinkers();
 
                             }
                         });
@@ -172,6 +172,7 @@ public class MoimingHomeFragment extends Fragment {
         View view = inflater.inflate(R.layout.frag_main_home, container, false);
 
         initView(view);
+
         initParams();
 
         getUgLinkers();
@@ -228,6 +229,7 @@ public class MoimingHomeFragment extends Fragment {
 
     }
 
+    // User Group Linker 로 속한 그룹들을 모두 불러온다. 이 때 앞서 가지고 있던 Notification 정보들과 우선 엮어준
     public void getUgLinkers() {
 
         String userUuid = curUser.getUuid().toString();
@@ -273,10 +275,10 @@ public class MoimingHomeFragment extends Fragment {
                         for (UGLinkerResponseDTO linker : groupLinkerLists) {  // TODO 3: Recycler 준비
 
                             MoimingGroupVO moimingGroup = linker.getMoimingGroupResponseDTO().convertToVO();
-                            MoimingGroupAndMembersDTO groupData = new MoimingGroupAndMembersDTO(moimingGroup, null);
+                            MoimingGroupAndMembersDTO groupData = new MoimingGroupAndMembersDTO(moimingGroup, null); //그룹 멤버 객체를 생성하고, 그룹을 담아 놓는다.
 
                             MainRecyclerLinkerData recyclerData = new MainRecyclerLinkerData(groupData
-                                    , mainActivity.rawNotificationMap.get(moimingGroup.getUuid()));
+                                    , mainActivity.rawNotificationMap.get(moimingGroup.getUuid())); // 생성한 객체를 Recycler List 에 추가를 우선 해놓는다.
 
                             rawDataList.add(recyclerData);
                         }
@@ -295,17 +297,10 @@ public class MoimingHomeFragment extends Fragment {
                     @Override
                     public void onComplete() {
 
-                        if(MainActivity.IS_NOTIFICATION_REFRESH_NEEDED) {
+                        buildGroupMembers(); // 멤버들을 엮기 위해서 전달. rawData Clear 이기 때문에 해야함?
 
-                            sortAdapterGroupData();
-
-                            mainRecyclerAdapter.notifyDataSetChanged();
-
-                            MainActivity.IS_NOTIFICATION_REFRESH_NEEDED = false;
-                        }else{
-                            buildGroupMembers();
-
-                        }
+//                        sortAdapterGroupData();
+//                        mainRecyclerAdapter.notifyDataSetChanged();
 
                     }
 
@@ -314,6 +309,8 @@ public class MoimingHomeFragment extends Fragment {
 
     // 각 그룹마다의 멤버를 담고 있다.
     private void buildGroupMembers() {
+
+        groupAndMemberDataList.clear(); // 이 함수가 다시 실행되는건 전체 정보 수정
 
         for (int i = 0; i < rawDataList.size(); i++) {
 
@@ -334,7 +331,6 @@ public class MoimingHomeFragment extends Fragment {
                         @Override
                         public void onNext(@NonNull TransferModel<List<MoimingMembersDTO>> transferModel) {
 
-                            groupAndMemberDataList.clear();
 
                             List<MoimingMembersDTO> groupMemberData = transferModel.getData();
 
@@ -356,7 +352,7 @@ public class MoimingHomeFragment extends Fragment {
                         @Override
                         public void onComplete() {
 
-                            if (index == rawDataList.size() - 1) {
+                            if (index == rawDataList.size() - 1) { // 마지막 순서면,
 
                                 if (MainActivity.IS_MAIN_GROUP_INFO_REFRESH_NEEDED) {
 
@@ -370,7 +366,7 @@ public class MoimingHomeFragment extends Fragment {
 
                                     initRecyclerView();
 
-                                }// 마지막 끝나면 (처음이 아니고 다시 받아오는 경우라면?)
+                                }
 
                             } else {
 
@@ -381,6 +377,43 @@ public class MoimingHomeFragment extends Fragment {
                     });
 
         }
+    }
+
+    public void applyRefreshedNotification(){
+
+        for(int i =0 ; i < rawDataList.size() ; i++){ // Map 만들어 놓는다.
+
+            MainRecyclerLinkerData rawSingleData = rawDataList.get(i);
+
+            mainActivity.rawNotificationMap.put(rawSingleData.getGroupData().getMoimingGroup().getUuid(), new ArrayList<>());
+
+        }
+
+        for (int i = 0; i < mainActivity.rawNotificationList.size(); i++) { // TODO 2: 앞에서 Raw Notification Map 에 노티 하나씩 돌려가면서 맞는 위치에 넣어준다.
+
+            ReceivedNotificationDTO dto = mainActivity.rawNotificationList.get(i);
+
+            List<ReceivedNotificationDTO> value = mainActivity.rawNotificationMap.get(dto.getNotification().getSentGroupUuid()); // 쌓여있는 List 를 가져와서,
+
+            value.add(dto); // 이번 dto 를 추가해주고,
+
+            mainActivity.rawNotificationMap.put(dto.getNotification().getSentGroupUuid(), value); // set 해준다.
+
+        }
+
+        for(int i = 0; i < rawDataList.size(); i++){
+
+            MainRecyclerLinkerData rawSingleData = rawDataList.get(i);
+
+            rawSingleData.setGroupNotification(mainActivity.rawNotificationMap.get(rawSingleData.getGroupData().getMoimingGroup().getUuid()));
+
+            rawDataList.set(i, rawSingleData); // 교체해준다.
+        }
+
+        sortAdapterGroupData();
+
+        MainActivity.IS_NOTIFICATION_REFRESH_NEEDED = false;
+        mainRecyclerAdapter.notifyDataSetChanged();
     }
 
     private void initRecyclerView() {
@@ -394,7 +427,7 @@ public class MoimingHomeFragment extends Fragment {
                 , curUser, exitDialogListener, refreshListener, userFixedGroupList);
         mainRecyclerView.setAdapter(mainRecyclerAdapter);
 
-        mainRecyclerView.addItemDecoration(new RecyclerViewItemDecoration(mainActivity, 8));
+//        mainRecyclerView.addItemDecoration(new RecyclerViewItemDecoration(mainActivity, 8));
     }
 
 
@@ -403,7 +436,6 @@ public class MoimingHomeFragment extends Fragment {
     private void sortAdapterGroupData() {
 
         // 이것도 검색이랑 똑같음!
-
         recyclerDataList.clear();
 
         List<MainRecyclerLinkerData> tempDataList = new ArrayList<>();
@@ -446,11 +478,5 @@ public class MoimingHomeFragment extends Fragment {
     public void onResume() { //TODO: 이런식으로 onResume 에 사용하는게 맞을까?
         super.onResume();
 
-        if (MainActivity.IS_MAIN_GROUP_INFO_REFRESH_NEEDED) {
-
-            getUgLinkers();
-
-            MainActivity.IS_MAIN_GROUP_INFO_REFRESH_NEEDED = false;
-        }
     }
 }

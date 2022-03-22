@@ -15,7 +15,7 @@ public class NotificationVO {
 
     private Integer msgType;
 
-    private String msgText;
+    private String msgText; // 이게 Received Notification DTO 에 있는 Full Text 포함.
 
     private Boolean isRead;
 

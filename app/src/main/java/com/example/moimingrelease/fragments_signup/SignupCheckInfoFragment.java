@@ -213,8 +213,6 @@ public class SignupCheckInfoFragment extends Fragment {
 
         }
 
-        // TODO: RETROFIT 함수에 대한 CLASS 화가 중요할 듯. 매번 이렇게 다 소환시키기는 코드가 더러움.
-        //       JAVA를 잘 사용해보자.
 
         // RETROFIT CONNECTION
 

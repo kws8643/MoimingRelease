@@ -91,7 +91,7 @@ public class SessionCreationActivity extends AppCompatActivity {
     private ConstraintLayout nmuInviteViewer;
     private TextView textNmuCnt;
 
-    private Button btnCreationFinish, btnPrevFunding;
+    private TextView btnCreationFinish, btnPrevFunding;
     private ConstraintLayout layoutSetMembers, layoutSessionResult;
     private TextView btnChooseMembers, btnEditSessionName, btnEditCost, textCostType;
     private TextView textInviteCnt;
@@ -810,7 +810,7 @@ public class SessionCreationActivity extends AppCompatActivity {
 
         // 계산서 뷰
         layoutSessionResult = findViewById(R.id.layout_session_result);
-        resultPersonalCost = findViewById(R.id.text_result_peronal_cost);
+        resultPersonalCost = findViewById(R.id.text_result_personal_cost);
         resultTotalCost = findViewById(R.id.text_result_cost);
         resultMemberCnt = findViewById(R.id.text_result_member);
         // Activity
@@ -967,7 +967,8 @@ public class SessionCreationActivity extends AppCompatActivity {
                 if (sessionType == 0) {
 
                     totalCost = cnt * fundingCost;
-                    btnPrevFunding.setTextColor(getResources().getColor(R.color.moimingLightTheme, null));
+                    btnPrevFunding.setBackgroundColor(getResources().getColor(R.color.moimingLightTheme, null));
+                    btnPrevFunding.setTextColor(getResources().getColor(R.color.moimingBoldGray, null));
                     btnPrevFunding.setEnabled(false); // 이제 못누름.
 
                 }
@@ -1059,8 +1060,11 @@ public class SessionCreationActivity extends AppCompatActivity {
                 //3. 준비 완료
                 isReady.put(2, true);
 
-                btnPrevFunding.setTextColor(getResources().getColor(R.color.moimingLightTheme, null));
-                btnPrevFunding.setEnabled(false); // 이제 불러오기 버튼 못누름.
+                btnPrevFunding.setBackgroundColor(getResources().getColor(R.color.moimingLightTheme, null));
+                btnPrevFunding.setTextColor(getResources().getColor(R.color.moimingBoldGray, null));
+                btnPrevFunding.setEnabled(false); // 이제 못누름.
+                /*btnPrevFunding.setTextColor(getResources().getColor(R.color.moimingLightTheme, null));
+                btnPrevFunding.setEnabled(false); // 이제 불러오기 버튼 못누름.*/
 
                 // 4. 멤버별 가격 All Set. //개인별 적용 가격이 있는지 들어가야 함
                 initPrevFundingLayout(previousSession);
@@ -1161,6 +1165,8 @@ public class SessionCreationActivity extends AppCompatActivity {
     private void setReceiptForPrevFunding(int totalMemberCnt) {
 
         layoutSessionResult.setVisibility(View.VISIBLE);
+        btnCreationFinish.setTextColor(getResources().getColor(R.color.moimingTheme, null));
+        btnCreationFinish.setEnabled(true);
 
         String personalCost = inputCost.getText().toString();
 
@@ -1173,6 +1179,8 @@ public class SessionCreationActivity extends AppCompatActivity {
     private void setReceipt() {
 
         layoutSessionResult.setVisibility(View.VISIBLE);
+        btnCreationFinish.setTextColor(getResources().getColor(R.color.moimingTheme, null));
+        btnCreationFinish.setEnabled(true);
 
         // 새로 들어온대로 설정.
         // 1. 총 금액 // 2. 총 인원 // 3. 인원별 금액. //4. 수정 사항 발생시 +- 표시

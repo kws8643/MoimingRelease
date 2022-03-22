@@ -12,10 +12,6 @@ public class SessionAndUserStatusDTO {
     @SerializedName("creator_name")
     private String creatorName;
 
-    @SerializedName("is_session_finished")
-    private boolean isSessionFinished;
-
-
     /**
      0 = 내 정산 1 = 송금 필요 2 = 송금 완료 3 = 송금 확인 중 4 = 미참여
      */
@@ -39,14 +35,6 @@ public class SessionAndUserStatusDTO {
 
     public void setCreatorName(String creatorName) {
         this.creatorName = creatorName;
-    }
-
-    public boolean isSessionFinished() {
-        return isSessionFinished;
-    }
-
-    public void setSessionFinished(boolean sessionFinished) {
-        isSessionFinished = sessionFinished;
     }
 
     public Integer getCurUserStatus() {

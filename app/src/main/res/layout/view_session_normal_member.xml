@@ -6,10 +6,10 @@
 
     <ImageView
         android:id="@+id/img_normal_creator"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="12dp"
+        android:layout_height="12dp"
         android:layout_marginLeft="5dp"
-        android:src="@drawable/ic_creator"
+        android:src="@drawable/ic_creator_orange"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toRightOf="@id/text_normal_name"
         app:layout_constraintTop_toTopOf="parent" />
@@ -36,7 +36,7 @@
         android:layout_marginRight="24dp"
         android:lineSpacingExtra="8sp"
         android:text="20000 원"
-        android:textColor="@color/moimingTheme"
+        android:textColor="@color/moimingOrange"
         android:textSize="14sp"
         android:textStyle="normal"
         app:layout_constraintBottom_toBottomOf="parent"

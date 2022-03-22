@@ -27,11 +27,23 @@ public class MoimingGroupVO implements Serializable, Parcelable {
     @SerializedName("bg_img")
     private String bgImg;
 
+    @SerializedName("group_payment")
+    private Integer groupPayment;
+
     @SerializedName("group_member_cnt")
     private Integer groupMemberCnt;
 
     @SerializedName("group_creator_uuid")
     private UUID groupCreatorUuid;
+
+    @SerializedName("notice")
+    private String notice;
+
+    @SerializedName("notice_creator_uuid")
+    private UUID noticeCreatorUuid;
+
+    @SerializedName("notice_created_at")
+    private LocalDateTime noticeCreatedAt;
 
     @SerializedName("created_at")
     private LocalDateTime createdAt;
@@ -41,6 +53,50 @@ public class MoimingGroupVO implements Serializable, Parcelable {
 
     public MoimingGroupVO() {
 
+    }
+
+    public static final Creator<MoimingGroupVO> CREATOR = new Creator<MoimingGroupVO>() {
+        @Override
+        public MoimingGroupVO createFromParcel(Parcel in) {
+            return new MoimingGroupVO(in);
+        }
+
+        @Override
+        public MoimingGroupVO[] newArray(int size) {
+            return new MoimingGroupVO[size];
+        }
+    };
+
+    public String getNotice() {
+        return notice;
+    }
+
+    public void setNotice(String notice) {
+        this.notice = notice;
+    }
+
+    public UUID getNoticeCreatorUuid() {
+        return noticeCreatorUuid;
+    }
+
+    public void setNoticeCreatorUuid(UUID noticeCreatorUuid) {
+        this.noticeCreatorUuid = noticeCreatorUuid;
+    }
+
+    public LocalDateTime getNoticeCreatedAt() {
+        return noticeCreatedAt;
+    }
+
+    public void setNoticeCreatedAt(LocalDateTime noticeCreatedAt) {
+        this.noticeCreatedAt = noticeCreatedAt;
+    }
+
+    public Integer getGroupPayment() {
+        return groupPayment;
+    }
+
+    public void setGroupPayment(Integer groupPayment) {
+        this.groupPayment = groupPayment;
     }
 
     public UUID getUuid() {
@@ -146,6 +202,10 @@ public class MoimingGroupVO implements Serializable, Parcelable {
         dest.writeString(bgImg);
         dest.writeInt(groupMemberCnt);
         dest.writeString(groupCreatorUuid.toString());
+        dest.writeString(notice);
+        dest.writeSerializable(noticeCreatorUuid);
+        dest.writeSerializable(noticeCreatedAt);
+        dest.writeInt(groupPayment);
         dest.writeSerializable(createdAt);
         dest.writeSerializable(updatedAt);
     }
@@ -159,21 +219,14 @@ public class MoimingGroupVO implements Serializable, Parcelable {
         bgImg = in.readString();
         groupMemberCnt = in.readInt();
         groupCreatorUuid = UUID.fromString(in.readString());
+        notice = in.readString();
+        noticeCreatorUuid = (UUID) in.readSerializable();
+        noticeCreatedAt = (LocalDateTime) in.readSerializable();
+        groupPayment = in.readInt();
         createdAt = (LocalDateTime) in.readSerializable();
         updatedAt = (LocalDateTime) in.readSerializable();
 
     }
 
-    public static final Creator<MoimingGroupVO> CREATOR = new Creator<MoimingGroupVO>() {
-        @Override
-        public MoimingGroupVO createFromParcel(Parcel in) {
-            return new MoimingGroupVO(in);
-        }
-
-        @Override
-        public MoimingGroupVO[] newArray(int size) {
-            return new MoimingGroupVO[size];
-        }
-    };
 
 }

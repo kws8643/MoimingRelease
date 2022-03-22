@@ -88,13 +88,28 @@ public class MainRecyclerAdapter extends RecyclerView.Adapter<MainRecyclerAdapte
         }
 
         if (!groupNotiList.isEmpty()) {
-            holder.imgNotice.setVisibility(View.VISIBLE);
 
-            Collections.sort(groupNotiList, byDate);
+            holder.imgNotice.setVisibility(View.GONE);
 
-            ReceivedNotificationDTO recentNoti = groupNotiList.get(0);
+            Collections.sort(groupNotiList, byDate); // 날짜로 소팅한 상태에서
 
-            String msg = recentNoti.getSentUserName() + "님이 " + recentNoti.getNotification().getMsgText();
+            ReceivedNotificationDTO recentNoti = null;
+
+            for (int i = 0; i < groupNotiList.size(); i++) { // 돌리면서
+
+                if (!groupNotiList.get(i).getNotification().getRead()) { // 하나라도 안읽은게 있다면
+
+                    holder.imgNotice.setVisibility(View.VISIBLE); // 발견하자마자 그걸로 세팅한다
+                    recentNoti = groupNotiList.get(i);
+                    break;
+                }
+            }
+
+            if (recentNoti == null) {
+                recentNoti = groupNotiList.get(0);
+            }
+
+            String msg = recentNoti.getNotification().getMsgText();
 
             holder.mainRecyclerGroupRecentNotice.setText(msg);
 
@@ -141,14 +156,12 @@ public class MainRecyclerAdapter extends RecyclerView.Adapter<MainRecyclerAdapte
 
                     MainRecyclerLinkerData selectedGroup = viewDataList.get(position);  // 해당 그룹으로 이동!
                     MoimingGroupAndMembersDTO selectedGroupDatas = selectedGroup.getGroupData();
-                    MoimingGroupVO selectedGroupData = selectedGroup.getGroupData().getMoimingGroup();
 
                     Intent toGroupActivity = new Intent(activityContext, GroupActivity.class);
 
                     toGroupActivity.putExtra(activityContext.getResources().getString(R.string.moiming_group_and_members_data_key), selectedGroupDatas);
                     toGroupActivity.putExtra(activityContext.getResources().getString(R.string.moiming_user_data_key), curUser);
 
-                    Log.w(MainActivity.MAIN_TAG, selectedGroupData.toString());
 
                     activityContext.startActivity(toGroupActivity);
 
@@ -180,7 +193,7 @@ public class MainRecyclerAdapter extends RecyclerView.Adapter<MainRecyclerAdapte
     Comparator<ReceivedNotificationDTO> byDate = new Comparator<ReceivedNotificationDTO>() {
         @Override
         public int compare(ReceivedNotificationDTO dto1, ReceivedNotificationDTO dto2) {
-            return dto1.getNotification().getCreatedAtForm().compareTo(dto2.getNotification().getCreatedAtForm());
+            return dto2.getNotification().getCreatedAtForm().compareTo(dto1.getNotification().getCreatedAtForm());
         }
     };
 

@@ -94,6 +94,8 @@ public class SessionActivity extends AppCompatActivity {
     private ImageView imgCreator;
     private RecyclerView confirmNotiRecycler;
     private ImageView btnEditSession;
+    private TextView textFinished;
+
 
     // 1. 정산 안한 유저
     private LinearLayout btnSendConfirm; // 총무에게 송금 확인 요청을 보낸다.
@@ -484,7 +486,7 @@ public class SessionActivity extends AppCompatActivity {
 
                             // 버튼 변경
                             btnSendConfirm.setClickable(false);
-                            btnSendConfirm.setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.shape_light_main_bg, null));
+                            btnSendConfirm.setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.shape_round_orange_light, null));
                             textSendBtn.setText("확인 중");
 
 
@@ -578,6 +580,7 @@ public class SessionActivity extends AppCompatActivity {
 
     }
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -590,7 +593,6 @@ public class SessionActivity extends AppCompatActivity {
         initParams();
 
         initSessionMembers();
-
 
     }
 
@@ -683,8 +685,16 @@ public class SessionActivity extends AppCompatActivity {
 
         layoutSessionStatus = findViewById(R.id.layout_session_status);
 
-        // 현재 유저가 어떤 유저인지에 따라 바뀌는 ..
+
         imgCreator = findViewById(R.id.img_creator);
+        if (curSession.getSessionCreatorUuid().toString().equals(curUser.getUuid().toString())) {
+            imgCreator.setVisibility(View.VISIBLE);
+        } else {
+            imgCreator.setVisibility(View.GONE);
+        }
+
+        textFinished = findViewById(R.id.text_session_1);
+
         layoutCreator = findViewById(R.id.layout_creator_status);
         layoutMember = findViewById(R.id.layout_member_status);
         textMemberFinished = findViewById(R.id.text_member_finished);
@@ -825,64 +835,93 @@ public class SessionActivity extends AppCompatActivity {
         ConstraintSet sessionStatusSet = new ConstraintSet();
 
         /**
-         0 = 내 정산 1 = 송금 필요 2 = 송금 완료 3 = 송금 확인 중 4 = 미참여
+         0 = 내 정산 (메인색)
+         1 = 송금 필요 (주황색)
+         2 = 송금 완료  (주황색)
+         3 = 송금 확인 중 (주황색 / light)
+         4 = 미참여 (회색) (완료도 회색)
          */
-        if (curUserStatus != 0) { // 이 정산은 내가 보내야 하는 정산!
+        if (!curSession.getFinished()) {
+            if (curUserStatus != 0) { // 이 정산은 내가 보내야 하는 정산!
 
-            layoutCreator.setVisibility(View.GONE);
-            imgCreator.setVisibility(View.GONE);
+                layoutCreator.setVisibility(View.GONE);
+                imgCreator.setVisibility(View.GONE);
+                btnSessionStatusChange.setVisibility(View.GONE);
+                sessionProgressBar.setProgressDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.shape_progress_bar_session_sender, null));
 
-            if (curUserStatus == 1 || curUserStatus == 3) { // 송금 필요함 (송금 확인중일 떄도 따로)
+                if (curUserStatus == 1 || curUserStatus == 3) { // 송금 필요함 (송금 확인중일 떄도 따로)
 
-                layoutMember.setVisibility(View.VISIBLE);
-                textMemberFinished.setVisibility(View.GONE);
+                    layoutMember.setVisibility(View.VISIBLE);
+                    textMemberFinished.setVisibility(View.GONE);
 
-                if (curUserStatus == 3) { // 송금 확인 요청 중
-                    // 버튼 변경
-                    btnSendConfirm.setClickable(false);
-                    btnSendConfirm.setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.shape_light_main_bg, null));
-                    textSendBtn.setText("확인 중");
+                    if (curUserStatus == 3) { // 송금 확인 요청 중
+                        // 버튼 변경
+                        btnSendConfirm.setClickable(false);
+                        btnSendConfirm.setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.shape_round_orange_light, null));
+                        textSendBtn.setText("확인 중");
+                    }
+
+                    sessionStatusSet.clone(layoutTotal);
+                    sessionStatusSet.connect(layoutSessionStatus.getId(), ConstraintSet.TOP, layoutMember.getId(), ConstraintSet.BOTTOM);
+
+                } else if (curUserStatus == 2) { // 송금 완료 함
+
+                    layoutMember.setVisibility(View.GONE);
+                    textMemberFinished.setVisibility(View.VISIBLE);
+
+                    sessionStatusSet.clone(layoutTotal);
+                    sessionStatusSet.connect(layoutSessionStatus.getId(), ConstraintSet.TOP, textMemberFinished.getId(), ConstraintSet.BOTTOM);
+
+                } else if (curUserStatus == 4) { // 미참여
+
+                    layoutMember.setVisibility(View.GONE);
+                    textMemberFinished.setText("참여하는 활동이 아닙니다");
+                    textMemberFinished.setVisibility(View.VISIBLE);
+
+                    sessionStatusSet.clone(layoutTotal);
+                    sessionStatusSet.connect(layoutSessionStatus.getId(), ConstraintSet.TOP, textMemberFinished.getId(), ConstraintSet.BOTTOM);
+
                 }
 
-                sessionStatusSet.clone(layoutTotal);
-                sessionStatusSet.connect(layoutSessionStatus.getId(), ConstraintSet.TOP, layoutMember.getId(), ConstraintSet.BOTTOM);
+                sessionStatusSet.applyTo(layoutTotal);
 
-            } else if (curUserStatus == 2) { // 송금 완료 함
 
+            } else { // 이 정산은 내가 만든 정산! 0일 경우
+
+                // 고정
+                imgCreator.setVisibility(View.VISIBLE);
                 layoutMember.setVisibility(View.GONE);
-                textMemberFinished.setVisibility(View.VISIBLE);
+                textMemberFinished.setVisibility(View.GONE);
+                btnSessionStatusChange.setVisibility(View.VISIBLE);
+
+                // 알림이 있을 경우
+                layoutCreator.setVisibility(View.VISIBLE);
 
                 sessionStatusSet.clone(layoutTotal);
-                sessionStatusSet.connect(layoutSessionStatus.getId(), ConstraintSet.TOP, textMemberFinished.getId(), ConstraintSet.BOTTOM);
+                sessionStatusSet.connect(layoutSessionStatus.getId(), ConstraintSet.TOP, layoutCreator.getId(), ConstraintSet.BOTTOM);
 
-            } else if (curUserStatus == 4) { // 미참여
-
-                layoutMember.setVisibility(View.GONE);
-                textMemberFinished.setText("참여하는 활동이 아닙니다");
-                textMemberFinished.setVisibility(View.VISIBLE);
-
-                sessionStatusSet.clone(layoutTotal);
-                sessionStatusSet.connect(layoutSessionStatus.getId(), ConstraintSet.TOP, textMemberFinished.getId(), ConstraintSet.BOTTOM);
+                sessionStatusSet.applyTo(layoutTotal);
 
             }
 
-            sessionStatusSet.applyTo(layoutTotal);
+        } else { // 정산이 끝났을 경우
 
-
-        } else { // 이 정산은 내가 만든 정산! 0일 경우
-
-            // 고정
-            imgCreator.setVisibility(View.VISIBLE);
-            layoutMember.setVisibility(View.GONE);
             textMemberFinished.setVisibility(View.GONE);
+            layoutMember.setVisibility(View.GONE);
+            layoutCreator.setVisibility(View.GONE);
+            btnSessionStatusChange.setVisibility(View.GONE);
 
-            // 알림이 있을 경우
-            layoutCreator.setVisibility(View.VISIBLE);
+            // TODO imgCreator 회색으로 변경 필요.
+            imgCreator.setImageResource(R.drawable.ic_creator_gray);
 
-            sessionStatusSet.clone(layoutTotal);
-            sessionStatusSet.connect(layoutSessionStatus.getId(), ConstraintSet.TOP, layoutCreator.getId(), ConstraintSet.BOTTOM);
+            if(curSession.getSessionType() == 1){ // 더치페이
+                textFinished.setText("정산 완료");
+            }else{ // 모금
+                textFinished.setText("모금 완료");
+            }
 
-            sessionStatusSet.applyTo(layoutTotal);
+            sessionProgressBar.setProgressDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.shape_progress_bar_session_finished, null));
+
 
         }
     }
@@ -947,7 +986,7 @@ public class SessionActivity extends AppCompatActivity {
 
         USLinkerRetrofitService linkerRetrofit = GlobalRetrofit.getInstance().getRetrofit().create(USLinkerRetrofitService.class);
 
-        linkerRetrofit.requestSessionLinker(curSession.getUuid().toString())
+        linkerRetrofit.requestSessionLinker(curUser.getUuid().toString(), curSession.getUuid().toString())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<TransferModel<SessionMembersDTO>>() {
@@ -965,8 +1004,6 @@ public class SessionActivity extends AppCompatActivity {
 
                         List<USLinkerResponseDTO> memberLinkerDTO = sessionMembers.getSessionMoimingMemberList();
                         List<NonMoimingUserResponseDTO> nmuLinkerDTO = sessionMembers.getSessionNmuList();
-
-                        // TODO: 해야할일 -> 송금 유저들 골라서 Fragment 에 뿌려줘야함. 아니면 S.U 해놓고 Fragment 에서 가져갈 수 있도록 제어해주기.
 
                         for (USLinkerResponseDTO dto : memberLinkerDTO) {
 
@@ -1002,6 +1039,13 @@ public class SessionActivity extends AppCompatActivity {
 
                                 unfinishedNmuLinkerList.add(nmuVo);
 
+                            }
+                        }
+
+                        // NOTIFICATION 변경 여부
+                        if (receivedDTO.getDescription() != null) {
+                            if (receivedDTO.getDescription().equals("changed")) {
+                                MainActivity.IS_NOTIFICATION_REFRESH_NEEDED = true;
                             }
                         }
                     }

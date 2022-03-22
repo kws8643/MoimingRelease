@@ -40,7 +40,6 @@ public class NotificationResponseDTO implements Parcelable {
     private String createdAt;
 
 
-
     public static final Creator<NotificationResponseDTO> CREATOR = new Creator<NotificationResponseDTO>() {
         @Override
         public NotificationResponseDTO createFromParcel(Parcel in) {
@@ -53,7 +52,7 @@ public class NotificationResponseDTO implements Parcelable {
         }
     };
 
-    public NotificationVO convertToVO(){
+    public NotificationVO convertToVO() {
 
         // 여기서 LocalDateTime 으로 CreatedAt / UpdatedAt 변환 후 VO로 저장.
         NotificationVO generateVO = new NotificationVO();
@@ -73,7 +72,7 @@ public class NotificationResponseDTO implements Parcelable {
 
     }
 
-    public LocalDateTime getCreatedAtForm(){
+    public LocalDateTime getCreatedAtForm() {
 
         LocalDateTime createdAtForm = LocalDateTime.parse(this.createdAt, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss"));
         return createdAtForm;
@@ -150,15 +149,15 @@ public class NotificationResponseDTO implements Parcelable {
 
 
     protected NotificationResponseDTO(Parcel in) {
+
         sentUserUuid = UUID.fromString(in.readString());
         sentActivity = in.readString();
         sentGroupUuid = UUID.fromString(in.readString());
-        sentSessionUuid= UUID.fromString(in.readString());
+        sentSessionUuid = (UUID) in.readSerializable();
         msgType = in.readInt();
         msgText = in.readString();
         isRead = Boolean.parseBoolean(in.readString());
         createdAt = in.readString();
-
     }
 
     @Override
@@ -166,7 +165,7 @@ public class NotificationResponseDTO implements Parcelable {
         dest.writeString(sentUserUuid.toString());
         dest.writeString(sentActivity);
         dest.writeString(sentGroupUuid.toString());
-        dest.writeString(sentSessionUuid.toString());
+        dest.writeSerializable(sentSessionUuid);
         dest.writeInt(msgType);
         dest.writeString(msgText);
         dest.writeString(String.valueOf(isRead));

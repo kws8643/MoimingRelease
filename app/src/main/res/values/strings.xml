@@ -24,7 +24,8 @@
 
     <string name="session_creation_from_group_activity_flag">FROM_GROUP_ACTIVITY_FLAG</string>
     <string name="session_creation_with_new_group_flag">SESSION_WITH_NEW_GROUP_FLAG</string>
-    <string name = "group_move_to_session_key">GROUP_TO_SESSION_KEY</string>
+    <string name="group_move_to_session_key">GROUP_TO_SESSION_KEY</string>
+    <string name="fcm_token_map">FCM_TOKEN_MAP_KEY</string>
 
 
 </resources>

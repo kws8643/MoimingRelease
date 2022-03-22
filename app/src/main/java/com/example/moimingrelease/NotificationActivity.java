@@ -13,6 +13,7 @@ import com.example.moimingrelease.moiming_model.extras.MoimingGroupAndMembersDTO
 import com.example.moimingrelease.moiming_model.extras.ReceivedNotificationDTO;
 import com.example.moimingrelease.moiming_model.moiming_vo.MoimingUserVO;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -37,7 +38,7 @@ public class NotificationActivity extends AppCompatActivity {
         if (receivedData != null) {
 
             curUser = (MoimingUserVO) receivedData.getExtras().getSerializable(getResources().getString(R.string.moiming_user_data_key));
-            groupAndMemberList = receivedData.getParcelableArrayListExtra(getResources().getString(R.string.search_group_data_key));
+            groupAndMemberList = receivedData.getParcelableArrayListExtra(getResources().getString(R.string.moiming_group_and_members_data_key));
             notificationList = receivedData.getParcelableArrayListExtra(getResources().getString(R.string.moiming_notification_data_key));
 
         }
@@ -89,7 +90,8 @@ public class NotificationActivity extends AppCompatActivity {
 
     private void sortNotificationList() {
 
-        List<ReceivedNotificationDTO> tempList = notificationList;
+        List<ReceivedNotificationDTO> tempList = new ArrayList<>();
+        tempList.addAll(notificationList);
         notificationList.clear();
 
         // 1. system Comes First
@@ -113,7 +115,7 @@ public class NotificationActivity extends AppCompatActivity {
     Comparator<ReceivedNotificationDTO> byDate = new Comparator<ReceivedNotificationDTO>() {
         @Override
         public int compare(ReceivedNotificationDTO dto1, ReceivedNotificationDTO dto2) {
-            return dto1.getNotification().getCreatedAtForm().compareTo(dto2.getNotification().getCreatedAtForm());
+            return dto2.getNotification().getCreatedAtForm().compareTo(dto1.getNotification().getCreatedAtForm());
         }
     };
 }

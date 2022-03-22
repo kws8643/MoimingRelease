@@ -1,5 +1,6 @@
 package com.example.moimingrelease;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -8,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -37,16 +39,26 @@ import com.example.moimingrelease.network.GlobalRetrofit;
 import com.example.moimingrelease.network.GroupRetrofitService;
 import com.example.moimingrelease.network.TransferModel;
 import com.example.moimingrelease.network.UGLinkerRetrofitService;
+import com.example.moimingrelease.network.fcm.FCMRequest;
 import com.example.moimingrelease.network.kakao_api.KakaoMoimingFriends;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
@@ -54,6 +66,8 @@ import io.reactivex.rxjava3.annotations.NonNull;
 import io.reactivex.rxjava3.core.Observer;
 import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
 
 public class GroupActivity extends AppCompatActivity {
 
@@ -64,11 +78,16 @@ public class GroupActivity extends AppCompatActivity {
     public static boolean SESSION_LIST_REFRESH_FLAG = false;
     public static boolean GROUP_INFO_REFRESH_FLAG = false;
 
-    KakaoMoimingFriends kmf = KakaoMoimingFriends.getInstance();w
+    private FirebaseFirestore firebaseDB = FirebaseFirestore.getInstance();
+    KakaoMoimingFriends kmf = KakaoMoimingFriends.getInstance();
+
+    private Map<UUID, String> groupMemberFcmTokenMap;
 
     public List<MoimingMembersDTO> groupMembers = new ArrayList<>();
     public List<SessionAndUserStatusDTO> sessionAdapterData;
     private List<SessionAndUserStatusDTO> sessionRawDataHolder;
+    private List<String> groupMembersUuid;
+
     MoimingGroupVO curGroup;
     MoimingUserVO curUser;
 
@@ -85,6 +104,8 @@ public class GroupActivity extends AppCompatActivity {
     private boolean isFiltered = false;
     private RecyclerView groupSessionViews;
     private GroupSessionViewAdapter sessionViewsAdapter;
+    private ConstraintLayout btnGroupNotice;
+    private TextView textGroupNotice, textNoticeFix;
 
     // Group Members
     private ConstraintLayout layoutMembersView;
@@ -268,6 +289,86 @@ public class GroupActivity extends AppCompatActivity {
         }
     }
 
+    private void sendInvitedUserFcm(String fcmToken) throws JSONException {
+
+        String textNoti = curUser.getUserName() + "님이 회원님을 " + curGroup.getGroupName() + "에 초대하셨습니다. 같이 즐거운 모임 만들어 나가세요!";
+
+        JSONObject jsonSend = FCMRequest.getInstance().buildFcmJsonData("새로운 모임"
+                , textNoti, "", curGroup.getUuid().toString(), "", fcmToken);
+
+/*
+
+        JSONObject jsonSend = FCMRequest.getInstance()
+                .buildJsonBody("모임 추가 알림", curGroup.getGroupName() + " 모임에 추가되셨습니다!", fcmToken);
+*/
+
+        RequestBody reBody = RequestBody.create(MediaType.parse("application/json, charset-utf8")
+                , String.valueOf(jsonSend));
+
+        FCMRequest.getInstance().sendFcmRequest(getApplicationContext(), reBody);
+
+    }
+
+
+    private void receiveFcmTokens(List<String> addingMemberUuid, boolean isMemberAdded) {
+
+        for (int i = 0; i < addingMemberUuid.size(); i++) {
+
+            DocumentReference keyDocs = firebaseDB.collection("UserInfo")
+                    .document(addingMemberUuid.get(i)); // uuid 가 문서 명임.
+
+
+            keyDocs.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@androidx.annotation.NonNull @NotNull Task<DocumentSnapshot> task) {
+
+                    if (task.isSuccessful()) {
+
+                        DocumentSnapshot snapshot = task.getResult();
+
+                        String userUuid = snapshot.getId();
+
+                        if (snapshot.exists()) {
+
+                            Map<String, Object> responseSnap = snapshot.getData();
+                            String memberFcmToken = (String) responseSnap.get("fcm_token");
+
+                            groupMemberFcmTokenMap.put(UUID.fromString(userUuid), memberFcmToken);
+
+                            if (isMemberAdded) {
+
+                                try {
+
+                                    sendInvitedUserFcm(memberFcmToken);
+
+                                } catch (JSONException e) {
+
+                                    if (e.getMessage() != null) {
+
+                                        Log.e("FCM_ERRR", e.getMessage());
+
+                                    }
+                                }
+                            }
+
+
+                        } else {
+
+                            Log.e("FCM_TAG", "해당 유저의 토큰 정보가 없습니다");
+                        }
+
+                    } else {
+                        Log.e("FCM_TAG", "해당 문서를 불러오지 못했습니다");
+                    }
+                }
+            });
+
+        }
+
+
+    }
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -279,12 +380,30 @@ public class GroupActivity extends AppCompatActivity {
 
         initParams();
 
+        receiveFcmTokens(groupMembersUuid, false);
+
         layoutMembersView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
             }
         });
+
+        btnGroupNotice.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent toNotice = new Intent(GroupActivity.this, GroupNoticeActivity.class);
+
+                toNotice.putExtra(getResources().getString(R.string.moiming_user_data_key), curUser);
+                toNotice.putExtra(getResources().getString(R.string.moiming_group_data_key), (Serializable) curGroup);
+                toNotice.putParcelableArrayListExtra(getResources().getString(R.string.group_members_data_key)
+                        , (ArrayList<MoimingMembersDTO>) groupMembers);
+
+                startActivityForResult(toNotice, 101);
+            }
+        });
+
 
         // 처음 Focus 를 얻을때도 동일한 작동 필요 (Sliding Panel 이 올라온 상태)
         searchSession.setOnFocusChangeListener(new View.OnFocusChangeListener() {
@@ -322,10 +441,13 @@ public class GroupActivity extends AppCompatActivity {
             public void onClick(View view) {
 
                 Intent inviteMembersActivity = new Intent(GroupActivity.this, InviteGroupMembersActivity.class);
-                inviteMembersActivity.putExtra(getResources().getString(R.string.moiming_group_data_key), (Serializable) curGroup);
-                inviteMembersActivity.putParcelableArrayListExtra(getResources().getString(R.string.group_members_data_key), (ArrayList<MoimingMembersDTO>) groupMembers);
 
-                startActivity(inviteMembersActivity);
+                inviteMembersActivity.putExtra(getResources().getString(R.string.moiming_user_data_key), curUser);
+                inviteMembersActivity.putExtra(getResources().getString(R.string.moiming_group_data_key), (Serializable) curGroup);
+                inviteMembersActivity.putStringArrayListExtra("group_members_uuid", (ArrayList<String>) groupMembersUuid);
+                inviteMembersActivity.putExtra(getResources().getString(R.string.fcm_token_map), (Serializable) groupMemberFcmTokenMap);
+
+                startActivityForResult(inviteMembersActivity, 100);
             }
         });
 
@@ -335,7 +457,10 @@ public class GroupActivity extends AppCompatActivity {
 
                 Intent toGroupPaymentActivity = new Intent(GroupActivity.this, GroupPaymentActivity.class);
 
-                toGroupPaymentActivity.putExtra("groupUuid", curGroup.getUuid().toString());
+                toGroupPaymentActivity.putExtra(getResources().getString(R.string.moiming_user_data_key), curUser);
+                toGroupPaymentActivity.putExtra("group_uuid", curGroup.getUuid().toString());
+                toGroupPaymentActivity.putExtra(getResources().getString(R.string.fcm_token_map), (Serializable) groupMemberFcmTokenMap);
+
                 startActivity(toGroupPaymentActivity);
             }
         });
@@ -370,6 +495,9 @@ public class GroupActivity extends AppCompatActivity {
                 inviteMembersActivity.putExtra(getResources().getString(R.string.moiming_user_data_key), curUser);
                 inviteMembersActivity.putExtra(getResources().getString(R.string.moiming_group_data_key), (Serializable) curGroup);
                 inviteMembersActivity.putParcelableArrayListExtra(getResources().getString(R.string.group_members_data_key), (ArrayList<MoimingMembersDTO>) groupMembers);
+                inviteMembersActivity.putStringArrayListExtra("group_members_uuid", (ArrayList<String>) groupMembersUuid);
+                inviteMembersActivity.putExtra(getResources().getString(R.string.fcm_token_map), (Serializable) groupMemberFcmTokenMap);
+
 
                 startActivity(inviteMembersActivity); // 해당 그룹의 uuid 전달 필요
             }
@@ -411,8 +539,14 @@ public class GroupActivity extends AppCompatActivity {
         filterMySession = findViewById(R.id.filter_my_session);
         sessionFilter = findViewById(R.id.session_filter);
         sessionFilter.setOnCheckedChangeListener(checkedChangeListener);
-    }
 
+        // Group Notice
+        btnGroupNotice = findViewById(R.id.layout_group_notice);
+        textGroupNotice = findViewById(R.id.text_group_notice);
+        textNoticeFix = findViewById(R.id.text_notice_fix);
+
+        setNoticeView();
+    }
 
     private void initParams() {
 
@@ -421,6 +555,64 @@ public class GroupActivity extends AppCompatActivity {
         sessionAdapterData = new ArrayList<>();
         sessionRawDataHolder = new ArrayList<>();
         sessionFilteredAdapterData = new ArrayList<>();
+
+        groupMemberFcmTokenMap = new HashMap<>();
+
+        groupMembersUuid = new ArrayList<>(); // 아답터 전송 용
+
+        for (int i = 0; i < groupMembers.size(); i++) {
+
+            groupMembersUuid.add((groupMembers.get(i)).getUuid().toString());
+
+        }
+
+    }
+
+    private void setNoticeView() {
+
+        if (curGroup.getNotice() != null) { // 존재함.
+
+            textNoticeFix.setVisibility(View.VISIBLE);
+
+            String noticeInfo = curGroup.getNotice();
+
+            if (noticeInfo.length() > 29) {
+
+                noticeInfo = curGroup.getNotice().subSequence(0, 29) + "...";
+            }
+
+            textGroupNotice.setText(noticeInfo);
+
+        } else {
+
+            textNoticeFix.setVisibility(View.GONE);
+            textGroupNotice.setText("모임원들에게 공지할 내용을 입력해주세요");
+            textGroupNotice.setTextColor(getResources().getColor(R.color.moimingTheme, null));
+        }
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable @org.jetbrains.annotations.Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == 100) {
+            if (resultCode == RESULT_OK) {
+
+                if (data != null) { // 멤버가 추가될때마다 FCM Map 에 추가된다.
+                    List<String> addedUser = data.getStringArrayListExtra("added_user_uuid");
+                    receiveFcmTokens(addedUser, true);
+
+                }
+            }
+        } else if (requestCode == 101) {
+            if (resultCode == RESULT_OK) { // Notice 바꿨을 떄 curGroup만 바꿔주고 Notice 란을 바꿔준다.
+
+                curGroup = (MoimingGroupVO) data.getExtras().getSerializable(getResources().getString(R.string.moiming_group_data_key));
+
+                setNoticeView();
+            }
+        }
 
     }
 
@@ -596,7 +788,13 @@ public class GroupActivity extends AppCompatActivity {
 
         GroupRetrofitService groupRetrofit = GlobalRetrofit.getInstance().getRetrofit().create(GroupRetrofitService.class);
 
-        groupRetrofit.requestGroupSessions(curGroup.getUuid().toString(), curUser.getUuid().toString())
+        int notificationCheck = 0;
+
+        // TODO: 이거 notification check 를 해라 말라 판단하는 기준인데, 이거 좀 이상한듯! 왜 session_list_refresh_flag 가 기준?
+        if (!SESSION_LIST_REFRESH_FLAG) notificationCheck = 1;
+        else notificationCheck = 0;
+
+        groupRetrofit.requestGroupSessions(curGroup.getUuid().toString(), curUser.getUuid().toString(), notificationCheck)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<TransferModel<List<SessionAndUserStatusDTO>>>() {
@@ -626,6 +824,12 @@ public class GroupActivity extends AppCompatActivity {
                             textNoResult.setVisibility(View.GONE);
                         }
 
+                        // NOTIFICATION 변경 여부
+                        if (listModel.getDescription() != null) {
+                            if (listModel.getDescription().equals("changed")) {
+                                MainActivity.IS_NOTIFICATION_REFRESH_NEEDED = true;
+                            }
+                        }
                     }
 
                     @Override
@@ -652,21 +856,21 @@ public class GroupActivity extends AppCompatActivity {
                             SESSION_LIST_REFRESH_FLAG = false;
                         }
 
-                        if(!movingSessionUuid.equals("")){
+                        if (!movingSessionUuid.equals("")) {
 
                             SessionAndUserStatusDTO curMovingSession = null;
 
                             //TODO: 해당 세션을 찾고 해당 세션으로 이동시켜야 한다.
-                            for(int i = 0; i< sessionAdapterData.size(); i++){
+                            for (int i = 0; i < sessionAdapterData.size(); i++) {
 
-                                if(sessionAdapterData.get(i).getMoimingSessionResponseDTO().getUuid()
-                                        .toString().equals(movingSessionUuid)){
+                                if (sessionAdapterData.get(i).getMoimingSessionResponseDTO().getUuid()
+                                        .toString().equals(movingSessionUuid)) {
                                     curMovingSession = sessionAdapterData.get(i);
                                 }
 
                             }
 
-                            if(curMovingSession != null) {
+                            if (curMovingSession != null) {
                                 Intent toSession = new Intent(GroupActivity.this, SessionActivity.class);
 
                                 toSession.putExtra("cur_user_status", curMovingSession.getCurUserStatus());
@@ -676,7 +880,7 @@ public class GroupActivity extends AppCompatActivity {
 
                                 startActivity(toSession);
 
-                            }else{
+                            } else {
 
                                 Toast.makeText(getApplicationContext(), "조회할 수 없는 정산활동 입니다.", Toast.LENGTH_SHORT).show();
                             }

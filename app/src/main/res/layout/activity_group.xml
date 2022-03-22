@@ -5,222 +5,267 @@
 
     뷰들 앞 뒤 관계, LinearLayout 수정 등이 필요.
 -->
-<com.sothree.slidinguppanel.SlidingUpPanelLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+
+<com.sothree.slidinguppanel.SlidingUpPanelLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id = "@+id/layout_sliding"
+    android:id="@+id/layout_sliding"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="bottom"
-    tools:context = ".GroupActivity"
     android:background="#00FFFFFF"
+    android:gravity="bottom"
     app:umanoDragView="@id/layout_drawer_session"
-    app:umanoPanelHeight="376dp"
     app:umanoOverlay="true"
+    app:umanoPanelHeight="376dp"
     app:umanoShadowHeight="3dp"
->
-
-<androidx.constraintlayout.widget.ConstraintLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/moimingBackgroundTheme"
-    android:focusable="true"
-    android:focusableInTouchMode="true"
     tools:context=".GroupActivity">
 
-    <ImageView
-        android:id="@+id/btn_finish_group_activity"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="16dp"
-        android:src="@drawable/ic_app_back"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageView
-        android:id="@+id/btn_to_payment"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginRight="16dp"
-        android:src="@drawable/ic_account_book"
-        app:layout_constraintRight_toLeftOf="@id/btn_group_more"
-        app:layout_constraintTop_toTopOf="parent" />
-
-
-    <ImageView
-        android:id="@+id/btn_group_more"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginRight="16dp"
-        android:src="@drawable/ic_more"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-
-    <androidx.cardview.widget.CardView
-        android:id="@+id/img_group_bg"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        app:cardCornerRadius="12dp"
-        app:cardElevation="0dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btn_group_more">
-
-        <ImageView
-            android:layout_width="328dp"
-            android:layout_height="184dp"
-            android:scaleType="fitXY"
-            android:src="@drawable/img_sample_group" />
-    </androidx.cardview.widget.CardView>
-
-
-    <View
-        android:layout_width="328dp"
-        android:layout_height="80dp"
-        android:background="@drawable/shape_group_gradient"
-        app:layout_constraintBottom_toBottomOf="@id/img_group_bg"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
-
-    <ImageView
-        android:id="@+id/btn_invite_members"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:layout_marginBottom="12dp"
-        android:src="@drawable/ic_add_round"
-        app:layout_constraintBottom_toBottomOf="@id/img_group_bg"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
-
-
-    <ImageView
-        android:id="@+id/btn_group_info"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginBottom="12dp"
-        android:src="@drawable/ic_info"
-        app:layout_constraintBottom_toBottomOf="@id/img_group_bg"
-        app:layout_constraintRight_toRightOf="@id/img_group_bg" />
-
-
-    <ImageView
-        android:id="@+id/btn_edit_bg_img"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginBottom="12dp"
-        android:src="@drawable/ic_edit"
-        app:layout_constraintBottom_toBottomOf="@id/img_group_bg"
-        app:layout_constraintRight_toLeftOf="@id/btn_group_info" />
-
-
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id = "@+id/layout_group_members_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginLeft="8dp"
-        app:layout_constraintBottom_toBottomOf="@id/img_group_bg"
-        app:layout_constraintLeft_toLeftOf="@id/img_group_bg">
-
-
-    <ImageView
-        android:id = "@+id/img_member_pf_5"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:layout_marginLeft="16dp"
-        android:background="@drawable/shape_group_members_pf"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintLeft_toLeftOf="@id/img_member_pf_4"
-        />
-
-
-    <ImageView
-        android:id = "@+id/img_member_pf_4"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:layout_marginLeft="16dp"
-        android:background="@drawable/shape_group_members_pf"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintLeft_toLeftOf="@id/img_member_pf_3"
-        />
-
-
-    <ImageView
-        android:id = "@+id/img_member_pf_3"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:layout_marginLeft="16dp"
-        android:background="@drawable/shape_group_members_pf"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintLeft_toLeftOf="@id/img_member_pf_2"
-        />
-
-
-    <ImageView
-        android:id = "@+id/img_member_pf_2"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:layout_marginLeft="16dp"
-        android:background="@drawable/shape_group_members_pf"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintLeft_toLeftOf="@id/img_member_pf_1"
-        />
-
-
-    <ImageView
-        android:id = "@+id/img_member_pf_1"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:layout_marginLeft="16dp"
-        android:background="@drawable/shape_group_members_pf"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintLeft_toLeftOf="@id/img_member_pf_me"
-        />
-
-
-    <ImageView
-        android:id = "@+id/img_member_pf_me"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:background="@drawable/shape_group_members_pf"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <TextView
-        android:id="@+id/text_group_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
-        android:gravity="center_horizontal"
-        android:lineSpacingExtra="7sp"
-        android:text="누가 컴퍼니"
-        android:textColor="@color/textDark"
-        android:textSize="16sp"
-        android:textStyle="normal"
-        app:layout_constraintBottom_toBottomOf="@id/btn_finish_group_activity"
-        app:layout_constraintLeft_toRightOf="@id/btn_finish_group_activity"
-        app:layout_constraintTop_toTopOf="@id/btn_finish_group_activity" />
-
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id = "@+id/layout_drawer_session"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/shape_group_session_drawer"
-        >
+        android:background="@color/moimingWhite"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        tools:context=".GroupActivity">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id= "@+id/layout_group_notice"
+            android:layout_width="328dp"
+            android:layout_height="32dp"
+            android:background="@drawable/shape_round_bg_notice"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/app_bar_group"
+            >
+
+            <TextView
+                android:id = "@+id/text_notice_fix"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="normal"
+                android:textSize="10sp"
+                android:layout_marginLeft="16dp"
+                android:textColor="@color/moimingTheme"
+                android:lineSpacingExtra="5sp"
+                android:gravity="center_horizontal"
+                android:text="공지"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"/>
+
+            <TextView
+                android:id = "@+id/text_group_notice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="normal"
+                android:textSize="10sp"
+                android:layout_marginLeft="12dp"
+                android:textColor="@color/textDark"
+                android:lineSpacingExtra="5sp"
+                android:text="공지 내용"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toRightOf="@id/text_notice_fix"
+                />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/img_group_bg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="0dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/layout_group_notice">
+
+            <ImageView
+                android:layout_width="328dp"
+                android:layout_height="184dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/img_sample_group" />
+        </androidx.cardview.widget.CardView>
+
+<!--        android:background="@drawable/shape_group_gradient"-->
+        <View
+            android:layout_width="328dp"
+            android:layout_height="36dp"
+            android:background="#E6FFFFFF"
+            app:layout_constraintBottom_toBottomOf="@id/img_group_bg"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent" />
+
+        <ImageView
+            android:id="@+id/btn_invite_members"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="4dp"
+            android:src="@drawable/ic_add_round"
+            app:layout_constraintBottom_toBottomOf="@id/img_group_bg"
+            app:layout_constraintLeft_toRightOf="@id/layout_group_members_view" />
+
+
+        <ImageView
+            android:id="@+id/btn_group_info"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="8dp"
+            android:src="@drawable/ic_info"
+            app:layout_constraintBottom_toBottomOf="@id/img_group_bg"
+            app:layout_constraintRight_toRightOf="@id/img_group_bg" />
+
+
+        <ImageView
+            android:id="@+id/btn_edit_bg_img"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="10dp"
+            android:src="@drawable/ic_edit"
+            app:layout_constraintBottom_toBottomOf="@id/img_group_bg"
+            app:layout_constraintRight_toLeftOf="@id/btn_group_info" />
+
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/app_bar_group"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:layout_alignParentTop="true"
+            android:background="@color/moimingWhite"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/btn_finish_group_activity"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="16dp"
+                android:src="@drawable/ic_app_back"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/btn_to_payment"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginRight="16dp"
+                android:src="@drawable/ic_account_book"
+                app:layout_constraintRight_toLeftOf="@id/btn_group_more"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/btn_group_more"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginRight="16dp"
+                android:src="@drawable/ic_more"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+
+            <TextView
+                android:id="@+id/text_group_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:gravity="center_horizontal"
+                android:lineSpacingExtra="7sp"
+                android:text="누가 컴퍼니"
+                android:textColor="@color/textDark"
+                android:textSize="16sp"
+                android:textStyle="normal"
+                app:layout_constraintBottom_toBottomOf="@id/btn_finish_group_activity"
+                app:layout_constraintLeft_toRightOf="@id/btn_finish_group_activity"
+                app:layout_constraintTop_toTopOf="@id/btn_finish_group_activity" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/layout_group_members_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginBottom="6dp"
+            app:layout_constraintBottom_toBottomOf="@id/img_group_bg"
+            app:layout_constraintLeft_toLeftOf="@id/img_group_bg">
+
+
+            <ImageView
+                android:id="@+id/img_member_pf_5"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginLeft="12dp"
+                android:background="@drawable/shape_group_members_pf"
+                app:layout_constraintLeft_toLeftOf="@id/img_member_pf_4"
+                app:layout_constraintTop_toTopOf="parent" />
+
+
+            <ImageView
+                android:id="@+id/img_member_pf_4"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginLeft="12dp"
+                android:background="@drawable/shape_group_members_pf"
+                app:layout_constraintLeft_toLeftOf="@id/img_member_pf_3"
+                app:layout_constraintTop_toTopOf="parent" />
+
+
+            <ImageView
+                android:id="@+id/img_member_pf_3"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginLeft="12dp"
+                android:background="@drawable/shape_group_members_pf"
+                app:layout_constraintLeft_toLeftOf="@id/img_member_pf_2"
+                app:layout_constraintTop_toTopOf="parent" />
+
+
+            <ImageView
+                android:id="@+id/img_member_pf_2"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginLeft="12dp"
+                android:background="@drawable/shape_group_members_pf"
+                app:layout_constraintLeft_toLeftOf="@id/img_member_pf_1"
+                app:layout_constraintTop_toTopOf="parent" />
+
+
+            <ImageView
+                android:id="@+id/img_member_pf_1"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginLeft="12dp"
+                android:background="@drawable/shape_group_members_pf"
+                app:layout_constraintLeft_toLeftOf="@id/img_member_pf_me"
+                app:layout_constraintTop_toTopOf="parent" />
+
+
+            <ImageView
+                android:id="@+id/img_member_pf_me"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:background="@drawable/shape_group_members_pf"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layout_drawer_session"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/shape_group_session_drawer">
 
         <LinearLayout
             android:id="@+id/layout_session_search"
@@ -232,13 +277,6 @@
             android:orientation="horizontal"
             app:layout_constraintLeft_toLeftOf="@id/session_filter"
             app:layout_constraintTop_toBottomOf="@id/drawer_handle">
-
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_marginLeft="12dp"
-                android:src="@drawable/ic_main_search" />
-
 
             <EditText
                 android:id="@+id/input_session_search"
@@ -252,10 +290,17 @@
                 android:textColor="@color/moimingBlack"
                 android:textSize="16sp" />
 
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginLeft="12dp"
+                android:src="@drawable/ic_main_search" />
+
         </LinearLayout>
 
         <LinearLayout
-            android:id = "@+id/btn_create_session"
+            android:id="@+id/btn_create_session"
             android:layout_width="88dp"
             android:layout_height="40dp"
             android:background="@drawable/shape_main_bg"
@@ -288,7 +333,7 @@
             app:layout_constraintTop_toBottomOf="@id/layout_session_search">
 
             <RadioButton
-                android:id = "@+id/filter_every"
+                android:id="@+id/filter_every"
                 android:layout_width="70dp"
                 android:layout_height="32dp"
                 android:background="@drawable/selector_session_filter"
@@ -300,7 +345,7 @@
                 android:textSize="12sp" />
 
             <RadioButton
-                android:id = "@+id/filter_dutchpay"
+                android:id="@+id/filter_dutchpay"
                 android:layout_width="70dp"
                 android:layout_height="32dp"
                 android:layout_marginLeft="16dp"
@@ -313,7 +358,7 @@
                 android:textSize="12sp" />
 
             <RadioButton
-                android:id = "@+id/filter_funding"
+                android:id="@+id/filter_funding"
                 android:layout_width="70dp"
                 android:layout_height="32dp"
                 android:layout_marginLeft="16dp"
@@ -326,7 +371,7 @@
                 android:textSize="12sp" />
 
             <RadioButton
-                android:id ="@+id/filter_my_session"
+                android:id="@+id/filter_my_session"
                 android:layout_width="70dp"
                 android:layout_height="32dp"
                 android:layout_marginLeft="16dp"
@@ -341,6 +386,22 @@
 
         </RadioGroup>
 
+        <TextView
+            android:id="@+id/text_session_no_result"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:gravity="center_horizontal"
+            android:lineSpacingExtra="7sp"
+            android:text="결과가 없습니다"
+            android:textColor="@color/textBoldGray"
+            android:textSize="16sp"
+            android:textStyle="normal"
+            android:visibility="gone"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/session_filter" />
+
         <View
             android:id="@+id/drawer_handle"
             android:layout_width="80dp"
@@ -350,22 +411,6 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/text_session_no_result"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:gravity="center_horizontal"
-            android:lineSpacingExtra="7sp"
-            android:text="결과가 없습니다"
-            android:visibility="gone"
-            android:textColor="@color/textBoldGray"
-            android:textSize="16sp"
-            android:textStyle="normal"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/session_filter" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/session_recycler_view"

@@ -32,6 +32,9 @@ public class MoimingMembersDTO implements Parcelable { // DB에 VO까지 없고,
     @SerializedName("bank_number")
     private String bankNumber;
 
+    public MoimingMembersDTO(){}
+
+
     public MoimingMembersDTO(UUID uuid, String userName, String userPfImg) {
 
         this.uuid = uuid;

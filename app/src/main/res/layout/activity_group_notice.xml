@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".GroupNoticeActivity">
+
+    <Button
+        android:id="@+id/btn_set_notice"
+        android:layout_width="328dp"
+        android:layout_height="48dp"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/shape_main_bg"
+        android:lineSpacingExtra="8sp"
+        android:text="+ 새 공지 등록하기"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+
+    <ImageView
+        android:id="@+id/img_notice_creator_pf_img"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/app_bar_group_notice" />
+
+    <TextView
+        android:id ="@+id/text_created_at"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:lineSpacingExtra="13sp"
+        android:text="공지등록날짜"
+        android:textColor="@color/textBoldGray"
+        android:textSize="10sp"
+        android:textStyle="normal"
+        app:layout_constraintLeft_toLeftOf="@id/text_notice_creator_name"
+        app:layout_constraintTop_toBottomOf="@id/text_notice_creator_name" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:gravity="center_horizontal"
+        android:lineSpacingExtra="13sp"
+        android:text="새로운 공지를 등록하면 이전 공지 내용은 사라집니다"
+        android:textColor="@color/textBoldGray"
+        android:textSize="10sp"
+        android:textStyle="normal"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/layout_notice_info" />
+
+    <!--    android:background="@drawable/shape_round_bg_notice_change"-->
+    <TextView
+        android:id="@+id/text_notice_creator_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="2dp"
+        android:lineSpacingExtra="9sp"
+        android:text="등록 멤버 이름"
+        android:textColor="@color/textDark"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        app:layout_constraintLeft_toRightOf="@id/img_notice_creator_pf_img"
+        app:layout_constraintTop_toTopOf="@id/img_notice_creator_pf_img" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/app_bar_group_notice"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_alignParentTop="true"
+        android:background="@color/moimingWhite"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/btn_finish_group_notice"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="16dp"
+            android:src="@drawable/ic_app_back"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:lineSpacingExtra="7sp"
+            android:text="공 지"
+            android:textColor="@color/textDark"
+            android:textSize="16sp"
+            android:textStyle="normal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <!-- 누를 시 화면 Shift 필요 -->
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layout_notice_info"
+        android:layout_width="328dp"
+        android:layout_height="108dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/shape_round_bg_notice_view"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/img_notice_creator_pf_img">
+
+
+        <TextView
+            android:id ="@+id/text_notice_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="normal"
+            android:textSize="16sp"
+            android:textColor="@color/textDark"
+            android:lineSpacingExtra="5sp"
+            android:layout_marginTop="16dp"
+            android:layout_marginStart="18dp"
+            android:maxLines="3"
+            android:maxEms="12"
+            android:text = "공지 내용이 보여집니다"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            />
+
+        <EditText
+            android:id ="@+id/input_notice_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="normal"
+            android:textSize="16sp"
+            android:background="@null"
+            android:textColor="@color/textDark"
+            android:lineSpacingExtra="5sp"
+            android:gravity="top"
+            android:layout_marginTop="16dp"
+            android:layout_marginStart="18dp"
+            android:maxLines="3"
+            android:maxEms="12"
+            android:maxLength="50"
+            android:hint = "모임원들에게 알리고 싶은 내용을 적어보세요 (최대 50자)"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            tools:ignore="HardcodedText" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

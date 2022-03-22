@@ -78,7 +78,6 @@
                     app:layout_constraintTop_toBottomOf="@id/text_session_2" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-
             <!-- 2.멤버들 화면 -->
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/layout_member_status"
@@ -106,7 +105,7 @@
                     android:layout_height="35dp"
                     android:layout_marginRight="17dp"
                     android:layout_marginBottom="12dp"
-                    android:background="@drawable/shape_main_bg"
+                    android:background="@drawable/shape_round_orange"
                     android:gravity="center"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintRight_toRightOf="parent">
@@ -201,8 +200,8 @@
 
                 <ImageView
                     android:id="@+id/img_creator"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="12dp"
+                    android:layout_height="12dp"
                     android:layout_marginRight="8dp"
                     android:src="@drawable/ic_creator"
                     app:layout_constraintBottom_toBottomOf="@id/text_session_create_info"
@@ -217,7 +216,6 @@
                     android:layout_marginTop="8dp"
                     android:progress="40"
                     android:progressDrawable="@drawable/shape_progress_bar_session"
-                    android:progressTint="@color/moimingTheme"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/text_cur_cost" />
@@ -383,7 +381,7 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_marginEnd="16dp"
-            android:src="@drawable/ic_edit_gray"
+            android:src="@drawable/ic_more_menu"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -417,10 +415,10 @@
             android:id="@+id/btn_change_session_status"
             android:layout_width="328dp"
             android:layout_height="48dp"
-            android:background = "@drawable/shape_light_main_bg"
-            android:textColor="@color/moimingWhite"
+            android:background="@drawable/shape_light_main_bg"
             android:lineSpacingExtra="8sp"
             android:text="완 료"
+            android:textColor="@color/moimingWhite"
             android:textSize="16sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"

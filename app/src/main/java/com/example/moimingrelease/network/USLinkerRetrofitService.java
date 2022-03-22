@@ -16,6 +16,7 @@ public interface USLinkerRetrofitService {
     @POST("api/userSessionLinker/receiveAll")
     Observable<TransferModel> usLinkRequest(@Body TransferModel<List<USLinkerRequestDTO>> linkRequestList);
 
-    @GET("api/userSessionLinker/{uuid}")
-    Observable<TransferModel<SessionMembersDTO>> requestSessionLinker(@Path("uuid") String sessionUuid);
+    @GET("api/userSessionLinker/{userUuid}/{sessionUuid}")
+    Observable<TransferModel<SessionMembersDTO>> requestSessionLinker(@Path("userUuid") String userUuid
+            , @Path("sessionUuid") String sessionUuid);
 }

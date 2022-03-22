@@ -67,9 +67,8 @@ public class MainActivity extends AppCompatActivity {
     public final static String FIXED_GROUP_UUID_KEY = "FIXED_GROUP";
 
     public static boolean IS_USER_UPDATED = false;
-    public static boolean IS_NOTIFICATION_REFRESH_NEEDED = false;
-    public static boolean IS_MAIN_GROUP_INFO_REFRESH_NEEDED = false;
-
+    public static boolean IS_NOTIFICATION_REFRESH_NEEDED = false; // Notification 만 Refresh 되면 된다.
+    public static boolean IS_MAIN_GROUP_INFO_REFRESH_NEEDED = false; // 메인화면 전체가 Refresh 되어야 함 Notification 포함
 
 
     public MoimingUserVO curMoimingUser;
@@ -290,7 +289,7 @@ public class MainActivity extends AppCompatActivity {
                 Intent toNotification = new Intent(MainActivity.this, NotificationActivity.class);
 
                 toNotification.putExtra(getResources().getString(R.string.moiming_user_data_key), curMoimingUser);
-                toNotification.putParcelableArrayListExtra(getResources().getString(R.string.search_group_data_key), homeFragment.getGroupAndMemberDataList());
+                toNotification.putParcelableArrayListExtra(getResources().getString(R.string.moiming_group_and_members_data_key), homeFragment.getGroupAndMemberDataList());
                 toNotification.putParcelableArrayListExtra(getResources().getString(R.string.moiming_notification_data_key), (ArrayList<? extends Parcelable>) rawNotificationList);
 
                 startActivity(toNotification);
@@ -298,14 +297,22 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        mainNavigation.getMenu().
 
-                getItem(1).
+        btnSetting.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
-                setEnabled(false);
+                Intent toSetting = new Intent(MainActivity.this, MyPageActivity.class);
 
-        mainNavigation.setOnNavigationItemSelectedListener(mainNavListener);
-        mainNavigation.setSelectedItemId(R.id.btn_main_home);
+                toSetting.putExtra(getResources().getString(R.string.moiming_user_data_key), curMoimingUser);
+
+                startActivity(toSetting);
+
+            }
+        });
+
+
+        checkPushNotiSetting();
 
     }
 
@@ -316,11 +323,6 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-//    public void setCurUserGroupList(ArrayList<MoimingGroupVO> curUserGroupList) {
-//
-//        this.curUserGroupList = curUserGroupList;
-//
-//    }
 
     private void receiveNotification() {
 
@@ -359,13 +361,26 @@ public class MainActivity extends AppCompatActivity {
 
                         parseNotification();
 
+
                         // 나머지 아답터에 전달해서 아답터에서 해결!
-                        if(IS_NOTIFICATION_REFRESH_NEEDED){ //  이거 중이라서 여기 온거면
+                        if (IS_NOTIFICATION_REFRESH_NEEDED || IS_MAIN_GROUP_INFO_REFRESH_NEEDED) { //  이거 중이라서 여기 온거면
 
-                            homeFragment.getUgLinkers();
+                            if (!IS_MAIN_GROUP_INFO_REFRESH_NEEDED) { // 얘도 해야하면 차피 그 쪽에서 Refresh 할 거임
 
-//                            IS_NOTIFICATION_REFRESH_NEEDED = false;
+                                // TODO: 그 쪽에서 Notification 만 다시 박는다.
+                                homeFragment.applyRefreshedNotification();
+                            } else {
 
+                                homeFragment.getUgLinkers();
+
+                                IS_MAIN_GROUP_INFO_REFRESH_NEEDED = false;
+                            }
+
+                        } else {
+
+                            mainNavigation.getMenu().getItem(1).setEnabled(false);
+                            mainNavigation.setOnNavigationItemSelectedListener(mainNavListener);
+                            mainNavigation.setSelectedItemId(R.id.btn_main_home);
                         }
 
                     }
@@ -553,11 +568,13 @@ public class MainActivity extends AppCompatActivity {
 
         }
 
-        if(IS_NOTIFICATION_REFRESH_NEEDED){
+        if (IS_NOTIFICATION_REFRESH_NEEDED || IS_MAIN_GROUP_INFO_REFRESH_NEEDED) { // 뭐든 일단 receiveNotification Refresh 는 필요하다.
 
             receiveNotification();
 
         }
+
+
     }
 
     private void updateCurUser() {
@@ -586,5 +603,15 @@ public class MainActivity extends AppCompatActivity {
 
                     }
                 });
+    }
+
+
+    // TODO: INIT PUSH NOTI Shared Preference
+    private void checkPushNotiSetting(){
+
+        // TODO:  Noti Shared Pref 가 들어왔을 때 없으면 Policy 조회 한다. Marketing True 면 다 True 로 init 해준다 (기기변동, 앱 삭제후 다시 설치 등)
+        //        회원가입시 동의 여부에 따라서 init됨. 추후 Setting 에서 변경 가능
+
+
     }
 }

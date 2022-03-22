@@ -17,6 +17,7 @@ import com.example.moimingrelease.app_adapter.GroupPaymentViewAdapter;
 import com.example.moimingrelease.app_listener_interface.PaymentSettingDialogListener;
 import com.example.moimingrelease.moiming_model.extras.PaymentViewData;
 import com.example.moimingrelease.moiming_model.moiming_vo.GroupPaymentVO;
+import com.example.moimingrelease.moiming_model.moiming_vo.MoimingUserVO;
 import com.example.moimingrelease.moiming_model.response_dto.GroupPaymentResponseDTO;
 import com.example.moimingrelease.moiming_model.dialog.CreatePaymentDialog;
 import com.example.moimingrelease.network.GlobalRetrofit;
@@ -29,6 +30,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.annotations.NonNull;
@@ -43,6 +46,7 @@ public class GroupPaymentActivity extends AppCompatActivity {
      * 불러오는 Payment 를 오래된 날짜 순서대로
      * sorting 한 후, 하나씩 추가하면서 total까지 계산을 담아내야 한다
      */
+    private Map<UUID, String> memberFcmTokenMap;
 
     public int calculated = 0;
     private boolean isRefreshing = false;
@@ -50,6 +54,7 @@ public class GroupPaymentActivity extends AppCompatActivity {
     private List<GroupPaymentVO> paymentList;
     private List<PaymentViewData> paymentRecyclerList;
 
+    private MoimingUserVO curUser;
     private String groupUuid;
     private ExtendedFloatingActionButton btnAdd;
     private RecyclerView paymentRecycler;
@@ -111,7 +116,7 @@ public class GroupPaymentActivity extends AppCompatActivity {
 
             paymentDialog = null;
 
-            paymentDialog = new CreatePaymentDialog(GroupPaymentActivity.this, groupUuid);
+            paymentDialog = new CreatePaymentDialog(GroupPaymentActivity.this, groupUuid, curUser);
 
             paymentDialog.setOnDismissListener(dismissListener);
         }
@@ -122,7 +127,9 @@ public class GroupPaymentActivity extends AppCompatActivity {
         Intent receivedIntent = getIntent();
 
         if (receivedIntent.getExtras() != null) {
-            groupUuid = receivedIntent.getExtras().getString("groupUuid");
+            curUser = (MoimingUserVO) receivedIntent.getExtras().getSerializable(getResources().getString(R.string.moiming_user_data_key));
+            groupUuid = receivedIntent.getExtras().getString("group_uuid");
+            memberFcmTokenMap = (Map<UUID, String>) receivedIntent.getExtras().getSerializable(getResources().getString(R.string.fcm_token_map));
         }
     }
 
@@ -172,7 +179,7 @@ public class GroupPaymentActivity extends AppCompatActivity {
 
     private void initParams() {
 
-        paymentDialog = new CreatePaymentDialog(this, groupUuid);
+        paymentDialog = new CreatePaymentDialog(this, groupUuid, curUser);
         paymentList = new ArrayList<>();
         paymentRecyclerList = new ArrayList<>();
 
@@ -226,6 +233,7 @@ public class GroupPaymentActivity extends AppCompatActivity {
 
                             paymentAdapter.notifyDataSetChanged();
                             isRefreshing = false;
+                            GroupActivity.GROUP_INFO_REFRESH_FLAG = true;
 
                         }
 

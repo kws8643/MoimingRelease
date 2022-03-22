@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".UserInfoActivity">
+
+
+    <ImageView
+        android:id="@+id/img_user_info_pf"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_marginTop="40dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/app_bar_user_info" />
+
+    <ImageView
+        android:id="@+id/btn_change_pf_img_user_info"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        android:src="@drawable/ic_change_pf_img"
+        app:layout_constraintBottom_toBottomOf="@id/img_user_info_pf"
+        app:layout_constraintRight_toRightOf="@id/img_user_info_pf" />
+
+
+    <TextView
+        android:id="@+id/text_user_info_1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="34dp"
+        android:layout_marginTop="32dp"
+        android:lineSpacingExtra="13sp"
+        android:text="이름 (실명)"
+        android:textColor="@color/textBoldGray"
+        android:textSize="10sp"
+        android:textStyle="normal"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/img_user_info_pf" />
+
+    <TextView
+        android:id="@+id/text_user_info_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="1dp"
+        android:lineSpacingExtra="9sp"
+        android:text="회원 이름"
+        android:textColor="@color/textDark"
+        android:textSize="14sp"
+        android:textStyle="normal"
+        app:layout_constraintLeft_toLeftOf="@id/text_user_info_1"
+        app:layout_constraintTop_toBottomOf="@id/text_user_info_1" />
+
+
+    <TextView
+        android:id="@+id/text_user_info_2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="28dp"
+        android:lineSpacingExtra="13sp"
+        android:text="휴대폰 번호"
+        android:textColor="@color/textBoldGray"
+        android:textSize="10sp"
+        android:textStyle="normal"
+        app:layout_constraintLeft_toLeftOf="@id/text_user_info_1"
+        app:layout_constraintTop_toBottomOf="@id/text_user_info_name" />
+
+    <TextView
+        android:id="@+id/text_user_info_phone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="1dp"
+        android:lineSpacingExtra="9sp"
+        android:text="010-0000-0000"
+        android:textColor="@color/textDark"
+        android:textSize="14sp"
+        android:textStyle="normal"
+        app:layout_constraintLeft_toLeftOf="@id/text_user_info_2"
+        app:layout_constraintTop_toBottomOf="@id/text_user_info_2" />
+
+    <TextView
+        android:id="@+id/text_user_info_3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="28dp"
+        android:lineSpacingExtra="13sp"
+        android:text="이메일"
+        android:textColor="@color/textBoldGray"
+        android:textSize="10sp"
+        android:textStyle="normal"
+        app:layout_constraintLeft_toLeftOf="@id/text_user_info_1"
+        app:layout_constraintTop_toBottomOf="@id/text_user_info_phone" />
+
+    <TextView
+        android:id="@+id/text_user_info_email"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="1dp"
+        android:lineSpacingExtra="9sp"
+        android:text="moiming@moiming.moim"
+        android:textColor="@color/textDark"
+        android:textSize="14sp"
+        android:textStyle="normal"
+        app:layout_constraintLeft_toLeftOf="@id/text_user_info_3"
+        app:layout_constraintTop_toBottomOf="@id/text_user_info_3" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:lineSpacingExtra="8sp"
+        android:layout_marginTop="68dp"
+        android:textColor="@color/moimingRed"
+        android:textSize="14sp"
+        android:textStyle="normal"
+        android:text="회원탈퇴"
+        app:layout_constraintTop_toBottomOf="@id/text_user_info_email"
+        app:layout_constraintLeft_toLeftOf="@id/text_user_info_1"/>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/app_bar_user_info"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_alignParentTop="true"
+        android:background="@color/moimingWhite"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/btn_finish_user_info"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="16dp"
+            android:src="@drawable/ic_app_back"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/text_user_info_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:lineSpacingExtra="7sp"
+            android:text="회원이름님의 정보"
+            android:textColor="@color/textDark"
+            android:textSize="16sp"
+            android:textStyle="normal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

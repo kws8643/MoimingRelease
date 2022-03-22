@@ -2,6 +2,8 @@ package com.example.moimingrelease.app_adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.shapes.OvalShape;
 import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,7 +39,6 @@ public class NotificationRecyclerAdapter extends RecyclerView.Adapter<Notificati
     private MoimingUserVO curUser;
     private List<MoimingGroupAndMembersDTO> groupAndMembersList;
     private List<ReceivedNotificationDTO> notificationList;
-    private int destinationParser;
 
     public NotificationRecyclerAdapter(Context mContext, MoimingUserVO curUser, List<MoimingGroupAndMembersDTO> groupAndMembersList
             , List<ReceivedNotificationDTO> notificationList) {
@@ -55,9 +56,8 @@ public class NotificationRecyclerAdapter extends RecyclerView.Adapter<Notificati
     public NotificationViewHolder onCreateViewHolder(@NonNull @NotNull ViewGroup parent, int viewType) {
 
         View view = LayoutInflater.from(mContext).inflate(R.layout.view_notification_recycler_item, parent, false);
-        NotificationViewHolder itemHolder = new NotificationViewHolder(view);
 
-        return itemHolder;
+        return new NotificationViewHolder(view);
 
     }
 
@@ -76,10 +76,8 @@ public class NotificationRecyclerAdapter extends RecyclerView.Adapter<Notificati
 
         NotificationResponseDTO notiDto = notificationData.getNotification();
 
-        destinationParser = 0;
-
         String sentUserName = notificationData.getSentUserName();
-        String msgContent = "";
+        String msgContent = notiDto.getMsgText();
 
         // isRead Confirming
         if (notiDto.getRead()) {
@@ -88,20 +86,14 @@ public class NotificationRecyclerAdapter extends RecyclerView.Adapter<Notificati
             holder.layoutNotiItem.setBackgroundColor(mContext.getResources().getColor(R.color.moimingNotificationTheme, null));
         }
 
-        // First need to parse each notification. type
+       /* // First need to parse each notification. type
         if (notiDto.getSentActivity().equals("group")) { // From Group Activity
 
             String sentGroupName = notificationData.getSentGroupName();
-
-            msgContent += sentGroupName + "의 ";
-            msgContent += sentUserName + "님이 ";
             msgContent += notiDto.getMsgText();
 
 
         } else if (notiDto.getSentActivity().equals("session")) { // From Session Activity
-
-            destinationParser = 1;
-
 
             String sentGroupName = notificationData.getSentGroupName();
             String sentSessionName = notificationData.getSentSessionName();
@@ -114,14 +106,12 @@ public class NotificationRecyclerAdapter extends RecyclerView.Adapter<Notificati
         } else if (notiDto.getSentActivity().equals("system")) { // From Moiming (Notice,event)
 
             // TODO: 공지사항 이벤트 에 대한 구성은 추후에 필요
-            destinationParser = 2;
-
 
         } else { // Does not exist
 
             System.out.println("ERROR");
         }
-
+*/
 
         holder.textNotiContent.setText(msgContent);
 
@@ -135,31 +125,28 @@ public class NotificationRecyclerAdapter extends RecyclerView.Adapter<Notificati
 
                 MoimingGroupAndMembersDTO selectedGroup = getMatchingInfo(notiDto.getSentGroupUuid());
 
-                if (destinationParser == 0) { // Group
-
-
-//                    curUser = (MoimingUserVO) dataIntent.getExtras().getSerializable(getResources().getString(R.string.moiming_user_data_key));
-
-//                    MoimingGroupAndMembersDTO groupAndMembersData = dataIntent.getExtras().getParcelable(getResources().getString(R.string.moiming_group_and_members_data_key));
+                if (notiDto.getSentActivity().equals("group")) { // Group
 
                     moveIntent = new Intent(mContext, GroupActivity.class);
 
                     moveIntent.putExtra(mContext.getResources().getString(R.string.moiming_user_data_key), (Serializable) curUser);
-                    moveIntent.putExtra(mContext.getResources().getString(R.string.moiming_group_and_members_data_key), (Parcelable) selectedGroup);
+                    moveIntent.putExtra(mContext.getResources().getString(R.string.moiming_group_and_members_data_key), selectedGroup);
 
-                } else if (destinationParser == 1) { // Session
+                } else if (notiDto.getSentActivity().equals("session")) { // Session
 
                     moveIntent = new Intent(mContext, GroupActivity.class);
 
                     moveIntent.putExtra(mContext.getResources().getString(R.string.moiming_user_data_key), (Serializable) curUser);
-                    moveIntent.putExtra(mContext.getResources().getString(R.string.moiming_group_and_members_data_key), (Parcelable) selectedGroup);
+                    moveIntent.putExtra(mContext.getResources().getString(R.string.moiming_group_and_members_data_key), selectedGroup);
                     moveIntent.putExtra(mContext.getResources().getString(R.string.group_move_to_session_key), notiDto.getSentSessionUuid().toString());
 
                 } else { // System
 
+                    moveIntent = null;
 
                 }
 
+                mContext.startActivity(moveIntent);
                 ((NotificationActivity) mContext).finish();
             }
         });
@@ -172,11 +159,11 @@ public class NotificationRecyclerAdapter extends RecyclerView.Adapter<Notificati
 
         String textDate = "";
 
-        int years = (int) ChronoUnit.YEARS.between(curTime, createdDate);
-        int months = (int) ChronoUnit.MONTHS.between(curTime, createdDate);
-        int days = (int) ChronoUnit.DAYS.between(curTime, createdDate);
-        int hours = (int) ChronoUnit.HOURS.between(curTime, createdDate);
-        int mins = (int) ChronoUnit.MINUTES.between(curTime, createdDate);
+        int years = (int) ChronoUnit.YEARS.between(createdDate, curTime);
+        int months = (int) ChronoUnit.MONTHS.between(createdDate, curTime);
+        int days = (int) ChronoUnit.DAYS.between(createdDate, curTime);
+        int hours = (int) ChronoUnit.HOURS.between(createdDate, curTime);
+        int mins = (int) ChronoUnit.MINUTES.between(createdDate, curTime);
 
 
         if (mins < 60) {
@@ -240,6 +227,9 @@ public class NotificationRecyclerAdapter extends RecyclerView.Adapter<Notificati
 
             layoutNotiItem = itemView.findViewById(R.id.layout_notification_item);
             imgNotiType = itemView.findViewById(R.id.img_notification_type);
+            imgNotiType.setBackground(new ShapeDrawable(new OvalShape()));
+            imgNotiType.setClipToOutline(true);
+
             textNotiContent = itemView.findViewById(R.id.text_notification_content);
             textNotiDate = itemView.findViewById(R.id.text_notification_date);
 

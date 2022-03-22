@@ -18,13 +18,17 @@ import com.example.moimingrelease.moiming_model.view.GroupInfoMemberViewer;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 public class GroupMembersViewActivity extends AppCompatActivity {
 
     private MoimingUserVO curUser;
     private MoimingGroupVO curGroup;
     private ArrayList<MoimingMembersDTO> curGroupMembers;
-
+    private Map<UUID, String> memberFcmTokenMap;
+    private List<String> groupMembersUuid;
 
     private TextView textMemberCnt;
 
@@ -40,6 +44,9 @@ public class GroupMembersViewActivity extends AppCompatActivity {
             curUser = (MoimingUserVO) receivedInfo.getSerializableExtra(getResources().getString(R.string.moiming_user_data_key));
             curGroup = receivedInfo.getExtras().getParcelable(getResources().getString(R.string.moiming_group_data_key));
             curGroupMembers = receivedInfo.getParcelableArrayListExtra(getResources().getString(R.string.group_members_data_key));
+            groupMembersUuid = receivedInfo.getStringArrayListExtra("group_members_uuid");
+            memberFcmTokenMap = (Map<UUID, String>) receivedInfo.getExtras().getSerializable(getResources().getString(R.string.fcm_token_map));
+
         }
 
     }
@@ -65,10 +72,15 @@ public class GroupMembersViewActivity extends AppCompatActivity {
             public void onClick(View view) {
 
                 Intent inviteMembersActivity = new Intent(GroupMembersViewActivity.this, InviteGroupMembersActivity.class);
-                inviteMembersActivity.putExtra(getResources().getString(R.string.moiming_group_data_key), (Serializable) curGroup);
-                inviteMembersActivity.putParcelableArrayListExtra(getResources().getString(R.string.group_members_data_key), (ArrayList<MoimingMembersDTO>) curGroupMembers);
 
-                startActivityForResult(inviteMembersActivity, 100);
+                inviteMembersActivity.putExtra(getResources().getString(R.string.moiming_user_data_key), curUser);
+                inviteMembersActivity.putStringArrayListExtra("group_members_uuid", (ArrayList<String>) groupMembersUuid);
+                inviteMembersActivity.putExtra(getResources().getString(R.string.moiming_group_data_key), (Serializable) curGroup);
+                inviteMembersActivity.putExtra(getResources().getString(R.string.fcm_token_map), (Serializable) memberFcmTokenMap);
+
+                startActivity(inviteMembersActivity);
+
+                finish();
             }
         });
 
@@ -137,17 +149,4 @@ public class GroupMembersViewActivity extends AppCompatActivity {
                 (TypedValue.COMPLEX_UNIT_DIP, dp, getResources().getDisplayMetrics());
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable @org.jetbrains.annotations.Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if(requestCode == 100){
-            if(resultCode == RESULT_OK){
-
-                // 걍 종료해버리자.. ㅋㅋ (종료하면 자동 리셋)
-                finish();
-
-            }
-        }
-    }
 }

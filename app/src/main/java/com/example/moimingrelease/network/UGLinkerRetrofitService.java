@@ -26,6 +26,6 @@ public interface UGLinkerRetrofitService {
     Observable<TransferModel> deleteGroupFromUser(@Body TransferModel<UserGroupUuidDTO> requestModel);
 
     @POST("api/userGroupLinker/link")
-    Observable<TransferModel> addMembersToGroupRequest(@Body TransferModel<List<UserGroupUuidDTO>> requestModel);
+    Observable<TransferModel<List<String>>> addMembersToGroupRequest(@Body TransferModel<List<UserGroupUuidDTO>> requestModel);
 
 }

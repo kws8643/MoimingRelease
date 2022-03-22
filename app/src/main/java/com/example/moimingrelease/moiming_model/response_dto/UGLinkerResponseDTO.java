@@ -17,6 +17,7 @@ public class UGLinkerResponseDTO {
     public void setId(Long id) {
         this.id = id;
     }
+/*
 
     public String getRecentNotice() {
         return recentNotice;
@@ -33,6 +34,7 @@ public class UGLinkerResponseDTO {
     public void setNoticeCnt(Integer noticeCnt) {
         this.noticeCnt = noticeCnt;
     }
+*/
 
     public String getCreatedAt() {
         return createdAt;
@@ -67,12 +69,12 @@ public class UGLinkerResponseDTO {
     }
 
     private Long id;
-
+/*
     @SerializedName("recent_notice")
     private String recentNotice;
 
     @SerializedName("notice_cnt")
-    private Integer noticeCnt;
+    private Integer noticeCnt;*/
 
     @SerializedName("created_at")
     private String createdAt;
@@ -91,9 +93,9 @@ public class UGLinkerResponseDTO {
         UserGroupLinkerVO userGroupLinkerVO = new UserGroupLinkerVO();
 
         userGroupLinkerVO.setId(this.id);
-        userGroupLinkerVO.setRecentNotice(this.recentNotice);
+ /*       userGroupLinkerVO.setRecentNotice(this.recentNotice);
         userGroupLinkerVO.setNoticeCnt(this.noticeCnt);
-
+*/
         userGroupLinkerVO.setMoimingUser(moimingUserResponseDTO.convertToVO());
         userGroupLinkerVO.setMoimingGroup(moimingGroupResponseDTO.convertToVO());
 

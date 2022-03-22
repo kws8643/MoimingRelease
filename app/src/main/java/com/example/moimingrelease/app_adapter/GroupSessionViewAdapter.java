@@ -87,50 +87,83 @@ public class GroupSessionViewAdapter extends RecyclerView.Adapter<GroupSessionVi
 
         int curUserStatus = singleDTO.getCurUserStatus();
 
-/**
- 0 = 내 정산 1 = 송금 필요 2 = 송금 완료 3 = 송금 확인 중 4 = 미참여
- */
 
-        if (curUserStatus != 0) { // 현재 정산은 나의 정산이 아님
+        if (!curSession.getFinished()) { // 완료되지 않은 정산활동 중
+            /**
+             0 = 내 정산 1 = 송금 필요 2 = 송금 완료 3 = 송금 확인 중 4 = 미참여
+             */
+            if (curUserStatus != 0) { // 현재 정산은 나의 정산이 아님
 
-            holder.icCreator.setVisibility(View.GONE);
+                holder.icCreator.setVisibility(View.GONE);
 
-            if (curUserStatus == 1 || curUserStatus == 3) { // 송금 필요, 송금 확정 전 상태
+                if (curUserStatus == 1 || curUserStatus == 3) { // 송금 필요, 송금 확정 전 상태
 
-                int curUserCost = singleDTO.getCurUserCost();
+                    int curUserCost = singleDTO.getCurUserCost();
 
-                String actionString = singleDTO.getCreatorName() + "에게 송금하기";
-                holder.action.setText(actionString);
-                holder.action.setTextColor(context.getResources().getColor(R.color.moimingOrange, null));
-                holder.status.setText(String.valueOf(curUserCost) + " 원");
-                holder.status.setTextColor(context.getResources().getColor(R.color.moimingOrange, null));
+                    String actionString = singleDTO.getCreatorName() + "에게 송금하기";
+                    holder.action.setText(actionString);
+                    holder.action.setTextColor(context.getResources().getColor(R.color.moimingOrange, null));
+                    holder.status.setText(String.valueOf(curUserCost) + " 원");
+                    holder.status.setTextColor(context.getResources().getColor(R.color.moimingOrange, null));
 
-            } else if (curUserStatus == 2) { // 송금 완료
+                } else if (curUserStatus == 2) { // 송금 완료 // TODO 색상 확인 필요 // 회색으로 하기로
 
-                int curUserCost = singleDTO.getCurUserCost();
+                    int curUserCost = singleDTO.getCurUserCost();
 
-                holder.action.setText("송금 완료");
-                holder.action.setTextColor(context.getResources().getColor(R.color.textBoldGray, null));
-                holder.status.setText(String.valueOf(curUserCost) + " 원");
-                holder.status.setTextColor(context.getResources().getColor(R.color.textBoldGray, null));
+                    holder.action.setText("송금 완료");
+                    holder.action.setTextColor(context.getResources().getColor(R.color.textBoldGray, null));
+                    holder.status.setText(String.valueOf(curUserCost) + " 원");
+                    holder.status.setTextColor(context.getResources().getColor(R.color.textBoldGray, null));
 
-            } else if (curUserStatus == 4) { // 미참여
-                holder.action.setText("미참여 활동");
-                holder.action.setTextColor(context.getResources().getColor(R.color.moimingBoldGray, null));
-                holder.status.setText("미참여 활동");
-                holder.status.setTextColor(context.getResources().getColor(R.color.moimingBoldGray, null));
+                } else if (curUserStatus == 4) { // 미참여
+                    holder.action.setText("미참여 활동");
+                    holder.action.setTextColor(context.getResources().getColor(R.color.textBoldGray, null));
+                    holder.status.setText("미참여 활동");
+                    holder.status.setTextColor(context.getResources().getColor(R.color.textBoldGray, null));
+                }
+
+
+            } else { // 현재 정산은 나의 정산임.
+
+                holder.icCreator.setVisibility(View.VISIBLE);
+                holder.action.setText("송금 요청하기");
+                holder.action.setTextColor(context.getResources().getColor(R.color.moimingTheme, null));
+
+                String statusString = curSession.getSessionMemberCnt() + "명 중 " + curSession.getCurSenderCnt() + "명 완료";
+                holder.status.setText(statusString);
+                holder.status.setTextColor(context.getResources().getColor(R.color.moimingTheme, null));
+
             }
 
+        } else { // 완료된 정산활동 입니다. // 완료 되었어도 나뉘어야 함
 
-        } else { // 현재 정산은 나의 정산임.
+            if (curUserStatus == 0) {
 
-            holder.icCreator.setVisibility(View.VISIBLE);
-            holder.action.setText("송금 요청하기");
-            holder.action.setTextColor(context.getResources().getColor(R.color.moimingTheme, null));
+                holder.icCreator.setVisibility(View.VISIBLE); // TODO 이거 색깔 회색으로?
+                holder.action.setText("정산 완료");
+                holder.action.setTextColor(context.getResources().getColor(R.color.textBoldGray, null));
 
-            String statusString = curSession.getSessionMemberCnt() + "명 중 " + curSession.getCurSenderCnt() + "명 완료";
-            holder.status.setText(statusString);
-            holder.status.setTextColor(context.getResources().getColor(R.color.moimingTheme, null));
+                holder.status.setText("정산이 완료되었습니다");
+                holder.status.setTextColor(context.getResources().getColor(R.color.textBoldGray, null));
+
+            } else if (curUserStatus == 4) {
+
+                holder.action.setText("미참여 활동");
+                holder.action.setTextColor(context.getResources().getColor(R.color.textBoldGray, null));
+                holder.status.setText("정산이 완료되었습니다");
+                holder.status.setTextColor(context.getResources().getColor(R.color.textBoldGray, null));
+
+            } else { // curUserStatus == 2, 3 일 때, 내가 보낸 내역들!, 사실 여기서 3일 리는 없음.
+
+                int curUserCost = singleDTO.getCurUserCost();
+
+                String actionString = "정산 완료";
+                holder.action.setText(actionString);
+                holder.action.setTextColor(context.getResources().getColor(R.color.textBoldGray, null));
+                holder.status.setText(curUserCost + " 원");
+                holder.status.setTextColor(context.getResources().getColor(R.color.textBoldGray, null));
+
+            }
 
         }
 

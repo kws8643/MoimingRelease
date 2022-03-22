@@ -25,6 +25,7 @@ import com.example.moimingrelease.moiming_model.extras.KakaoMoimingFriendsDTO;
 import com.example.moimingrelease.moiming_model.extras.MoimingMembersDTO;
 import com.example.moimingrelease.moiming_model.extras.UserGroupUuidDTO;
 import com.example.moimingrelease.moiming_model.moiming_vo.MoimingGroupVO;
+import com.example.moimingrelease.moiming_model.moiming_vo.MoimingUserVO;
 import com.example.moimingrelease.moiming_model.view.CustomUserViewer;
 import com.example.moimingrelease.network.GlobalRetrofit;
 import com.example.moimingrelease.network.TransferModel;
@@ -71,8 +72,7 @@ public class InviteGroupMembersActivity extends AppCompatActivity {
 
     public String INVITE_MEMBER_TAG = "INVITE_MEMBER_TAG";
 
-    private FirebaseFirestore firebaseDB = FirebaseFirestore.getInstance();
-
+    private MoimingUserVO curUser;
     private MoimingGroupVO curGroup;
     private List<KakaoMoimingFriendsDTO> kmfAdapterList;
     private List<KakaoMoimingFriendsDTO> kmfRawDataList;
@@ -89,15 +89,15 @@ public class InviteGroupMembersActivity extends AppCompatActivity {
     private HorizontalScrollView horizontalViewMembers;
     private LinearLayout layoutMembersHolder;
 
-    private List<MoimingMembersDTO> groupMembers; // 나를 제외한 그룹 멤버들을 가져오고, 여기서 파싱하여 속해 있는 사람은 체크해둔다.
+    //    private List<MoimingMembersDTO> groupMembers; // 나를 제외한 그룹 멤버들을 가져오고, 여기서 파싱하여 속해 있는 사람은 체크해둔다.
+    private Map<UUID, String> memberFcmTokenMap;
     private List<String> groupMembersUuid;
-    private List<String> groupMemberFcmTokens;
 
     private Map<String, CustomUserViewer> invitingUserViewerMap;
 
     private int curInvitingCnt = 0;
 
-
+/*
     // TODO: 초대된 대상도 알림을 받나? 나도 알림을 받나??
 
     private void receiveFcmTokens() { // TODO: 이거 될 때까지 ProgressBar 해놓는 것도 나쁘지 않을듯.
@@ -138,7 +138,7 @@ public class InviteGroupMembersActivity extends AppCompatActivity {
         }
 
 
-    }
+    }*/
 
     public InviteKmfCheckBoxListener kmfCheckBoxListener = new InviteKmfCheckBoxListener() {
         @Override
@@ -299,9 +299,13 @@ public class InviteGroupMembersActivity extends AppCompatActivity {
 
         if (received.getExtras() != null) {
 
+            curUser = (MoimingUserVO) received.getExtras().getSerializable(getResources().getString(R.string.moiming_user_data_key));
+
             curGroup = (MoimingGroupVO) received.getExtras().getSerializable(getResources().getString(R.string.moiming_group_data_key));
 
-            groupMembers = received.getParcelableArrayListExtra(getResources().getString(R.string.group_members_data_key));
+            groupMembersUuid = received.getStringArrayListExtra("group_members_uuid");
+
+            memberFcmTokenMap = (Map<UUID, String>) received.getExtras().getSerializable(getResources().getString(R.string.fcm_token_map));
 
         } else {
 
@@ -321,7 +325,7 @@ public class InviteGroupMembersActivity extends AppCompatActivity {
 
         initParams();
 
-        receiveFcmTokens();
+//        receiveFcmTokens();
 
         initRecyclerView();
 
@@ -376,16 +380,10 @@ public class InviteGroupMembersActivity extends AppCompatActivity {
         kmfAdapterList.addAll(kmfRawDataList);
 
         invitingUserViewerMap = new HashMap<>(); // CustomViewerMap 관리 용
-        groupMemberFcmTokens = new ArrayList<>();
 
-        groupMembersUuid = new ArrayList<>(); // 아답터 전송 용
-
-        for (int i = 0; i < groupMembers.size(); i++) {
-
-            groupMembersUuid.add((groupMembers.get(i)).getUuid().toString());
-
-        }
     }
+
+    private List<String> addedUserUuid;
 
     private void addSelectedMembersToGroup() {
 
@@ -393,7 +391,7 @@ public class InviteGroupMembersActivity extends AppCompatActivity {
         List<UserGroupUuidDTO> requestModelList = new ArrayList<>();
 
         for (String userUuid : invitedUuidList) {
-            UserGroupUuidDTO singleLinker = new UserGroupUuidDTO(UUID.fromString(userUuid), curGroup.getUuid());
+            UserGroupUuidDTO singleLinker = new UserGroupUuidDTO(curUser.getUuid(), UUID.fromString(userUuid), curGroup.getUuid());
             requestModelList.add(singleLinker);
         }
 
@@ -403,16 +401,18 @@ public class InviteGroupMembersActivity extends AppCompatActivity {
         retrofit.addMembersToGroupRequest(requestModel)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<TransferModel>() {
+                .subscribe(new Observer<TransferModel<List<String>>>() {
                     @Override
                     public void onSubscribe(@NonNull Disposable d) {
 
                     }
 
                     @Override
-                    public void onNext(@NonNull TransferModel transferModel) {
+                    public void onNext(@NonNull TransferModel<List<String>> responseModel) {
 
                         Toast.makeText(getApplicationContext(), "멤버 추가를 완료하였습니다", Toast.LENGTH_SHORT).show();
+
+                        addedUserUuid = responseModel.getData();
                     }
 
                     @Override
@@ -432,10 +432,16 @@ public class InviteGroupMembersActivity extends AppCompatActivity {
                         try {
 
                             GroupActivity.GROUP_INFO_REFRESH_FLAG = true;
+                            MainActivity.IS_NOTIFICATION_REFRESH_NEEDED = true;
 
-                            sendToInvitedUser(); // 새로 초대된 친구들에게 알려야 하는데 ...... 음.. UUID 필요!
+                            // TODO: FCM TOKEN MAP 자체는 GroupActivity에서 관리하므로 밖에서 콜백으로 해주도록 한다
+                            /*if (addedUserUuid != null) {
+                                sendToInvitedUser(); //1. 초대된 친구에게 초대됐다고 알림
+                            }*/
 
-                            sendFcmToMembers(); // 그룹원들에게 그룹원 초대 사실을 알림
+                            if (addedUserUuid != null) {
+                                sendFcmToMembers(); //2. 멤버들에게 신입들 x 명 초대되었다고 알림.
+                            }
 
                         } catch (JSONException e) {
 
@@ -445,120 +451,69 @@ public class InviteGroupMembersActivity extends AppCompatActivity {
                         }
 
                         // TODO: 초대했으면 그룹 액티비티 Refresh 필요!
+                        Intent finishIntent = new Intent();
+
+                        if (addedUserUuid != null) {
+                            finishIntent.putStringArrayListExtra("added_user_uuid", (ArrayList<String>) addedUserUuid);
+                            setResult(RESULT_OK, finishIntent);
+                        } else {
+                            setResult(RESULT_CANCELED);
+                        }
+
                         finish();
                     }
                 });
 
     }
 
-    //TODO: 추후 FB FCM 토큰들이 다들 생기면 재 Test
-    private void sendToInvitedUser() throws JSONException {
-
-
-    }
-
 
     private void sendFcmToMembers() throws JSONException {
 
+        List<String> fcmTokenList = new ArrayList<>(memberFcmTokenMap.values());
 
-        for (int i = 0; i < groupMemberFcmTokens.size(); i++) {
+        int addedMemberCnt = addedUserUuid.size();
 
-            JSONObject jsonSend = FCMRequest.getInstance().buildJsonBody("안녕하세요", "그룹원들이 초대되었습니다", groupMemberFcmTokens.get(i));
+        String userName = "";
 
-            /*JSONObject jsonData = new JSONObject();
+        for (int i = 0; i < kmfRawDataList.size(); i++) { //
 
-            jsonData.put("title", "안녕하세요");
-            jsonData.put("text", "그룹원들이 초대되었습니다");
+            if (kmfRawDataList.get(i).getMemberData().getUuid().toString().equals(addedUserUuid.get(0))) {
 
-            JSONObject jsonMessage = new JSONObject();
+                userName = kmfRawDataList.get(i).getMemberData().getUserName();
+            }
+        }
 
-            jsonMessage.put("token", groupMemberFcmTokens.get(i));
-            jsonMessage.put("data", jsonData);
+        if (userName.equals("")) {
+            Toast.makeText(getApplicationContext(), "푸시 전송에 실패하였습니다", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
-            JSONObject jsonSend = new JSONObject();
-            jsonSend.put("message", jsonMessage);*/
+        String textNoti;
 
-
-            Log.w(INVITE_MEMBER_TAG, jsonSend.toString());
-
-
-            RequestBody reBody = RequestBody.create(MediaType.parse("application/json, charset-utf8")
-                    , String.valueOf(jsonSend));
-
-
-            Request request = new Request.Builder()
-                    .header("Content-Type", "application/json")
-                    .addHeader("Authorization", "Bearer " + FCMAppToken.moimingAccessToken)
-                    .url("https://fcm.googleapis.com/v1/projects/moimingofficial-rel/messages:send/")
-                    .post(reBody)
-                    .build();
+        if (addedMemberCnt > 1) {
+            textNoti = userName + "님 외 " + (addedMemberCnt - 1) + "명이 " + curGroup.getGroupName() + "에 초대되었습니다! 환영해주세요!";
+        } else { // 1 일경우
+            textNoti = userName + "님이 " + curGroup.getGroupName() + "에 초대되었습니다! 환영해주세요!";
+        }
 
 
-            OkHttpClient fcmClient = new OkHttpClient();
-            fcmClient.newCall(request).enqueue(new okhttp3.Callback() {
-                @Override
-                public void onFailure(okhttp3.Call call, IOException e) {
-                    // 메시지 전송이 실패했을 경우.
-                    Log.e(INVITE_MEMBER_TAG, e.getMessage());
+        if (addedMemberCnt != 0) {
 
-                }
+            for (int i = 0; i < fcmTokenList.size(); i++) { // 기존 그룹원들에게 모두 보내는 부분
 
-                @Override
-                public void onResponse(okhttp3.Call call, okhttp3.Response response) throws IOException {
+                JSONObject jsonSend = FCMRequest.getInstance()
+                        .buildFcmJsonData("새로운 모임원", textNoti, "", curGroup.getUuid().toString()
+                                , "", fcmTokenList.get(i));
 
-                    if (response.code() == 401) { // app access token expired
+//                JSONObject jsonSend = FCMRequest.getInstance().buildJsonBody("모임원 추가 알림", addedMemberCnt + "명의 그룹원들이 초대되었습니다"
+//                        , fcmTokenList.get(i));
 
-                        FCMAppToken.getFcmAppAccessToken(getApplicationContext(), new FCMCallBack() {
-                            @Override
-                            public void onSuccess() {
+                RequestBody reBody = RequestBody.create(MediaType.parse("application/json, charset-utf8")
+                        , String.valueOf(jsonSend));
 
-                                Request request = new Request.Builder()
-                                        .header("Content-Type", "application/json")
-                                        .addHeader("Authorization", "Bearer " + FCMAppToken.moimingAccessToken)
-                                        .url("https://fcm.googleapis.com/v1/projects/moimingofficial-rel/messages:send/")
-                                        .post(reBody)
-                                        .build();
+                FCMRequest.getInstance().sendFcmRequest(getApplicationContext(), reBody);
 
-                                fcmClient.newCall(request).enqueue(new okhttp3.Callback() {
-                                    @Override
-                                    public void onFailure(okhttp3.Call call, IOException e) {
-
-                                        Log.e(INVITE_MEMBER_TAG, "재호출시 error:: " + e.getMessage());
-
-                                    }
-
-                                    @Override
-                                    public void onResponse(okhttp3.Call call, okhttp3.Response response) throws IOException {
-
-                                        if (response.isSuccessful()) {
-                                            // 전송이 완료됨.
-                                            Log.w(INVITE_MEMBER_TAG, "Successfully Sent Message");
-
-                                        } else {
-                                            Toast.makeText(getApplicationContext(), "통신을 실패하였습니다..", Toast.LENGTH_SHORT).show();
-                                        }
-                                    }
-                                });
-                            }
-
-                            @Override
-                            public void onFailure() {
-
-                                Log.e(INVITE_MEMBER_TAG, "Token Refresh Error");
-
-                            }
-                        });
-
-                    }
-
-                    if (response.isSuccessful()) {
-
-                        Log.w(INVITE_MEMBER_TAG, "Successfully Sent Message (No Refresh)");
-
-                    }
-                }
-            });
-
+            }
         }
     }
 

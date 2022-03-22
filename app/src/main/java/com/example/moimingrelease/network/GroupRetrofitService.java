@@ -1,5 +1,6 @@
 package com.example.moimingrelease.network;
 
+import com.example.moimingrelease.moiming_model.extras.GroupNoticeDTO;
 import com.example.moimingrelease.moiming_model.extras.MoimingGroupAndMembersDTO;
 import com.example.moimingrelease.moiming_model.extras.MoimingMembersDTO;
 import com.example.moimingrelease.moiming_model.extras.SessionAndUserStatusDTO;
@@ -29,12 +30,17 @@ public interface GroupRetrofitService {
     @GET("api/group/getGroupMembers/{groupUuid}")
     Observable<TransferModel<List<MoimingMembersDTO>>> getGroupMembersList(@Path("groupUuid") String groupUuid);
 
-    @POST("api/group/getGroupSessions/{groupUuid}")
-    Observable<TransferModel<List<SessionAndUserStatusDTO>>> requestGroupSessions(@Path("groupUuid") String groupUuid, @Body String userUuid);
+    @POST("api/group/getGroupSessions/{groupUuid}/{notificationCheck}")
+    Observable<TransferModel<List<SessionAndUserStatusDTO>>> requestGroupSessions(@Path("groupUuid") String groupUuid, @Body String userUuid
+            , @Path("notificationCheck") Integer notificationCheck);
 
     @POST("api/group/createWithSession")
     Observable<TransferModel<MoimingGroupAndMembersDTO>> groupCreationWithSessionRequest(@Body TransferModel<GroupAndSessionCreationDTO> requestModel);
 
     @POST("api/group/getGroupAndMembers") // GroupActivity 내 Refresh 용
     Observable<TransferModel<MoimingGroupAndMembersDTO>> getGroupAndMembers(@Body String groupUuid);
+
+    @POST("api/group/setNotice")
+    Observable<TransferModel<MoimingGroupResponseDTO>> groupNoticeRequest(@Body TransferModel<GroupNoticeDTO> requestModel);
+
 }

@@ -6,6 +6,7 @@ import android.widget.Toast;
 
 import com.example.moimingrelease.app_listener_interface.FCMCallBack;
 import com.example.moimingrelease.network.GlobalRetrofit;
+import com.google.gson.Gson;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -29,7 +30,7 @@ public class FCMRequest {
 
     private static FCMRequest INSTANCE = new FCMRequest();
 
-    public FCMRequest(){
+    public FCMRequest() {
 
     }
 
@@ -56,6 +57,22 @@ public class FCMRequest {
         JSONObject jsonSend = new JSONObject();
         jsonSend.put("message", jsonMessage);
 
+        return jsonSend;
+
+    }
+
+    public JSONObject buildFcmJsonData(String title, String text, String icon, String groupUuid, String sessionUuid, String fcmToken) throws JSONException {
+
+        FCMDataModel fcmData = new FCMDataModel(title, text, icon, groupUuid, sessionUuid);
+
+        Gson gson = new Gson();
+
+        JSONObject jsonMessage = new JSONObject();
+        jsonMessage.put("token", fcmToken);
+        jsonMessage.put("data", new JSONObject(gson.toJson(fcmData)));
+
+        JSONObject jsonSend = new JSONObject();
+        jsonSend.put("message", jsonMessage);
 
         return jsonSend;
 
