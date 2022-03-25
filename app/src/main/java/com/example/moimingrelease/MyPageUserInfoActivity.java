@@ -6,18 +6,21 @@ import android.content.Intent;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.OvalShape;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.moimingrelease.moiming_model.moiming_vo.MoimingUserVO;
 
-public class UserInfoActivity extends AppCompatActivity {
+public class MyPageUserInfoActivity extends AppCompatActivity {
 
     private MoimingUserVO curUser;
 
     private ImageView imgUserPf;
     private TextView textName, textPhone, textEmail;
+
+    private TextView textDeleteAccount;
 
 
     @Override
@@ -30,6 +33,20 @@ public class UserInfoActivity extends AppCompatActivity {
         initView();
 
         initParams();
+
+        textDeleteAccount.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+                Intent deleteIntent = new Intent(MyPageUserInfoActivity.this, MyPageDeleteAccountActivity.class);
+
+                deleteIntent.putExtra(getResources().getString(R.string.moiming_user_data_key), curUser);
+
+                startActivity(deleteIntent);
+
+            }
+        });
 
     }
 
@@ -57,6 +74,8 @@ public class UserInfoActivity extends AppCompatActivity {
         textPhone.setText(curUser.getPhoneNumber());
         textEmail = findViewById(R.id.text_user_info_email);
         textEmail.setText(curUser.getUserEmail());
+
+        textDeleteAccount = findViewById(R.id.text_delete_account);
 
 
     }

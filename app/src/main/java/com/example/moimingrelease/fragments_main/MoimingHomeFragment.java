@@ -247,7 +247,7 @@ public class MoimingHomeFragment extends Fragment {
                     @Override
                     public void onNext(@NonNull TransferModel<List<UGLinkerResponseDTO>> responseData) {
 
-                        Log.w("TAG", responseData.toString());
+                        Log.e("Working Log 14: " , "WORKS!");
 
                         rawDataList.clear();
 

@@ -15,6 +15,7 @@ import androidx.core.app.NotificationManagerCompat;
 
 import com.example.moimingrelease.MainActivity;
 import com.example.moimingrelease.R;
+import com.example.moimingrelease.SplashActivity;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
@@ -50,6 +51,7 @@ public class FCMReceiveService extends FirebaseMessagingService {
 
             MainActivity.IS_MAIN_GROUP_INFO_REFRESH_NEEDED = true; // 어떤 메시지가 오든 Main Layout 은 다시 형성한다.
 
+
             sendNotification(title, text, groupUuid, sessionUuid);
 
         }
@@ -63,23 +65,24 @@ public class FCMReceiveService extends FirebaseMessagingService {
 
         //TODO: Pending Intent 처리 필요, notiBuilder에도 담(클릭시 이동하는 Activity)
         // 앱이 동작중이면 알림을 눌러도 아무 작동을 하지 않음. 꺼져 있는 상태임을 가정.
-        /*
-        Intent intent = new Intent(getBaseContext(), ActSplash.class);
+
+        // TODO: ERROR: 만약 앱이 아예 종료된 상태라면.. 이거 static 변수 살아 있는걸까?
+        //       살아 있어서 Main 이 2번 돌아서 Error 생기는것으로 판단됨. 아니라면 다른 디버깅 필요. ( Splash > Main 으로 가는데 Error 발생)
+        //       이걸로 작동 한다. Main 에서 static 변수 살아 있는거 확인했고 이거 제어하면 될듯. How??
+
+
+        Intent intent = new Intent(getBaseContext(), SplashActivity.class);
+        intent.putExtra("is_fcm_clicked", true);
         intent.setAction(Intent.ACTION_MAIN);
         intent.addCategory(Intent.CATEGORY_LAUNCHER);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        PendingIntent pIntent = PendingIntent.getActivity(getBaseContext(), NotificationHelper.ID_FCM, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-*/
-
-        // TODO: 앱이 아예 꺼진건지 ( 눌러도 다시 처음으로 돌아감 ) 아니면 누르면 실행 중이던 곳에서 실행되는지의 여부를 체크 필요.
-        // 아예 꺼진거면 Login Check 다시 진행 필요, curUser 데이터 불러와야 함.
-
-        // TODO: if (안꺼짐){ 다시 켜서 원래 있던 상태}
-        //       else { 이하
+        PendingIntent pIntent = PendingIntent.getActivity(getBaseContext()
+                , 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        /*
         Intent pendingIntent = new Intent(this, MainActivity.class);
         pendingIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntents = PendingIntent.getActivity(this, 0
-                , pendingIntent, PendingIntent.FLAG_ONE_SHOT);
+                , pendingIntent, PendingIntent.FLAG_ONE_SHOT);*/
 
         CharSequence name = "moiming";
         String description = "moiming";
@@ -93,7 +96,7 @@ public class FCMReceiveService extends FirebaseMessagingService {
                 .setContentText(text)
                 .setAutoCancel(true)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
-                .setContentIntent(pendingIntents);
+                .setContentIntent(pIntent);
 
         NotificationManager notiManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
@@ -109,7 +112,7 @@ public class FCMReceiveService extends FirebaseMessagingService {
     }
 
 
-    private void requestUserState(){
+    private void requestUserState() {
 
 
     }

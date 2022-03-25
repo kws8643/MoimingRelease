@@ -11,8 +11,10 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".MyPageNotificationSettingActivity"></activity>
-        <activity android:name=".UserInfoActivity" />
+        <activity android:name=".MyPageServiceInfoActivity"></activity>
+        <activity android:name=".MyPageDeleteAccountActivity" />
+        <activity android:name=".MyPageNotificationSettingActivity" />
+        <activity android:name=".MyPageUserInfoActivity" />
         <activity android:name=".MyPageActivity" />
         <activity
             android:name=".GroupNoticeActivity"

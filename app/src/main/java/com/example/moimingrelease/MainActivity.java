@@ -224,14 +224,20 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Log.e("FLAG_TAG: 3", String.valueOf(MainActivity.IS_MAIN_GROUP_INFO_REFRESH_NEEDED));
+        Log.e("Working Log 2: ", "WORKS!");
 
         receiveIntent();
+        Log.e("Working Log 3: ", "WORKS!");
 
         prepareKakaoFriends();
+        Log.e("Working Log 4: ", "WORKS!");
 
         initView();
+        Log.e("Working Log 5: ", "WORKS!");
 
         initParams();
+        Log.e("Working Log 6: ", "WORKS!");
 
 
         try {
@@ -245,6 +251,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         receiveNotification();
+        Log.e("Working Log 7: ", "WORKS!");
 
 
         //fab listeners
@@ -312,15 +319,26 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-        checkPushNotiSetting();
+//        checkPushNotiSetting();
+//        Log.e("Working Log 8: " , "WORKS!");
 
     }
+
 
     private void receiveIntent() {
 
         Intent dataReceived = getIntent();
-        curMoimingUser = (MoimingUserVO) dataReceived.getExtras().getSerializable("moiming_user");
 
+        if (dataReceived.getExtras() != null) {
+            curMoimingUser = (MoimingUserVO) dataReceived.getExtras().getSerializable("moiming_user");
+            boolean isFcmClicked = dataReceived.getBooleanExtra("is_fcm_clicked", false);
+            Log.e("Working Log:: ", "result: " + IS_MAIN_GROUP_INFO_REFRESH_NEEDED);
+
+            if (isFcmClicked) {
+
+                IS_MAIN_GROUP_INFO_REFRESH_NEEDED = false;
+            }
+        }
     }
 
 
@@ -359,17 +377,21 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onComplete() {
 
+                        Log.e("Working Log 9: ", "WORKS!");
                         parseNotification();
 
 
                         // 나머지 아답터에 전달해서 아답터에서 해결!
                         if (IS_NOTIFICATION_REFRESH_NEEDED || IS_MAIN_GROUP_INFO_REFRESH_NEEDED) { //  이거 중이라서 여기 온거면
+                            Log.e("Working Log 10: ", "WORKS!" + IS_NOTIFICATION_REFRESH_NEEDED + "," + IS_MAIN_GROUP_INFO_REFRESH_NEEDED);
 
                             if (!IS_MAIN_GROUP_INFO_REFRESH_NEEDED) { // 얘도 해야하면 차피 그 쪽에서 Refresh 할 거임
+                                Log.e("Working Log 11: ", "WORKS!" + IS_NOTIFICATION_REFRESH_NEEDED + "," + IS_MAIN_GROUP_INFO_REFRESH_NEEDED);
 
                                 // TODO: 그 쪽에서 Notification 만 다시 박는다.
                                 homeFragment.applyRefreshedNotification();
                             } else {
+                                Log.e("Working Log 12: ", "WORKS!" + IS_NOTIFICATION_REFRESH_NEEDED + "," + IS_MAIN_GROUP_INFO_REFRESH_NEEDED);
 
                                 homeFragment.getUgLinkers();
 
@@ -377,6 +399,8 @@ public class MainActivity extends AppCompatActivity {
                             }
 
                         } else {
+
+                            Log.e("Working Log 13: ", "WORKS!" + IS_NOTIFICATION_REFRESH_NEEDED + "," + IS_MAIN_GROUP_INFO_REFRESH_NEEDED);
 
                             mainNavigation.getMenu().getItem(1).setEnabled(false);
                             mainNavigation.setOnNavigationItemSelectedListener(mainNavListener);
@@ -558,6 +582,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onRestart() {
         super.onRestart();
+        Log.e("FLAG_TAG: 4", String.valueOf(MainActivity.IS_MAIN_GROUP_INFO_REFRESH_NEEDED));
 
         if (IS_USER_UPDATED) { // Refresh 가 필요한 경우
 
@@ -607,7 +632,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     // TODO: INIT PUSH NOTI Shared Preference
-    private void checkPushNotiSetting(){
+    private void checkPushNotiSetting() {
 
         // TODO:  Noti Shared Pref 가 들어왔을 때 없으면 Policy 조회 한다. Marketing True 면 다 True 로 init 해준다 (기기변동, 앱 삭제후 다시 설치 등)
         //        회원가입시 동의 여부에 따라서 init됨. 추후 Setting 에서 변경 가능

@@ -32,15 +32,30 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
 public class SplashActivity extends AppCompatActivity {
 
     private final String SPLASH_TAG = "SPLASH_TAG";
+    private boolean isFcmClicked = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
+        receiveIntent();
+
         Handler hd = new Handler();
         hd.postDelayed(new SplashHandler(), 200);
     }
+
+    private void receiveIntent() {
+
+        Intent receivedIntent = getIntent();
+
+        if (receivedIntent.getExtras() != null) {
+
+            isFcmClicked = receivedIntent.getBooleanExtra("is_fcm_clicked", false);
+
+        }
+    }
+
 
     private void requestAutoLogin() {
 
@@ -78,10 +93,13 @@ public class SplashActivity extends AppCompatActivity {
 
                         if (isTokenValidate && isUserPresent) { // 토큰 유효. 정보들 가져옴.
 
+                            Log.e("Working Log 1: " , "WORKS!");
+
                             MoimingUserVO loginUser = MoimingUserVO.parseDataToVO((Map<String, Object>) responseData.get("loginUser"));
 
                             // 3 현 로그인 유저를 VO로 넘기고, MainActivity를 실행한다.
                             Intent startMoiming = new Intent(SplashActivity.this, MainActivity.class);
+                            startMoiming.putExtra("is_fcm_clicked", isFcmClicked);
                             startMoiming.putExtra("moiming_user", loginUser);
                             startActivity(startMoiming);
                             finish();

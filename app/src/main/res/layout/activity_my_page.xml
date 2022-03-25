@@ -172,8 +172,9 @@
         android:id="@+id/layout_alarm_setting"
         android:layout_width="match_parent"
         android:layout_height="26dp"
-        android:layout_marginTop="10dp"
-        app:layout_constraintTop_toBottomOf="@id/layout_account_check">
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@id/layout_account_check"
+        tools:layout_editor_absoluteX="0dp">
 
         <ImageView
             android:layout_width="24dp"

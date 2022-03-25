@@ -7,13 +7,24 @@
     tools:context=".MyPageNotificationSettingActivity">
 
     <Switch
+        android:id="@+id/switch_app_notice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="24dp"
+        android:thumb="@drawable/switch_thumb"
+        android:track="@drawable/switch_selector"
+        app:layout_constraintBottom_toBottomOf="@id/text_notice"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/text_notice" />
+
+
+    <Switch
         android:id="@+id/switch_send_confirm"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginRight="24dp"
         android:thumb="@drawable/switch_thumb"
         android:track="@drawable/switch_selector"
-        android:checked="true"
         app:layout_constraintBottom_toBottomOf="@id/text_send_confirm"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@id/text_send_confirm" />
@@ -52,6 +63,21 @@
         app:layout_constraintTop_toTopOf="@id/text_group_payment" />
 
     <TextView
+        android:id="@+id/text_notice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="40dp"
+        android:layout_marginTop="19dp"
+        android:lineSpacingExtra="8sp"
+        android:text="공지 사항"
+        android:textColor="@color/textDark"
+        android:textSize="14sp"
+        android:textStyle="normal"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/app_bar_my_page_noti_setting" />
+
+
+    <TextView
         android:id="@+id/text_send_request"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -63,7 +89,7 @@
         android:textSize="14sp"
         android:textStyle="normal"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/app_bar_my_page_noti_setting" />
+        app:layout_constraintTop_toBottomOf="@id/text_notice" />
 
     <TextView
         android:id="@+id/text_send_confirm"
@@ -86,7 +112,7 @@
         android:layout_marginLeft="40dp"
         android:layout_marginTop="24dp"
         android:lineSpacingExtra="8sp"
-        android:text="새 그룹 초대"
+        android:text="모임 초대 및 추가"
         android:textColor="@color/textDark"
         android:textSize="14sp"
         android:textStyle="normal"

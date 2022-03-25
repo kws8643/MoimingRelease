@@ -13,7 +13,6 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.moimingrelease.moiming_model.moiming_vo.MoimingUserVO;
-import com.google.firebase.auth.UserInfo;
 
 public class MyPageActivity extends AppCompatActivity {
 
@@ -22,7 +21,7 @@ public class MyPageActivity extends AppCompatActivity {
     private TextView btnToUserInfo, textMyName;
     private ImageView imgMyPf;
 
-    private ConstraintLayout btnAlarmSetting;
+    private ConstraintLayout btnAlarmSetting, btnService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +38,7 @@ public class MyPageActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                Intent toUserInfo = new Intent(MyPageActivity.this, UserInfoActivity.class);
+                Intent toUserInfo = new Intent(MyPageActivity.this, MyPageUserInfoActivity.class);
 
                 toUserInfo.putExtra(getResources().getString(R.string.moiming_user_data_key), curUser);
 
@@ -58,6 +57,15 @@ public class MyPageActivity extends AppCompatActivity {
             }
         });
 
+        btnService.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent toServiceInfo = new Intent(MyPageActivity.this, MyPageServiceInfoActivity.class);
+                startActivity(toServiceInfo);
+            }
+        });{
+
+        }
 
     }
 
@@ -82,6 +90,10 @@ public class MyPageActivity extends AppCompatActivity {
 
         textMyName = findViewById(R.id.text_my_name);
         textMyName.setText(curUser.getUserName());
+
+        btnAlarmSetting = findViewById(R.id.layout_alarm_setting);
+
+        btnService = findViewById(R.id.layout_service);
     }
 
     private void initParams() {

@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MyPageServiceInfoActivity">
+
+    <TextView
+        android:id="@+id/text_service_1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="40dp"
+        android:layout_marginTop="19dp"
+        android:lineSpacingExtra="8sp"
+        android:textColor="@color/textDark"
+        android:textSize="14sp"
+        android:textStyle="normal"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/app_bar_my_page_service"
+        tools:text="카카오톡 채널" />
+
+    <TextView
+        android:id="@+id/text_moiming_kakao_href"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="40dp"
+        android:layout_marginTop="10dp"
+        android:lineSpacingExtra="8sp"
+        android:textColor="@color/moimingTheme"
+        android:textSize="14sp"
+        android:textStyle="normal"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/text_service_1"
+        tools:text="www.kakaochannel/nugamoiming.com" />
+
+    <TextView
+        android:id="@+id/text_service_2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="40dp"
+        android:layout_marginTop="32dp"
+        android:lineSpacingExtra="8sp"
+        android:textColor="@color/textDark"
+        android:textSize="14sp"
+        android:textStyle="normal"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/text_moiming_kakao_href"
+        tools:text="이메일" />
+
+    <TextView
+        android:id="@+id/text_moiming_email_href"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="40dp"
+        android:layout_marginTop="10dp"
+        android:lineSpacingExtra="8sp"
+        android:textColor="@color/moimingTheme"
+        android:textSize="14sp"
+        android:textStyle="normal"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/text_service_2"
+        tools:text="moimingnuga@gmail.com" />
+
+    <TextView
+        android:id="@+id/text_service_3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="40dp"
+        android:layout_marginTop="32dp"
+        android:lineSpacingExtra="8sp"
+        android:textColor="@color/textDark"
+        android:textSize="14sp"
+        android:textStyle="normal"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/text_moiming_email_href"
+        tools:text="인스타그램" />
+
+    <TextView
+        android:id="@+id/text_moiming_insta_href"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="40dp"
+        android:layout_marginTop="10dp"
+        android:lineSpacingExtra="8sp"
+        android:textColor="@color/moimingTheme"
+        android:textSize="14sp"
+        android:textStyle="normal"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/text_service_3"
+        tools:text="_@moiming_official" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/app_bar_my_page_service"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_alignParentTop="true"
+        android:background="@color/moimingWhite"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/btn_finish_my_page_service"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="16dp"
+            android:src="@drawable/ic_app_back"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:lineSpacingExtra="7sp"
+            android:text="서비스 문의 / 건의"
+            android:textColor="@color/textDark"
+            android:textSize="16sp"
+            android:textStyle="normal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

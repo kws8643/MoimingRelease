@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MyPageDeleteAccountActivity">
+
+    <Button
+        android:id="@+id/btn_delete_account"
+        android:layout_width="328dp"
+        android:layout_height="48dp"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/shape_light_main_bg"
+        android:lineSpacingExtra="8sp"
+        android:text="회원 탈퇴"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+
+    <CheckBox
+        android:id="@+id/cb_resign"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="36dp"
+        android:buttonTint="@color/moimingTheme"
+        android:minWidth="0dp"
+        android:minHeight="0dp"
+        app:layout_constraintBottom_toBottomOf="@id/text_resign"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/text_resign" />
+
+
+    <CheckBox
+        android:id="@+id/cb_unsatis"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="36dp"
+        android:buttonTint="@color/moimingTheme"
+        android:minWidth="0dp"
+        android:minHeight="0dp"
+        app:layout_constraintBottom_toBottomOf="@id/text_unsatis"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/text_unsatis" />
+
+    <CheckBox
+        android:id="@+id/cb_delete_agree"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="36dp"
+        android:buttonTint="@color/moimingTheme"
+        android:minWidth="0dp"
+        android:minHeight="0dp"
+        app:layout_constraintBottom_toBottomOf="@id/text_delete_agree"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/text_delete_agree" />
+
+    <TextView
+        android:id="@+id/text_resign"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="40dp"
+        android:layout_marginTop="27dp"
+        android:lineSpacingExtra="8sp"
+        android:text="재 가입 또는 로그인 변경"
+        android:textColor="@color/textDark"
+        android:textSize="14sp"
+        android:textStyle="normal"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/text_delete_session_1" />
+
+    <TextView
+        android:id="@+id/text_unsatis"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="40dp"
+        android:layout_marginTop="16dp"
+        android:lineSpacingExtra="8sp"
+        android:text="서비스 불만족"
+        android:textColor="@color/textDark"
+        android:textSize="14sp"
+        android:textStyle="normal"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/text_resign" />
+
+
+    <TextView
+        android:id="@+id/text_delete_session_1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="40dp"
+        android:layout_marginTop="16dp"
+        android:lineSpacingExtra="6sp"
+        android:text="탈퇴 사유"
+        android:textColor="@color/textDark"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/app_bar_delete_account" />
+
+    <TextView
+        android:id="@+id/text_delete_agree"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="40dp"
+        android:layout_marginBottom="27dp"
+        android:lineSpacingExtra="8sp"
+        android:text="상기 내용을 확인 및 동의합니다."
+        android:textColor="@color/textDark"
+        android:textSize="14sp"
+        android:textStyle="normal"
+        app:layout_constraintBottom_toTopOf="@id/btn_delete_account"
+        app:layout_constraintLeft_toLeftOf="parent" />
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/app_bar_delete_account"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_alignParentTop="true"
+        android:background="@color/moimingWhite"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/btn_finish_delete_account"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="16dp"
+            android:src="@drawable/ic_app_back"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:lineSpacingExtra="7sp"
+            android:text="회원 탈퇴"
+            android:textColor="@color/textDark"
+            android:textSize="16sp"
+            android:textStyle="normal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layout_notice_info"
+        android:layout_width="328dp"
+        android:layout_height="108dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/shape_round_bg_notice_change"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/text_unsatis">
+
+
+        <EditText
+            android:id="@+id/input_notice_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:background="@null"
+            android:gravity="top"
+            android:hint="모이밍 서비스를 위한 다양하고 솔직한 의견 부탁드립니다 (선택)"
+            android:lineSpacingExtra="5sp"
+            android:maxEms="14"
+            android:maxLength="80"
+            android:maxLines="3"
+            android:textColor="@color/textDark"
+            android:textSize="14sp"
+            android:textStyle="normal"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
