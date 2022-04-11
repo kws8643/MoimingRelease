@@ -8,6 +8,6 @@ public interface PaymentSettingDialogListener {
 
     void touchEdit(GroupPaymentVO paymentData);
 
-    void touchDelete(String paymentUuid);
+    void touchDelete(String paymentUuid, String paymentName);
 
 }

@@ -1,111 +1,134 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:focusable="true"
     android:focusableInTouchMode="true">
 
-
     <TextView
-        android:id="@+id/btn_select_all_group_members"
+        android:id="@+id/text_no_search_result"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginRight="24dp"
-        android:lineSpacingExtra="13sp"
-        android:text="전체 선택"
-        android:textColor="@color/moimingTheme"
-        android:textSize="10sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@id/layout_group_member_search"
-        app:layout_constraintLeft_toRightOf="@id/layout_group_member_search"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="@id/layout_group_member_search" />
+        android:layout_below="@id/layout_ref_1"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="36dp"
+        android:text="해당 유저를 찾을 수 없습니다"
+        android:textSize="18sp"
+        android:visibility="gone"/>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/layout_group_member_search"
-        android:layout_width="256dp"
-        android:layout_height="40dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="16dp"
-        android:background="@drawable/shape_gray_bg"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <EditText
-            android:id="@+id/input_group_member"
-            android:layout_width="220dp"
-            android:layout_height="match_parent"
-            android:background="@null"
-            android:hint="그룹원 이름으로 검색"
-            android:inputType="text"
-            android:paddingStart="5dp"
-            android:singleLine="true"
-            android:textColor="@color/moimingBlack"
-            android:textSize="16sp"
-            app:layout_constraintLeft_toRightOf="@id/img_search" />
-
-        <ImageView
-            android:id="@+id/img_search"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_marginLeft="12dp"
-            android:src="@drawable/ic_main_search"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/layout_kmf_search"
-        android:layout_width="328dp"
-        android:layout_height="40dp"
-        android:layout_marginTop="16dp"
-        android:background="@drawable/shape_gray_bg"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:visibility="gone"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <EditText
-            android:id="@+id/input_kmf_name"
-            android:layout_width="220dp"
-            android:layout_height="match_parent"
-            android:background="@null"
-            android:hint="모이밍 친구 검색"
-            android:inputType="text"
-            android:paddingStart="5dp"
-            android:singleLine="true"
-            android:textColor="@color/moimingBlack"
-            android:textSize="16sp"
-            app:layout_constraintLeft_toRightOf="@id/img_kmf_search" />
-
-        <ImageView
-            android:id="@+id/img_kmf_search"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_marginLeft="12dp"
-            android:src="@drawable/ic_main_search"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/create_session_group_members_list"
+        android:id="@+id/layout_ref_1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="72dp"
-        android:focusable="true"
-        android:focusableInTouchMode="true"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true">
+
+        <TextView
+            android:id="@+id/btn_select_all_group_members"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="20dp"
+            android:lineSpacingExtra="13sp"
+            android:text="전체 선택"
+            android:textColor="@color/moimingTheme"
+            android:textSize="10sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@id/layout_group_member_search"
+            app:layout_constraintLeft_toRightOf="@id/layout_group_member_search"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@id/layout_group_member_search" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/layout_group_member_search"
+            android:layout_width="272dp"
+            android:layout_height="40dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/shape_gray_bg"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <EditText
+                android:id="@+id/input_group_member"
+                android:layout_width="220dp"
+                android:layout_height="match_parent"
+                android:background="@null"
+                android:hint="이름으로 검색"
+                android:inputType="text"
+                android:paddingStart="5dp"
+                android:singleLine="true"
+                android:textColor="@color/moimingBlack"
+                android:textSize="16sp"
+                app:layout_constraintLeft_toRightOf="@id/img_search" />
+
+            <ImageView
+                android:id="@+id/img_search"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginLeft="12dp"
+                android:src="@drawable/ic_main_search"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/layout_kmf_search"
+            android:layout_width="328dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/shape_gray_bg"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:visibility="gone"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <EditText
+                android:id="@+id/input_kmf_name"
+                android:layout_width="220dp"
+                android:layout_height="match_parent"
+                android:background="@null"
+                android:hint="모이밍 친구 검색"
+                android:inputType="text"
+                android:paddingStart="5dp"
+                android:singleLine="true"
+                android:textColor="@color/moimingBlack"
+                android:textSize="16sp"
+                app:layout_constraintLeft_toRightOf="@id/img_kmf_search" />
+
+            <ImageView
+                android:id="@+id/img_kmf_search"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginLeft="12dp"
+                android:src="@drawable/ic_main_search"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/layout_ref_1"
+        android:layout_marginTop="24dp">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/create_session_group_members_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:focusable="true"
+            android:focusableInTouchMode="true" />
+
+    </androidx.core.widget.NestedScrollView>
+</RelativeLayout>

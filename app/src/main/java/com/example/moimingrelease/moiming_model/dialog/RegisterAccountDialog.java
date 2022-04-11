@@ -99,5 +99,8 @@ public class RegisterAccountDialog extends Dialog {
 
     }
 
-
+    @Override
+    public void onBackPressed() {
+        btnCancel.performClick();
+    }
 }

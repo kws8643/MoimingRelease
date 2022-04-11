@@ -4,6 +4,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -20,9 +21,10 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,12 +32,13 @@ import android.widget.Toast;
 import com.example.moimingrelease.app_adapter.MembersEditPersonalCostRecyclerAdapter;
 import com.example.moimingrelease.app_adapter.NmuEditPersonalCostRecyclerAdapter;
 import com.example.moimingrelease.app_adapter.RecyclerViewItemDecoration;
+import com.example.moimingrelease.app_listener_interface.CancelActivityCallBack;
 import com.example.moimingrelease.app_listener_interface.RegisterAccountListener;
 import com.example.moimingrelease.app_listener_interface.SessionCreationNmuNameChangeListener;
 import com.example.moimingrelease.app_listener_interface.SessionPersonalCostEditCntListener;
 import com.example.moimingrelease.app_listener_interface.UserCostCancelCheckBoxListener;
 import com.example.moimingrelease.app_listener_interface.UserEditPersonalCostListener;
-import com.example.moimingrelease.fragments_main.MoimingHomeFragment;
+import com.example.moimingrelease.moiming_model.dialog.CancelActivityDialog;
 import com.example.moimingrelease.moiming_model.dialog.RegisterAccountDialog;
 import com.example.moimingrelease.moiming_model.extras.MoimingGroupAndMembersDTO;
 import com.example.moimingrelease.moiming_model.extras.MoimingMembersDTO;
@@ -97,11 +100,10 @@ public class SessionCreationActivity extends AppCompatActivity {
     private TextView textInviteCnt;
     private LinearLayout layoutUsersHolder;
     private EditText inputSessionName, inputCost;
-    private ScrollView scroll;
+    private NestedScrollView scroll;
 
     private Map<Integer, Boolean> isReady;
     public boolean isPersonalEditOpen = false;
-    private boolean fromGroupActivity;
     private boolean fromNewGroupCreation;
     MoimingUserVO curUser;
     MoimingGroupVO curGroup;
@@ -191,11 +193,20 @@ public class SessionCreationActivity extends AppCompatActivity {
     };
 
 
+    private CancelActivityCallBack finishCallBack = new CancelActivityCallBack() {
+        @Override
+        public void finishActivity() {
+
+            finish();
+        }
+    };
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.test_layout);
+        setContentView(R.layout.activity_session_creation);
 
         receiveIntent();
 
@@ -206,6 +217,17 @@ public class SessionCreationActivity extends AppCompatActivity {
         initHorizontalView();
 
         COST_EDIT_USER_CNT = 0;
+
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                // Dialog
+                CancelActivityDialog dialog = new CancelActivityDialog(SessionCreationActivity.this, finishCallBack, "입력하신 정보가 삭제됩니다");
+
+                dialog.show();
+            }
+        });
 
         btnChooseMembers.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -309,6 +331,7 @@ public class SessionCreationActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
+                // 새로운 금액이 입력되는 것
                 String inputData = inputCost.getText().toString();
 
                 if (inputData.isEmpty() || Integer.parseInt(inputData) == 0) {
@@ -350,7 +373,7 @@ public class SessionCreationActivity extends AppCompatActivity {
 
                         } else { // 모금일 경우
 
-                            fundingCost = Integer.parseInt(inputData);
+                            fundingCost = Integer.parseInt(inputData); // 개별 금액 (전체 수정 필요)
                         }
 
                         inputCost.setEnabled(false);
@@ -423,38 +446,81 @@ public class SessionCreationActivity extends AppCompatActivity {
                                 NmuEditPersonalCostRecyclerAdapter.NMU_EDIT_COST_USER_CNT = 0;
 
                                 int invitedCnt = sessionInvitedMembers.size() + inviteNmuCnt + 1;
-                                int dividedN = (int) (totalCost / invitedCnt);
-                                int curUserCost = dividedN;
 
-                                if ((dividedN * invitedCnt) != totalCost) {
+                                if (sessionType == 1) {
 
-                                    int diff = totalCost - (dividedN * invitedCnt);
-                                    curUserCost += diff;
-                                }
+                                    totalCost = Integer.parseInt(inputCost.getText().toString());
 
-                                for (int i = 0; i < membersSessionDataList.size(); i++) {
+                                    int dividedN = (int) (totalCost / invitedCnt);
+                                    int curUserCost = dividedN;
 
-                                    SessionMemberLinkerData linkerData = membersSessionDataList.get(i);
-                                    if (i == 0) {
-                                        linkerData.setUserCost(curUserCost);
-                                        linkerData.setIsEdited(false);
-                                    } else {
+                                    if ((dividedN * invitedCnt) != totalCost) {
 
-                                        linkerData.setUserCost(dividedN);
-                                        linkerData.setIsEdited(false);
+                                        int diff = totalCost - (dividedN * invitedCnt);
+                                        curUserCost += diff;
                                     }
 
-                                    membersSessionDataList.set(i, linkerData);
-                                }
+                                    for (int i = 0; i < membersSessionDataList.size(); i++) {
 
-                                for (int i = 0; i < inviteNmuCnt; i++) {
+                                        SessionMemberLinkerData linkerData = membersSessionDataList.get(i);
 
-                                    SessionNmuLinkerData nmuLinkerData = nmuSessionDataList.get(i);
+                                        if (i == 0) {
+                                            linkerData.setUserCost(curUserCost);
+                                            linkerData.setIsEdited(false);
+                                        } else {
 
-                                    nmuLinkerData.setUserCost(dividedN);
-                                    nmuLinkerData.setIsEdited(false);
+                                            linkerData.setUserCost(dividedN);
+                                            linkerData.setIsEdited(false);
+                                        }
 
-                                    nmuSessionDataList.set(i, nmuLinkerData);
+                                        membersSessionDataList.set(i, linkerData);
+                                    }
+
+                                    for (int i = 0; i < inviteNmuCnt; i++) {
+
+                                        SessionNmuLinkerData nmuLinkerData = nmuSessionDataList.get(i);
+
+                                        nmuLinkerData.setUserCost(dividedN);
+                                        nmuLinkerData.setIsEdited(false);
+
+                                        nmuSessionDataList.set(i, nmuLinkerData);
+                                    }
+
+                                    // 영수증 수정
+                                    resultMemberCnt.setText(String.valueOf(invitedCnt));
+                                    resultPersonalCost.setText(String.valueOf(dividedN));
+                                    resultTotalCost.setText(String.valueOf(totalCost));
+
+                                } else { // 모금일 경우
+
+
+                                    int personalFundingCost = Integer.parseInt(inputCost.getText().toString());
+
+                                    totalCost = personalFundingCost * invitedCnt;
+
+                                    for (int i = 0; i < membersSessionDataList.size(); i++) {
+
+                                        SessionMemberLinkerData linkerData = membersSessionDataList.get(i);
+
+                                        linkerData.setUserCost(personalFundingCost);
+                                        linkerData.setIsEdited(false);
+
+                                        membersSessionDataList.set(i, linkerData);
+                                    }
+
+                                    for (int i = 0; i < inviteNmuCnt; i++) {
+
+                                        SessionNmuLinkerData nmuLinkerData = nmuSessionDataList.get(i);
+
+                                        nmuLinkerData.setUserCost(personalFundingCost);
+                                        nmuLinkerData.setIsEdited(false);
+
+                                        nmuSessionDataList.set(i, nmuLinkerData);
+                                    }
+
+                                    resultMemberCnt.setText(String.valueOf(invitedCnt));
+                                    resultPersonalCost.setText(String.valueOf(personalFundingCost));
+                                    resultTotalCost.setText(String.valueOf(totalCost));
                                 }
 
                                 membersAdapter.notifyDataSetChanged();
@@ -609,6 +675,7 @@ public class SessionCreationActivity extends AppCompatActivity {
 
                         groupIntent.putExtra(getResources().getString(R.string.moiming_user_data_key), curUser);
                         groupIntent.putExtra(getResources().getString(R.string.moiming_group_and_members_data_key), (Parcelable) response);
+                        groupIntent.putExtra("created_with_session", true);
 //                        groupIntent.putExtra(getResources().getString(R.string.moiming_group_data_key), (Serializable) response.getMoimingGroupDto().convertToVO());
 
                         startActivity(groupIntent);
@@ -666,10 +733,24 @@ public class SessionCreationActivity extends AppCompatActivity {
     // 다 준비된 후에 가격을 조정할 경우
     private void refreshAllSessionByTotalCost() {
 
+       /* if (sessionType == 1) { // 더치페이일 경우
+
+            totalCost = Integer.parseInt(inputData); // 모으는 총액
+
+        } else { // 모금일 경우
+
+            fundingCost = Integer.parseInt(inputData); // 개별 금액 (전체 수정 필요)
+        }
+
+        inputCost.setEnabled(false);
+        btnEditCost.setVisibility(View.VISIBLE);
+        textCostType.setVisibility(View.VISIBLE);*/
+
+
         int newDividedN;
         int invitedCnt = sessionInvitedMembers.size() + inviteNmuCnt + 1;
 
-        if (sessionType == 1) {
+        if (sessionType == 1) { // 더치페이일 경우
 
             newDividedN = (int) (totalCost / invitedCnt);
             int curUserCost = newDividedN;
@@ -747,7 +828,7 @@ public class SessionCreationActivity extends AppCompatActivity {
         curGroup = (MoimingGroupVO) dataIntent.getExtras().getSerializable(getResources().getString(R.string.moiming_group_data_key));
         curUser = (MoimingUserVO) dataIntent.getExtras().getSerializable(getResources().getString(R.string.moiming_user_data_key));
         curGroupMembers = dataIntent.getParcelableArrayListExtra(GroupActivity.MOIMING_GROUP_MEMBERS_KEY);
-        fromGroupActivity = dataIntent.getExtras().getBoolean(getResources().getString(R.string.session_creation_from_group_activity_flag), false);
+        fromNewGroupCreation = dataIntent.getExtras().getBoolean(getResources().getString(R.string.session_creation_with_new_group_flag), false);
 
         if (curUser.getBankName() == null || curUser.getBankNumber() == null) {
 
@@ -759,7 +840,6 @@ public class SessionCreationActivity extends AppCompatActivity {
         // 2. GroupMembers 들이 카카오 친구들이여야 한다. <여기까지 된듯>
         // 3. 생성시 Group 생성 --> Session 생성 --> SessionLinker 생성
         // 이후로 차이 없음.
-        fromNewGroupCreation = dataIntent.getExtras().getBoolean(getResources().getString(R.string.session_creation_with_new_group_flag), false);
 
         if (fromNewGroupCreation) { // 바로 생성일 경우
             sessionType = 1;
@@ -786,7 +866,7 @@ public class SessionCreationActivity extends AppCompatActivity {
 
             } else {
 
-                Toast.makeText(getApplicationContext(), "계좌 등록이 되어야 이용할 수 있습니다.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "원활한 서비스 이용을 위해 계좌 등록이 필요합니다", Toast.LENGTH_SHORT).show();
 
                 finish();
 
@@ -802,11 +882,16 @@ public class SessionCreationActivity extends AppCompatActivity {
 
     }
 
+    private ImageView btnBack;
+
     private void initView() {
+
+        btnBack = findViewById(R.id.btn_back_session_creation);
 
         //NMU
         nmuInviteViewer = findViewById(R.id.viewer_non_moiming_member_out);
         textNmuCnt = findViewById(R.id.text_nmu_cnt_out);
+        textNmuRef = findViewById(R.id.b);
 
         // 계산서 뷰
         layoutSessionResult = findViewById(R.id.layout_session_result);
@@ -950,11 +1035,17 @@ public class SessionCreationActivity extends AppCompatActivity {
 
                 if (inviteNmuCnt != 0) {
 
+                    textNmuInviteCnt.setVisibility(View.VISIBLE);
+                    nmuRecycler.setVisibility(View.VISIBLE);
+                    textNmuRef.setVisibility(View.VISIBLE);
                     nmuInviteViewer.setVisibility(View.VISIBLE);
                     textNmuCnt.setText("+" + inviteNmuCnt);
 
                 } else {
 
+                    textNmuInviteCnt.setVisibility(View.GONE);
+                    nmuRecycler.setVisibility(View.GONE);
+                    textNmuRef.setVisibility(View.GONE);
                     nmuInviteViewer.setVisibility(View.GONE);
                 }
 
@@ -1014,6 +1105,7 @@ public class SessionCreationActivity extends AppCompatActivity {
 
                 // 불러오려는 세션 정보
                 MoimingSessionVO previousSession = (MoimingSessionVO) data.getSerializableExtra(getResources().getString(R.string.moiming_session_data_key));
+                boolean isAllSingleSame = data.getBooleanExtra("is_all_single_same", true);
 
                 // 1. 이름 Setting.
                 inputSessionName.setText(previousSession.getSessionName()); // 이름 동일하게 Set.
@@ -1023,7 +1115,6 @@ public class SessionCreationActivity extends AppCompatActivity {
                 int singleCost = previousSession.getSingleCost();
                 inputCost.setText(String.valueOf(singleCost));
                 inputCost.onEditorAction(EditorInfo.IME_ACTION_DONE);
-
 
                 // 3. 참여 멤버들 All Set.
                 // -1 sessionMemberList 에 추가.
@@ -1042,13 +1133,25 @@ public class SessionCreationActivity extends AppCompatActivity {
                 } //  세션 초대에 넣고, horizontal view 에 추가한다.
 
                 // -1 nmu Cnt 추가
-                inviteNmuCnt = previousSession.getNmuList().size();
 
-                if (inviteNmuCnt != 0) { // NMU Viewer (보라색 몇 명인지) 가리고 채우고
-                    nmuInviteViewer.setVisibility(View.VISIBLE);
-                    textNmuCnt.setText("+" + inviteNmuCnt);
+                inviteNmuCnt = 0;
+
+                if (previousSession.getNmuList() != null) {
+                    inviteNmuCnt = previousSession.getNmuList().size();
+
+                    if (inviteNmuCnt != 0) { // NMU Viewer (보라색 몇 명인지) 가리고 채우고
+                        nmuInviteViewer.setVisibility(View.VISIBLE);
+                        textNmuCnt.setText("+" + inviteNmuCnt);
+                    } else {
+                        nmuInviteViewer.setVisibility(View.GONE);
+                        textNmuInviteCnt.setVisibility(View.GONE);
+                        nmuRecycler.setVisibility(View.GONE);
+                        textNmuRef.setVisibility(View.GONE);
+                    }
                 } else {
-                    nmuInviteViewer.setVisibility(View.GONE);
+                    textNmuInviteCnt.setVisibility(View.GONE);
+                    nmuRecycler.setVisibility(View.GONE);
+                    textNmuRef.setVisibility(View.GONE);
                 }
 
                 // 총 참여하는 멤버들 숫자 업데이트
@@ -1066,19 +1169,25 @@ public class SessionCreationActivity extends AppCompatActivity {
                 /*btnPrevFunding.setTextColor(getResources().getColor(R.color.moimingLightTheme, null));
                 btnPrevFunding.setEnabled(false); // 이제 불러오기 버튼 못누름.*/
 
-                // 4. 멤버별 가격 All Set. //개인별 적용 가격이 있는지 들어가야 함
+                totalCost = previousSession.getTotalCost();
+
+                // 4. 멤버별 가격 All Set. // 개인별 적용 가격이 있는지 들어가야 함
                 initPrevFundingLayout(previousSession);
 
-                setReceiptForPrevFunding(cnt);
+                setReceiptForPrevFunding(cnt, isAllSingleSame);
 
             }
 
-            View view = this.getCurrentFocus();
+            // TODO: 키보드 갑자기 튀어 올라오는 현상
+            layoutDrawer.requestFocus();
+            imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
 
-            if (view != null) {
-                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-            }
+//            View view = this.getCurrentFocus();
+//
+//            if (view != null) {
+//                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+//                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+//            }
 
 
         }
@@ -1107,16 +1216,15 @@ public class SessionCreationActivity extends AppCompatActivity {
                     , prevMember.getUserPfImg()
                     , sessionLinker.getPersonalCost());
 
-            totalCost += sessionLinker.getPersonalCost(); // 현재 정산 totalCost update
             if (!sessionLinker.getPersonalCost().equals(sessionVO.getSingleCost())) { // 금액이 수정된 상태였다면?
                 prevMemberData.setIsEdited(true); // 체크표시 될 수 있도록!
             }
 
-            if (!prevMember.getUuid().equals(curUser.getUuid())) {
+            if (!prevMember.getUuid().equals(curUser.getUuid())) { // 현 유저가 포함되어 있지 않다.
                 membersSessionDataList.add(prevMemberData);
-            } else {
+            } else { // 현 유저이다.
                 isCurUserPreviousMember = true;
-                membersSessionDataList.add(0, prevMemberData);
+                membersSessionDataList.add(0, prevMemberData); // 가장 먼저 넣는다.
             }
         }
 
@@ -1124,21 +1232,25 @@ public class SessionCreationActivity extends AppCompatActivity {
         if (!isCurUserPreviousMember) {
             SessionMemberLinkerData prevMemberData = new SessionMemberLinkerData(curUser.getUuid()
                     , curUser.getUserName(), curUser.getUserPfImg(), sessionVO.getSingleCost());
+
+            totalCost += sessionVO.getSingleCost(); // 이전에 들어갔던 Single Cost 대로 넣는다.
             membersSessionDataList.add(0, prevMemberData); // 제일 처음에 넣는다.
 
         }
 
-        if (sessionVO.getNmuList().size() != 0) {
-            for (int i = 0; i < sessionVO.getNmuList().size(); i++) {
+        if (sessionVO.getNmuList() != null) {
+            if (sessionVO.getNmuList().size() != 0) {
+                for (int i = 0; i < sessionVO.getNmuList().size(); i++) {
 
-                NonMoimingUserVO nmu = sessionVO.getNmuList().get(i);
-                SessionNmuLinkerData preNmudata = new SessionNmuLinkerData(nmu.getNmuName(), nmu.getNmuPersonalCost());
+                    NonMoimingUserVO nmu = sessionVO.getNmuList().get(i);
+                    SessionNmuLinkerData preNmudata = new SessionNmuLinkerData(nmu.getNmuName(), nmu.getNmuPersonalCost());
 
-                if (!nmu.getNmuPersonalCost().equals(sessionVO.getSingleCost())) {
-                    preNmudata.setIsEdited(true);
+                    if (!nmu.getNmuPersonalCost().equals(sessionVO.getSingleCost())) {
+                        preNmudata.setIsEdited(true);
+                    }
+
+                    nmuSessionDataList.add(preNmudata);
                 }
-
-                nmuSessionDataList.add(preNmudata);
             }
         }
 
@@ -1153,16 +1265,17 @@ public class SessionCreationActivity extends AppCompatActivity {
         memberRecycler.addItemDecoration(new RecyclerViewItemDecoration(this, 8));
 
         //2. 비모이머것 해결.
-        LinearLayoutManager nmuLayoutManager = new LinearLayoutManager(this);
+        if (sessionVO.getNmuList() != null) {
+            LinearLayoutManager nmuLayoutManager = new LinearLayoutManager(this);
 
-        nmuRecycler.setLayoutManager(nmuLayoutManager);
-        nmuAdapter = new NmuEditPersonalCostRecyclerAdapter(getApplicationContext(), totalCnt, nmuSessionDataList, editCostListener, cancelCheckBoxListener, cntListener, nmuNameChangeListener);
-        nmuRecycler.setAdapter(nmuAdapter);
-        nmuRecycler.addItemDecoration(new RecyclerViewItemDecoration(this, 8));
-
+            nmuRecycler.setLayoutManager(nmuLayoutManager);
+            nmuAdapter = new NmuEditPersonalCostRecyclerAdapter(getApplicationContext(), totalCnt, nmuSessionDataList, editCostListener, cancelCheckBoxListener, cntListener, nmuNameChangeListener);
+            nmuRecycler.setAdapter(nmuAdapter);
+            nmuRecycler.addItemDecoration(new RecyclerViewItemDecoration(this, 8));
+        }
     }
 
-    private void setReceiptForPrevFunding(int totalMemberCnt) {
+    private void setReceiptForPrevFunding(int totalMemberCnt, boolean isAllSame) {
 
         layoutSessionResult.setVisibility(View.VISIBLE);
         btnCreationFinish.setTextColor(getResources().getColor(R.color.moimingTheme, null));
@@ -1173,6 +1286,12 @@ public class SessionCreationActivity extends AppCompatActivity {
         resultTotalCost.setText(String.valueOf(totalCost));
         resultPersonalCost.setText(String.valueOf(personalCost));
         resultMemberCnt.setText(String.valueOf(totalMemberCnt));
+
+        if (isAllSame) {
+            findViewById(R.id.view_edited_cost).setVisibility(View.GONE);
+        } else {
+            findViewById(R.id.view_edited_cost).setVisibility(View.VISIBLE);
+        }
 
     }
 
@@ -1251,6 +1370,7 @@ public class SessionCreationActivity extends AppCompatActivity {
 
     private void editReceiptDutchpay(boolean reset, int newDividedN) {
 
+        resultTotalCost.setText(String.valueOf(totalCost));
         resultPersonalCost.setText(String.valueOf(newDividedN));
 
         if (reset) {
@@ -1307,9 +1427,10 @@ public class SessionCreationActivity extends AppCompatActivity {
                 (TypedValue.COMPLEX_UNIT_DIP, dp, getResources().getDisplayMetrics());
     }
 
-
-    private ConstraintLayout layoutDrawer, layoutPersonalCost;
+    private RelativeLayout layoutDrawer;
+    private ConstraintLayout layoutPersonalCost;
     private TextView textMemberInviteCnt, textNmuInviteCnt; // x 명
+    private TextView textNmuRef;
     private RecyclerView memberRecycler, nmuRecycler;
     private TextView btnResetPersonal;
     private View sizeMatcher;
@@ -1858,7 +1979,7 @@ public class SessionCreationActivity extends AppCompatActivity {
     };
 
 
-    public void scrollToView(View view, final ScrollView scrollView, int count) {
+    public void scrollToView(View view, final NestedScrollView scrollView, int count) {
         if (view != null && view != scrollView) {
             count += view.getTop();
             scrollToView((View) view.getParent(), scrollView, count);
@@ -1970,16 +2091,6 @@ public class SessionCreationActivity extends AppCompatActivity {
             return;
 
         }
-        // 1. Session 을 먼저 만든다. // 만든 것을 완성후 세션 정보를 한번 가져와줘야 함.
-
-        // 2. 각 유저들의 SessionLinker 들을 만들어 주고 List 로 합쳐준다 .
-
-        // 3. User Linker Request 를 보낸다. (비모이밍 유저 것도 한거번에 전달)
-
-        // Session Linker Requset DTO 들 포함 내용.
-
-        // 1. isMoimingUser /
-
     }
 
     private void makeLinkerRequest() {
@@ -2029,7 +2140,7 @@ public class SessionCreationActivity extends AppCompatActivity {
 
                         // 새로운 세션을 생성한 경우 // 해당 액티비티로 돌아갈 경우 초기화를 담당한다.
                         // 바로 생성일 경우 초기화 안해도 됨.
-                        if (fromGroupActivity) GroupActivity.SESSION_LIST_REFRESH_FLAG = true;
+                        if (!fromNewGroupCreation) GroupActivity.SESSION_LIST_REFRESH_FLAG = true;
 
 
                     }
@@ -2055,4 +2166,11 @@ public class SessionCreationActivity extends AppCompatActivity {
                     }
                 });
     }
+
+    @Override
+    public void onBackPressed() {
+
+        btnBack.performClick();
+    }
+
 }

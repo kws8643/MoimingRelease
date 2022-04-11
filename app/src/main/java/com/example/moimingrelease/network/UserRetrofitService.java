@@ -14,12 +14,8 @@ import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
 
-// Retrofit Interface 에서 메소드 하나하나 = 요청문;
-
 public interface UserRetrofitService {
 
-    // Response Callback으로 전달받는 객체는 원래 <DTO>가 맞는 것
-    // 일단 객체 내용이 비슷한 것 같으니 VO로 한다...?
     @POST("api/user/signup")
     Call<TransferModel<MoimingUserResponseDTO>> userSignupRequest(@Body TransferModel<MoimingUserRequestDTO> requestModel);
 

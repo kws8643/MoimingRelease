@@ -1,11 +1,11 @@
 package com.example.moimingrelease.frag_session_creation_previous_funding;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -13,15 +13,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.moimingrelease.R;
-import com.example.moimingrelease.SessionCreationActivity;
 import com.example.moimingrelease.SessionCreationPreviousFundingActivity;
 import com.example.moimingrelease.app_adapter.PreviousFundingViewAdapter;
-import com.example.moimingrelease.app_adapter.SessionCreationOldGroupsAdapter;
 import com.example.moimingrelease.app_listener_interface.ViewPrevSessionListener;
-import com.example.moimingrelease.moiming_model.extras.MoimingMembersDTO;
-import com.example.moimingrelease.moiming_model.moiming_vo.MoimingGroupVO;
 import com.example.moimingrelease.moiming_model.moiming_vo.MoimingSessionVO;
-import com.example.moimingrelease.moiming_model.moiming_vo.MoimingUserVO;
 import com.example.moimingrelease.moiming_model.response_dto.MoimingSessionResponseDTO;
 import com.example.moimingrelease.network.GlobalRetrofit;
 import com.example.moimingrelease.network.SessionRetrofitService;
@@ -43,16 +38,15 @@ public class ChoosePrevFundingFragment extends Fragment {
     private PreviousFundingViewAdapter recyclerAdapter;
     private List<MoimingSessionVO> prevFundingDataList;
 
+    private ImageView btnBack;
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
-
         if (getArguments() != null) {
 
         }
-
     }
 
     @Override
@@ -65,15 +59,23 @@ public class ChoosePrevFundingFragment extends Fragment {
 
         getPrevFundingList();
 
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                activity.finish();
+            }
+        });
         return view;
     }
 
-    private void initView(View view){
+    private void initView(View view) {
 
         recyclerPrevFunding = view.findViewById(R.id.prev_funding_recycler);
+        btnBack = view.findViewById(R.id.btn_back_choose_funding);
+
     }
 
-    private void initParams(){
+    private void initParams() {
 
         activity = (SessionCreationPreviousFundingActivity) getActivity();
 
@@ -82,7 +84,7 @@ public class ChoosePrevFundingFragment extends Fragment {
 
     }
 
-    private void getPrevFundingList(){
+    private void getPrevFundingList() {
 
         SessionRetrofitService sessionRetrofit = GlobalRetrofit.getInstance().getRetrofit().create(SessionRetrofitService.class);
         sessionRetrofit.getGroupFundings(activity.getCurGroup().getUuid().toString()) // 바로 호출 함수 실행
@@ -100,7 +102,7 @@ public class ChoosePrevFundingFragment extends Fragment {
                         // TODO: 받아오는 Data 구경 좀 해보자...
                         List<MoimingSessionResponseDTO> dataList = receivedModel.getData();
 
-                        for(MoimingSessionResponseDTO dto: dataList){
+                        for (MoimingSessionResponseDTO dto : dataList) {
 
                             prevFundingDataList.add(dto.convertToVO());
 
@@ -125,7 +127,7 @@ public class ChoosePrevFundingFragment extends Fragment {
 
     }
 
-    private void initRecyclerView(){
+    private void initRecyclerView() {
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(activity.getApplicationContext());
         recyclerPrevFunding.setLayoutManager(linearLayoutManager);

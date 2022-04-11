@@ -14,16 +14,22 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.moimingrelease.app_adapter.GroupPaymentViewAdapter;
+import com.example.moimingrelease.app_listener_interface.PaymentSendFcmListener;
 import com.example.moimingrelease.app_listener_interface.PaymentSettingDialogListener;
 import com.example.moimingrelease.moiming_model.extras.PaymentViewData;
 import com.example.moimingrelease.moiming_model.moiming_vo.GroupPaymentVO;
+import com.example.moimingrelease.moiming_model.moiming_vo.MoimingGroupVO;
 import com.example.moimingrelease.moiming_model.moiming_vo.MoimingUserVO;
 import com.example.moimingrelease.moiming_model.response_dto.GroupPaymentResponseDTO;
 import com.example.moimingrelease.moiming_model.dialog.CreatePaymentDialog;
 import com.example.moimingrelease.network.GlobalRetrofit;
 import com.example.moimingrelease.network.GroupPaymentRetrofitService;
 import com.example.moimingrelease.network.TransferModel;
+import com.example.moimingrelease.network.fcm.FCMRequest;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -38,6 +44,8 @@ import io.reactivex.rxjava3.annotations.NonNull;
 import io.reactivex.rxjava3.core.Observer;
 import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
 
 public class GroupPaymentActivity extends AppCompatActivity {
 
@@ -55,13 +63,36 @@ public class GroupPaymentActivity extends AppCompatActivity {
     private List<PaymentViewData> paymentRecyclerList;
 
     private MoimingUserVO curUser;
-    private String groupUuid;
+    private MoimingGroupVO curGroup;
     private ExtendedFloatingActionButton btnAdd;
     private RecyclerView paymentRecycler;
     private GroupPaymentViewAdapter paymentAdapter;
     private TextView textCurCost;
 
     CreatePaymentDialog paymentDialog;
+
+    private PaymentSendFcmListener fcmListener = new PaymentSendFcmListener() {
+        @Override
+        public void sendFcm(String fcmMsg) throws JSONException {
+
+            List<String> fcmTokenList = new ArrayList<>(memberFcmTokenMap.values());
+
+            for (int i = 0; i < fcmTokenList.size(); i++) {
+
+                JSONObject jsonSend = FCMRequest.getInstance()
+                        .buildFcmJsonData("group", String.valueOf(2), "회계 장부", fcmMsg, ""
+                                , curGroup.getUuid().toString()
+                                , "", fcmTokenList.get(i));
+
+
+                RequestBody reBody = RequestBody.create(MediaType.parse("application/json, charset-utf8")
+                        , String.valueOf(jsonSend));
+
+                FCMRequest.getInstance().sendFcmRequest(getApplicationContext(), reBody);
+            }
+
+        }
+    };
 
     PaymentSettingDialogListener paymentDialogListener = new PaymentSettingDialogListener() {
 
@@ -86,14 +117,13 @@ public class GroupPaymentActivity extends AppCompatActivity {
             // 5. set isUpdating
             paymentDialog.setIsPaymentUpdating(true, paymentData.getUuid().toString());
 
-
         }
 
         @Override
-        public void touchDelete(String paymentUuid) {
+        public void touchDelete(String paymentUuid, String paymentName) {
 
             // Payment 를 삭제 후, Refresh 해줘야 한다. NotifyData도 함께!
-            deletePayment(paymentUuid);
+            deletePayment(paymentUuid, paymentName);
 
         }
     };
@@ -116,7 +146,7 @@ public class GroupPaymentActivity extends AppCompatActivity {
 
             paymentDialog = null;
 
-            paymentDialog = new CreatePaymentDialog(GroupPaymentActivity.this, groupUuid, curUser);
+            paymentDialog = new CreatePaymentDialog(GroupPaymentActivity.this, fcmListener, curGroup, curUser);
 
             paymentDialog.setOnDismissListener(dismissListener);
         }
@@ -128,7 +158,8 @@ public class GroupPaymentActivity extends AppCompatActivity {
 
         if (receivedIntent.getExtras() != null) {
             curUser = (MoimingUserVO) receivedIntent.getExtras().getSerializable(getResources().getString(R.string.moiming_user_data_key));
-            groupUuid = receivedIntent.getExtras().getString("group_uuid");
+            curGroup = (MoimingGroupVO) receivedIntent.getExtras().getSerializable(getResources().getString(R.string.moiming_group_data_key));
+//            groupUuid = receivedIntent.getExtras().getString("group_uuid");
             memberFcmTokenMap = (Map<UUID, String>) receivedIntent.getExtras().getSerializable(getResources().getString(R.string.fcm_token_map));
         }
     }
@@ -179,7 +210,7 @@ public class GroupPaymentActivity extends AppCompatActivity {
 
     private void initParams() {
 
-        paymentDialog = new CreatePaymentDialog(this, groupUuid, curUser);
+        paymentDialog = new CreatePaymentDialog(this, fcmListener, curGroup, curUser);
         paymentList = new ArrayList<>();
         paymentRecyclerList = new ArrayList<>();
 
@@ -190,7 +221,7 @@ public class GroupPaymentActivity extends AppCompatActivity {
     private void getGroupPaymentHistory() { // 그룹 UUID 를 통해서 내역들을 불러온다.
 
         GroupPaymentRetrofitService paymentRetrofit = GlobalRetrofit.getInstance().getRetrofit().create(GroupPaymentRetrofitService.class);
-        paymentRetrofit.getGroupPayments(groupUuid)
+        paymentRetrofit.getGroupPayments(curGroup.getUuid().toString())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<TransferModel<List<GroupPaymentResponseDTO>>>() {
@@ -242,11 +273,17 @@ public class GroupPaymentActivity extends AppCompatActivity {
                 });
     }
 
-    private void deletePayment(String paymentUuid) {
+    private void deletePayment(String paymentUuid, String paymentName) {
+
+        List<String> requestData = new ArrayList<>();
+        requestData.add(paymentUuid);
+        requestData.add(curUser.getUuid().toString());
+
+        TransferModel<List<String>> requestModel = new TransferModel<>(requestData);
 
         GroupPaymentRetrofitService retrofit = GlobalRetrofit.getInstance().getRetrofit().create(GroupPaymentRetrofitService.class);
 
-        retrofit.deleteGroupPayment(paymentUuid)
+        retrofit.deleteGroupPayment(requestModel)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<TransferModel>() {
@@ -256,7 +293,7 @@ public class GroupPaymentActivity extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onNext(@NonNull TransferModel transferModel) {
+                    public void onNext(@NonNull TransferModel responseModel) {
 
                         Toast.makeText(getApplicationContext(), "해당 내역이 삭제되었습니다", Toast.LENGTH_SHORT).show();
                     }
@@ -282,10 +319,42 @@ public class GroupPaymentActivity extends AppCompatActivity {
                         paymentList.clear();
                         paymentRecyclerList.clear();
 
+                        String fcmMsg = curUser.getUserName() + "님이 " + curGroup.getGroupName() + "의 회계장부에서 "
+                                + paymentName + "을 삭제했어요";
+
+                        try {
+                            sendDeleteFcm(fcmMsg);
+                        } catch (JSONException e) {
+                            if (e.getMessage() != null) {
+                                Log.e("FCM Error:: ", e.getMessage());
+                            }
+                        }
                         getGroupPaymentHistory();
 
                     }
                 });
+
+
+    }
+
+
+    private void sendDeleteFcm(String fcmMsg) throws JSONException {
+
+        List<String> fcmTokenList = new ArrayList<>(memberFcmTokenMap.values());
+
+        for (int i = 0; i < fcmTokenList.size(); i++) {
+
+            JSONObject jsonSend = FCMRequest.getInstance()
+                    .buildFcmJsonData("group", String.valueOf(2), "회계 장부", fcmMsg, ""
+                            , curGroup.getUuid().toString()
+                            , "", fcmTokenList.get(i));
+
+
+            RequestBody reBody = RequestBody.create(MediaType.parse("application/json, charset-utf8")
+                    , String.valueOf(jsonSend));
+
+            FCMRequest.getInstance().sendFcmRequest(getApplicationContext(), reBody);
+        }
 
 
     }

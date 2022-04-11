@@ -26,7 +26,8 @@ import java.util.List;
 
 public class TabSessionFinishedMembers extends Fragment {
 
-    private TextView textMember1, textNmu1;
+    private TextView textMember1;
+    private TextView textMemberRef, textNmuRef;
 
     private SessionActivity sessionActivity;
     private RecyclerView memberRecycler, nmuRecycler;
@@ -61,7 +62,8 @@ public class TabSessionFinishedMembers extends Fragment {
         nmuRecycler = view.findViewById(R.id.session_finished_nmu_status);
 
         textMember1 = view.findViewById(R.id.text_session_fin_member_1);
-        textNmu1 = view.findViewById(R.id.text_session_fin_nmu_1);
+        textMemberRef = view.findViewById(R.id.text_finished_moiming_members);
+        textNmuRef = view.findViewById(R.id.text_fin_nmu_members);
 
     }
 
@@ -91,7 +93,6 @@ public class TabSessionFinishedMembers extends Fragment {
             if (sessionActivity.curUserStatus != 0) { // 일반 멤버일경우
 
                 textMember1.setVisibility(View.GONE);
-                textNmu1.setVisibility(View.GONE);
 
                 normalMemberViewAdapter = new SessionNormalMemberAdapter(sessionActivity.getApplicationContext(), finishedMemberDataList
                         , true, sessionActivity.getCurUserUuid(), sessionActivity.getCurSession());
@@ -105,7 +106,6 @@ public class TabSessionFinishedMembers extends Fragment {
             } else { // 내가 총무일 경우
 
                 textMember1.setVisibility(View.VISIBLE);
-                textNmu1.setVisibility(View.VISIBLE);
 
                 memberAdapter = new SessionFinishedMembersAdapter(sessionActivity.getApplicationContext(), finishedMemberDataList
                         , true, sessionActivity.getCurUserUuid(), sessionActivity.getCurSession(), sessionActivity.sentUserCallback);
@@ -116,10 +116,6 @@ public class TabSessionFinishedMembers extends Fragment {
                 nmuRecycler.setAdapter(nmuAdapter);
 
             }
-
-
-            memberRecycler.addItemDecoration(new RecyclerViewItemDecoration(sessionActivity, 6));
-            nmuRecycler.addItemDecoration(new RecyclerViewItemDecoration(sessionActivity, 6));
 
         } else {
 
@@ -145,16 +141,21 @@ public class TabSessionFinishedMembers extends Fragment {
         }
 
 
-        for (int i = 0; i < sessionActivity.finishedNmuLinkerList.size(); i++) {
+        if (sessionActivity.finishedNmuLinkerList.size() > 0) {
+            textNmuRef.setVisibility(View.VISIBLE);
+            for (int i = 0; i < sessionActivity.finishedNmuLinkerList.size(); i++) {
 
-            NonMoimingUserVO baseData = sessionActivity.finishedNmuLinkerList.get(i);
+                NonMoimingUserVO baseData = sessionActivity.finishedNmuLinkerList.get(i);
 
-            SessionStatusMemberLinkerData nmuData = new SessionStatusMemberLinkerData(baseData);
+                SessionStatusMemberLinkerData nmuData = new SessionStatusMemberLinkerData(baseData);
 
-            finishedNmuDataList.add(nmuData);
+                finishedNmuDataList.add(nmuData);
 
+            }
+        } else {
+
+            textNmuRef.setVisibility(View.GONE);
         }
-
 
     }
 }

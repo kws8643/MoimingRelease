@@ -55,11 +55,6 @@ public class PreviousFundingViewAdapter extends RecyclerView.Adapter<PreviousFun
         MoimingSessionVO sessionVO = prevFundingDataList.get(position);
 
         holder.textName.setText(sessionVO.getSessionName());
-
-//        int sessionCost = sessionVO.getTotalCost();
-//        int sessionMemberCnt = sessionVO.getSessionMemberCnt();
-//        int singleCost = sessionCost/sessionMemberCnt;
-
         holder.textCost.setText(String.valueOf(sessionVO.getSingleCost()));
         holder.textDate.setText(sessionVO.getCreatedAt().format(DateTimeFormatter.ofPattern("yy.MM.dd")));
 

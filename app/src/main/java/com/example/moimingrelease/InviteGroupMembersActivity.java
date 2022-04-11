@@ -14,13 +14,16 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.HorizontalScrollView;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.moimingrelease.app_adapter.KakaoFriendRecyclerAdapter;
+import com.example.moimingrelease.app_listener_interface.CancelActivityCallBack;
 import com.example.moimingrelease.app_listener_interface.FCMCallBack;
 import com.example.moimingrelease.app_listener_interface.InviteKmfCheckBoxListener;
+import com.example.moimingrelease.moiming_model.dialog.CancelActivityDialog;
 import com.example.moimingrelease.moiming_model.extras.KakaoMoimingFriendsDTO;
 import com.example.moimingrelease.moiming_model.extras.MoimingMembersDTO;
 import com.example.moimingrelease.moiming_model.extras.UserGroupUuidDTO;
@@ -349,9 +352,30 @@ public class InviteGroupMembersActivity extends AppCompatActivity {
             }
         });
 
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                CancelActivityDialog dialog = new CancelActivityDialog(InviteGroupMembersActivity.this, finishCallback, "친구를 초대하지 않습니다");
+
+                dialog.show();
+            }
+        });
     }
 
+    private CancelActivityCallBack finishCallback = new CancelActivityCallBack() {
+        @Override
+        public void finishActivity() {
+
+            finish();
+        }
+    };
+
+    private ImageView btnBack;
+
     private void initView() {
+
+        btnBack = findViewById(R.id.btn_back_invite_members);
 
         friendsRecyclerView = findViewById(R.id.friends_recycler_view);
         btnSendInvitation = findViewById(R.id.btn_send_invitation);
@@ -502,7 +526,7 @@ public class InviteGroupMembersActivity extends AppCompatActivity {
             for (int i = 0; i < fcmTokenList.size(); i++) { // 기존 그룹원들에게 모두 보내는 부분
 
                 JSONObject jsonSend = FCMRequest.getInstance()
-                        .buildFcmJsonData("새로운 모임원", textNoti, "", curGroup.getUuid().toString()
+                        .buildFcmJsonData("group", String.valueOf(0), "새로운 모임원", textNoti, "", curGroup.getUuid().toString()
                                 , "", fcmTokenList.get(i));
 
 //                JSONObject jsonSend = FCMRequest.getInstance().buildJsonBody("모임원 추가 알림", addedMemberCnt + "명의 그룹원들이 초대되었습니다"
@@ -668,7 +692,13 @@ public class InviteGroupMembersActivity extends AppCompatActivity {
 
     }
 
-/*
+    @Override
+    public void onBackPressed() {
+
+        btnBack.performClick();
+    }
+
+    /*
 
     private void makeInviteFeed() {
 

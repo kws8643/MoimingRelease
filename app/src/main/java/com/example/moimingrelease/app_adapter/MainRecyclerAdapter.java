@@ -44,7 +44,7 @@ public class MainRecyclerAdapter extends RecyclerView.Adapter<MainRecyclerAdapte
     private GroupExitDialogListener exitDialogListener;
     private MainFixedGroupRefreshListener refreshListener;
     private ArrayList<String> fixedGroupUuidList;
-
+    private boolean isRecyclerClickable = true; // 기본은 되게끔
 
     public MainRecyclerAdapter(Context activityContext, List<MainRecyclerLinkerData> viewDataList
             , MoimingUserVO curUser, GroupExitDialogListener exitDialogListener
@@ -69,6 +69,30 @@ public class MainRecyclerAdapter extends RecyclerView.Adapter<MainRecyclerAdapte
 
         return itemHolder;
     }
+
+    public void alertItemList(List<MainRecyclerLinkerData> viewDataList, ArrayList<String> fixedGroupUuidList) {
+
+        this.viewDataList = viewDataList;
+
+        this.fixedGroupUuidList = fixedGroupUuidList;
+
+
+    }
+
+    public void setRecyclerClickable(boolean isClickable) {
+
+        if (isClickable) {
+
+            this.isRecyclerClickable = true;
+
+        } else { // 잠시 리사이클러가 눌리는걸 금지
+
+            this.isRecyclerClickable = false;
+
+        }
+
+    }
+
 
     @Override
     public void onBindViewHolder(@NonNull @NotNull MainRecyclerViewHolder holder, int position) {
@@ -116,6 +140,8 @@ public class MainRecyclerAdapter extends RecyclerView.Adapter<MainRecyclerAdapte
 
         } else {
             holder.imgNotice.setVisibility(View.GONE);
+            holder.mainRecyclerGroupRecentNotice.setText("해당 그룹의 최근 알림이 존재하지 않습니다");
+
         }
 
     }
@@ -131,7 +157,6 @@ public class MainRecyclerAdapter extends RecyclerView.Adapter<MainRecyclerAdapte
         private ImageView mainRecyclerGroupImg;
         private TextView mainRecyclerGroupName;
         private TextView mainRecyclerGroupRecentNotice;
-
 
         public MainRecyclerViewHolder(@NotNull View itemView) {
             super(itemView);
@@ -152,19 +177,21 @@ public class MainRecyclerAdapter extends RecyclerView.Adapter<MainRecyclerAdapte
                 @Override
                 public void onClick(View view) {
 
-                    int position = getAdapterPosition();
+                    if (isRecyclerClickable) {
 
-                    MainRecyclerLinkerData selectedGroup = viewDataList.get(position);  // 해당 그룹으로 이동!
-                    MoimingGroupAndMembersDTO selectedGroupDatas = selectedGroup.getGroupData();
+                        int position = getAdapterPosition();
 
-                    Intent toGroupActivity = new Intent(activityContext, GroupActivity.class);
+                        MainRecyclerLinkerData selectedGroup = viewDataList.get(position);  // 해당 그룹으로 이동!
+                        MoimingGroupAndMembersDTO selectedGroupDatas = selectedGroup.getGroupData();
 
-                    toGroupActivity.putExtra(activityContext.getResources().getString(R.string.moiming_group_and_members_data_key), selectedGroupDatas);
-                    toGroupActivity.putExtra(activityContext.getResources().getString(R.string.moiming_user_data_key), curUser);
+                        Intent toGroupActivity = new Intent(activityContext, GroupActivity.class);
+
+                        toGroupActivity.putExtra(activityContext.getResources().getString(R.string.moiming_group_and_members_data_key), selectedGroupDatas);
+                        toGroupActivity.putExtra(activityContext.getResources().getString(R.string.moiming_user_data_key), curUser);
 
 
-                    activityContext.startActivity(toGroupActivity);
-
+                        activityContext.startActivity(toGroupActivity);
+                    }
                 }
             });
 
@@ -172,16 +199,18 @@ public class MainRecyclerAdapter extends RecyclerView.Adapter<MainRecyclerAdapte
                 @Override
                 public boolean onLongClick(View v) {
 
-                    int position = getAdapterPosition();
+                    if (isRecyclerClickable) {
+                        int position = getAdapterPosition();
 
-                    MainRecyclerLinkerData selectedGroup = viewDataList.get(position);
+                        MainRecyclerLinkerData selectedGroup = viewDataList.get(position);
 
-                    String groupUuid = selectedGroup.getGroupData().getMoimingGroup().getUuid().toString();
+                        String groupUuid = selectedGroup.getGroupData().getMoimingGroup().getUuid().toString();
 
-                    GroupLongTouchDialog dialog = new GroupLongTouchDialog(((MainActivity) activityContext)
-                            , groupUuid, exitDialogListener, refreshListener, fixedGroupUuidList.contains(groupUuid));
-                    dialog.show();
+                        GroupLongTouchDialog dialog = new GroupLongTouchDialog(((MainActivity) activityContext)
+                                , groupUuid, exitDialogListener, refreshListener, fixedGroupUuidList.contains(groupUuid));
+                        dialog.show();
 
+                    }
                     return false;
                 }
             });

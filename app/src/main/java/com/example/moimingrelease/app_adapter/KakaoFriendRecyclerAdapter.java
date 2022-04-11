@@ -82,7 +82,6 @@ public class KakaoFriendRecyclerAdapter extends RecyclerView.Adapter<KakaoFriend
         boolean isGroupMember;
 
         // 검색 도중에도 계속 확인해줘야하기 때문에 추가된 사항
-
         if (groupMembersUuid.contains(curUserUuid)) { // 해당 유저가 그룹 멤버에 포함되어 있는지?
             isGroupMember = true;
             holder.friendIsChecked.setChecked(true);

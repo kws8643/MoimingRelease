@@ -96,7 +96,8 @@ public class ViewGroupInfoFragment extends Fragment {
                 createDutchpay.putExtra(activity.getResources().getString(R.string.moiming_user_data_key), curUser);
                 createDutchpay.putExtra(activity.getResources().getString(R.string.moiming_group_data_key), (Serializable) selectedGroup);
                 createDutchpay.putParcelableArrayListExtra(GroupActivity.MOIMING_GROUP_MEMBERS_KEY, (ArrayList<MoimingMembersDTO>) membersList);
-                createDutchpay.putExtra(activity.getResources().getString(R.string.session_creation_from_group_activity_flag), false);
+//                createDutchpay.putExtra(activity.getResources().getString(R.string.session_creation_from_group_activity_flag), false);
+                createDutchpay.putExtra(activity.getResources().getString(R.string.session_creation_with_new_group_flag), false);
 
                 activity.startActivity(createDutchpay);
 

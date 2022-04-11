@@ -20,7 +20,7 @@ public class NonMoimingUserResponseDTO {
     private Integer nmuPersonalCost;
 
     @SerializedName("is_nmu_sent")
-    private Boolean isNmuSent;
+    private boolean isNmuSent;
 
     @SerializedName("created_at")
     private String createdAt;

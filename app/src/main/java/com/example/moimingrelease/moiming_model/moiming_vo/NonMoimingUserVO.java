@@ -15,7 +15,7 @@ public class NonMoimingUserVO implements Serializable {
 
     private Integer nmuPersonalCost;
 
-    private Boolean isNmuSent;
+    private boolean isNmuSent;
 
     private LocalDateTime createdAt;
 

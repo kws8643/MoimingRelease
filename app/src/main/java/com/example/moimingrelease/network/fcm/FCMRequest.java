@@ -61,9 +61,10 @@ public class FCMRequest {
 
     }
 
-    public JSONObject buildFcmJsonData(String title, String text, String icon, String groupUuid, String sessionUuid, String fcmToken) throws JSONException {
+    public JSONObject buildFcmJsonData(String activity, String type, String title, String text, String icon
+            , String groupUuid, String sessionUuid, String fcmToken) throws JSONException {
 
-        FCMDataModel fcmData = new FCMDataModel(title, text, icon, groupUuid, sessionUuid);
+        FCMDataModel fcmData = new FCMDataModel(activity, type, title, text, icon, groupUuid, sessionUuid);
 
         Gson gson = new Gson();
 
@@ -149,8 +150,10 @@ public class FCMRequest {
 
                 if (response.isSuccessful()) {
 
-                    Log.w("Session FCM", "Successfully Sent Message (No Refresh)");
+                    Log.e("Session FCM", "Successfully Sent Message (No Refresh)");
 
+                } else {
+                    Log.e("FCM MSG:", response.message());
                 }
             }
 

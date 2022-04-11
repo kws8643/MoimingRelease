@@ -30,7 +30,8 @@ public class NotificationRequestDTO {
     private String msgText;
 
 
-    public NotificationRequestDTO(UUID toUserUuid, UUID sentUserUuid, String sentActivity, UUID sentGroupUuid, UUID sentSessionUuid, Integer msgType, String msgText) {
+    public NotificationRequestDTO(UUID toUserUuid, UUID sentUserUuid, String sentActivity
+            , UUID sentGroupUuid, UUID sentSessionUuid, Integer msgType, String msgText) {
 
         this.toUserUuid = toUserUuid;
         this.sentUserUuid = sentUserUuid;

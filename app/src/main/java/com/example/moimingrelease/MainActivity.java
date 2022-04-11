@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -19,6 +20,7 @@ import android.widget.Toast;
 import com.example.moimingrelease.app_listener_interface.FCMCallBack;
 import com.example.moimingrelease.fragments_main.MoimingHomeFragment;
 import com.example.moimingrelease.fragments_main.MoimingReserveFragment;
+import com.example.moimingrelease.moiming_model.dialog.AppProcessDialog;
 import com.example.moimingrelease.moiming_model.extras.ReceivedNotificationDTO;
 import com.example.moimingrelease.moiming_model.moiming_vo.MoimingUserVO;
 import com.example.moimingrelease.moiming_model.moiming_vo.NotificationVO;
@@ -70,10 +72,12 @@ public class MainActivity extends AppCompatActivity {
     public static boolean IS_NOTIFICATION_REFRESH_NEEDED = false; // Notification 만 Refresh 되면 된다.
     public static boolean IS_MAIN_GROUP_INFO_REFRESH_NEEDED = false; // 메인화면 전체가 Refresh 되어야 함 Notification 포함
 
+    public AppProcessDialog processDialog;
 
     public MoimingUserVO curMoimingUser;
 
     private ExtendedFloatingActionButton btnDutchpay, btnDutchpayOld, btnDutchpayNew;
+    private FrameLayout mainFrame;
     private View transparent_bg;
     //    private Animation main_fab_open, main_fab_close;
 
@@ -83,11 +87,9 @@ public class MainActivity extends AppCompatActivity {
 //    private final int openYDelta = 100;
 //    private final int closeYDelta = -100;
 
-
     private BottomNavigationView mainNavigation;
     private ImageView btnSetting, btnNotification, btnAdd, btnSearch;
     private TextView viewNotification;
-
 
     private FragmentManager fragmentManager;
     MoimingHomeFragment homeFragment;
@@ -95,6 +97,10 @@ public class MainActivity extends AppCompatActivity {
 
     public List<ReceivedNotificationDTO> rawNotificationList;
     public Map<UUID, List<ReceivedNotificationDTO>> rawNotificationMap;
+
+    // 만약 종료시 눌러서 해당 Activity 로 이동해야할 때
+    private String movingGroupUuid;
+    private String movingSessionUuid;
 
 
     private BottomNavigationView.OnNavigationItemSelectedListener mainNavListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -155,10 +161,10 @@ public class MainActivity extends AppCompatActivity {
 
                     startActivity(toSessionInOldGroup);
 
+                    fabAction();
+
                     break;
 
-
-                // TODO: 이거 해야 함!
                 case R.id.btn_dutchpay_new:
 
                     Toast.makeText(getApplicationContext(), "새 그룹원들과 더치페이를 합니다.", Toast.LENGTH_SHORT).show();
@@ -169,6 +175,8 @@ public class MainActivity extends AppCompatActivity {
                     toSessionInNewGroup.putExtra(getResources().getString(R.string.session_creation_with_new_group_flag), true);
 
                     startActivity(toSessionInNewGroup);
+
+                    fabAction();
 
                     break;
 
@@ -283,8 +291,6 @@ public class MainActivity extends AppCompatActivity {
 
                 overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
 
-                // TODO: 내가 하는 애니메이션은 안됨.. ㅈ같음.. 이상한 검은 화면이 뜸 ㅅㅂ.. 도저히 왜안되는지 모르겠음.
-
             }
         });
 
@@ -319,9 +325,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-//        checkPushNotiSetting();
-//        Log.e("Working Log 8: " , "WORKS!");
-
     }
 
 
@@ -330,9 +333,13 @@ public class MainActivity extends AppCompatActivity {
         Intent dataReceived = getIntent();
 
         if (dataReceived.getExtras() != null) {
-            curMoimingUser = (MoimingUserVO) dataReceived.getExtras().getSerializable("moiming_user");
+            curMoimingUser = (MoimingUserVO) dataReceived.getExtras().getSerializable(getResources().getString(R.string.moiming_user_data_key));
             boolean isFcmClicked = dataReceived.getBooleanExtra("is_fcm_clicked", false);
-            Log.e("Working Log:: ", "result: " + IS_MAIN_GROUP_INFO_REFRESH_NEEDED);
+//            Log.e("Working Log:: ", "result: " + IS_MAIN_GROUP_INFO_REFRESH_NEEDED);
+
+            movingGroupUuid = dataReceived.getExtras().getString(getResources().getString(R.string.main_move_to_group_key), "");
+            movingSessionUuid = dataReceived.getExtras().getString(getResources().getString(R.string.group_move_to_session_key), "");
+
 
             if (isFcmClicked) {
 
@@ -341,9 +348,22 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public String getMovingGroupUuid() {
+
+        return this.movingGroupUuid;
+
+    }
+
+    public String getMovingSessionUuid() {
+
+        return this.movingSessionUuid;
+    }
 
     private void receiveNotification() {
 
+        processDialog.show();
+
+        // 자꾸 한번씩 튕긴다..
         String userUuid = curMoimingUser.getUuid().toString();
 
         NotificationRetrofitService notiRetrofit = GlobalRetrofit.getInstance().getRetrofit().create(NotificationRetrofitService.class);
@@ -372,6 +392,10 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {
 
+                        if (e.getMessage() != null) {
+                            Log.e("Notification Receive Error:: ", e.getMessage());
+                        }
+
                     }
 
                     @Override
@@ -379,7 +403,6 @@ public class MainActivity extends AppCompatActivity {
 
                         Log.e("Working Log 9: ", "WORKS!");
                         parseNotification();
-
 
                         // 나머지 아답터에 전달해서 아답터에서 해결!
                         if (IS_NOTIFICATION_REFRESH_NEEDED || IS_MAIN_GROUP_INFO_REFRESH_NEEDED) { //  이거 중이라서 여기 온거면
@@ -390,6 +413,7 @@ public class MainActivity extends AppCompatActivity {
 
                                 // TODO: 그 쪽에서 Notification 만 다시 박는다.
                                 homeFragment.applyRefreshedNotification();
+
                             } else {
                                 Log.e("Working Log 12: ", "WORKS!" + IS_NOTIFICATION_REFRESH_NEEDED + "," + IS_MAIN_GROUP_INFO_REFRESH_NEEDED);
 
@@ -398,7 +422,7 @@ public class MainActivity extends AppCompatActivity {
                                 IS_MAIN_GROUP_INFO_REFRESH_NEEDED = false;
                             }
 
-                        } else {
+                        } else { // 처음 실행
 
                             Log.e("Working Log 13: ", "WORKS!" + IS_NOTIFICATION_REFRESH_NEEDED + "," + IS_MAIN_GROUP_INFO_REFRESH_NEEDED);
 
@@ -446,7 +470,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void initParams() {
 
-//        curUserGroupList = new ArrayList<>();
+        // 다이얼로그 퍼블릭화
+        processDialog = new AppProcessDialog(MainActivity.this);
 
         // 변수 확인
         fragmentManager = getSupportFragmentManager();
@@ -458,71 +483,12 @@ public class MainActivity extends AppCompatActivity {
         rawNotificationList = new ArrayList<>();
         rawNotificationMap = new HashMap<>();
 
-        /*//  FAB 에니메이션 정의
-        mainFabOpen = new TranslateAnimation(0, 0, 0, 0);
-        mainFabClose = new TranslateAnimation(0, 0, 0, 0);
-        mainFabOpen.setDuration(300);
-        mainFabOpen.setFillAfter(true);
-        mainFabClose.setDuration(300);
-        mainFabClose.setFillAfter(true);
-
-
-        mainFabOpen.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
-
-            }
-
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                CoordinatorLayout.LayoutParams newBtn = (CoordinatorLayout.LayoutParams) btnDutchpayNew.getLayoutParams();
-                CoordinatorLayout.LayoutParams oldBtn = (CoordinatorLayout.LayoutParams) btnDutchpayOld.getLayoutParams();
-
-                newBtn.bottomMargin += openYDelta;
-                oldBtn.bottomMargin += openYDelta;
-
-                btnDutchpayNew.setLayoutParams(newBtn);
-                btnDutchpayOld.setLayoutParams(oldBtn);
-            }
-
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-
-
-            }
-        });
-
-
-        mainFabClose.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
-
-            }
-
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                CoordinatorLayout.LayoutParams newBtn = (CoordinatorLayout.LayoutParams) btnDutchpayNew.getLayoutParams();
-                CoordinatorLayout.LayoutParams oldBtn = (CoordinatorLayout.LayoutParams) btnDutchpayOld.getLayoutParams();
-
-                newBtn.bottomMargin += closeYDelta;
-                oldBtn.bottomMargin += closeYDelta;
-
-                btnDutchpayNew.setLayoutParams(newBtn);
-                btnDutchpayOld.setLayoutParams(oldBtn);
-            }
-
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-
-
-            }
-        });*/
-
     }
 
 
     private void initView() {
 
+        mainFrame = findViewById(R.id.frame_main);
         viewNotification = findViewById(R.id.view_notification_cnt);
 
         mainNavigation = findViewById(R.id.main_navigation);
@@ -549,9 +515,6 @@ public class MainActivity extends AppCompatActivity {
 
         if (isFabOpen) {
 
-//            btnDutchpayOld.startAnimation(mainFabOpen);
-//            btnDutchpayNew.startAnimation(mainFabOpen);
-
             transparent_bg.setVisibility(View.GONE);
 
             btnDutchpayOld.setClickable(false);
@@ -559,13 +522,17 @@ public class MainActivity extends AppCompatActivity {
             btnDutchpayNew.setClickable(false);
             btnDutchpayNew.setVisibility(View.GONE);
 
+            // 나머지 만질 수 있게 함
+            btnAdd.setEnabled(true);
+            btnNotification.setEnabled(true);
+            btnSearch.setEnabled(true);
+            btnSetting.setEnabled(true);
+            homeFragment.setAdapterRecyclerClickable(true);
+
 
             isFabOpen = false;
 
         } else {
-
-//            btnDutchpayOld.startAnimation(mainFabOpen);
-//            btnDutchpayNew.startAnimation(mainFabClose);
 
             transparent_bg.setVisibility(View.VISIBLE);
 
@@ -573,6 +540,14 @@ public class MainActivity extends AppCompatActivity {
             btnDutchpayOld.setVisibility(View.VISIBLE);
             btnDutchpayNew.setClickable(true);
             btnDutchpayNew.setVisibility(View.VISIBLE);
+
+            // 나머지 못 만지게함
+            btnAdd.setEnabled(false);
+            btnNotification.setEnabled(false);
+            btnSearch.setEnabled(false);
+            btnSetting.setEnabled(false);
+            homeFragment.setAdapterRecyclerClickable(false);
+
 
             isFabOpen = true;
         }
@@ -628,15 +603,5 @@ public class MainActivity extends AppCompatActivity {
 
                     }
                 });
-    }
-
-
-    // TODO: INIT PUSH NOTI Shared Preference
-    private void checkPushNotiSetting() {
-
-        // TODO:  Noti Shared Pref 가 들어왔을 때 없으면 Policy 조회 한다. Marketing True 면 다 True 로 init 해준다 (기기변동, 앱 삭제후 다시 설치 등)
-        //        회원가입시 동의 여부에 따라서 init됨. 추후 Setting 에서 변경 가능
-
-
     }
 }

@@ -20,6 +20,7 @@ import com.example.moimingrelease.GroupActivity;
 import com.example.moimingrelease.NotificationActivity;
 import com.example.moimingrelease.R;
 import com.example.moimingrelease.SessionActivity;
+import com.example.moimingrelease.WelcomeActivity;
 import com.example.moimingrelease.moiming_model.extras.MoimingGroupAndMembersDTO;
 import com.example.moimingrelease.moiming_model.extras.ReceivedNotificationDTO;
 import com.example.moimingrelease.moiming_model.moiming_vo.MoimingUserVO;
@@ -123,26 +124,31 @@ public class NotificationRecyclerAdapter extends RecyclerView.Adapter<Notificati
 
                 Intent moveIntent;
 
-                MoimingGroupAndMembersDTO selectedGroup = getMatchingInfo(notiDto.getSentGroupUuid());
+                if (!notiDto.getSentActivity().equals("system")) {
 
-                if (notiDto.getSentActivity().equals("group")) { // Group
+                    MoimingGroupAndMembersDTO selectedGroup = getMatchingInfo(notiDto.getSentGroupUuid());
 
-                    moveIntent = new Intent(mContext, GroupActivity.class);
+                    if (notiDto.getSentActivity().equals("group")) { // Group
 
-                    moveIntent.putExtra(mContext.getResources().getString(R.string.moiming_user_data_key), (Serializable) curUser);
-                    moveIntent.putExtra(mContext.getResources().getString(R.string.moiming_group_and_members_data_key), selectedGroup);
+                        moveIntent = new Intent(mContext, GroupActivity.class);
 
-                } else if (notiDto.getSentActivity().equals("session")) { // Session
+                        moveIntent.putExtra(mContext.getResources().getString(R.string.moiming_user_data_key), (Serializable) curUser);
+                        moveIntent.putExtra(mContext.getResources().getString(R.string.moiming_group_and_members_data_key), selectedGroup);
 
-                    moveIntent = new Intent(mContext, GroupActivity.class);
+                    } else { // Session
 
-                    moveIntent.putExtra(mContext.getResources().getString(R.string.moiming_user_data_key), (Serializable) curUser);
-                    moveIntent.putExtra(mContext.getResources().getString(R.string.moiming_group_and_members_data_key), selectedGroup);
-                    moveIntent.putExtra(mContext.getResources().getString(R.string.group_move_to_session_key), notiDto.getSentSessionUuid().toString());
+                        moveIntent = new Intent(mContext, GroupActivity.class);
 
+                        moveIntent.putExtra(mContext.getResources().getString(R.string.moiming_user_data_key), (Serializable) curUser);
+                        moveIntent.putExtra(mContext.getResources().getString(R.string.moiming_group_and_members_data_key), selectedGroup);
+                        moveIntent.putExtra(mContext.getResources().getString(R.string.group_move_to_session_key), notiDto.getSentSessionUuid().toString());
+
+                    }
                 } else { // System
 
-                    moveIntent = null;
+                    moveIntent = new Intent(mContext, WelcomeActivity.class);
+
+                    moveIntent.putExtra("first_user", false);
 
                 }
 

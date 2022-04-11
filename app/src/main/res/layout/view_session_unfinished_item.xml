@@ -1,79 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="328dp"
+    android:layout_width="match_parent"
     android:layout_height="40dp">
 
-    <CheckBox
-        android:id="@+id/checkbox_state_change"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:layout_marginRight="16dp"
-        android:buttonTint="@color/moimingTheme"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent">
 
-    <LinearLayout
-        android:id="@+id/btn_send_request"
-        android:layout_width="72dp"
-        android:layout_height="26dp"
-        android:layout_marginEnd="73dp"
-        android:background="@drawable/shape_main_bg"
-        android:gravity="center"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        <CheckBox
+            android:id="@+id/checkbox_state_change"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginRight="26dp"
+            android:buttonTint="@color/moimingTheme"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
+        <ImageView
+            android:id="@+id/img_unfinished_creator"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:lineSpacingExtra="5sp"
-            android:text="송금 요청"
-            android:textColor="@color/moimingWhite"
-            android:textSize="10sp"
-            android:textStyle="normal" />
+            android:layout_marginLeft="5dp"
+            android:src="@drawable/ic_creator"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toRightOf="@id/text_unfinished_name"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    </LinearLayout>
 
+        <LinearLayout
+            android:id="@+id/btn_send_request"
+            android:layout_width="72dp"
+            android:layout_height="26dp"
+            android:layout_marginEnd="20dp"
+            android:background="@drawable/shape_main_bg"
+            android:gravity="center"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/checkbox_state_change"
+            app:layout_constraintTop_toTopOf="parent">
 
-    <TextView
-        android:id="@+id/text_unfinished_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:lineSpacingExtra="8sp"
-        android:text="참여자"
-        android:textColor="@color/textDark"
-        android:textSize="14sp"
-        android:textStyle="normal"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:lineSpacingExtra="5sp"
+                android:text="송금 요청"
+                android:textColor="@color/moimingWhite"
+                android:textSize="10sp"
+                android:textStyle="normal" />
 
-    <TextView
-        android:id="@+id/text_unfinished_cost"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="98dp"
-        android:lineSpacingExtra="8sp"
-        android:text="20000 원"
-        android:textColor="@color/moimingTheme"
-        android:textSize="14sp"
-        android:textStyle="normal"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        </LinearLayout>
 
-    <ImageView
-        android:id="@+id/img_unfinished_creator"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="5dp"
-        android:src="@drawable/ic_creator"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toRightOf="@id/text_unfinished_name"
-        app:layout_constraintTop_toTopOf="parent" />
+        <TextView
+            android:id="@+id/text_unfinished_cost"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="92dp"
+            android:lineSpacingExtra="8sp"
+            android:text="20000 원"
+            android:textColor="@color/moimingTheme"
+            android:textSize="14sp"
+            android:textStyle="normal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
+        <TextView
+            android:id="@+id/text_unfinished_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:lineSpacingExtra="8sp"
+            android:text="참여자"
+            android:textColor="@color/textDark"
+            android:textSize="14sp"
+            android:textStyle="normal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

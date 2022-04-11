@@ -9,6 +9,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.moimingrelease.R;
@@ -34,6 +35,7 @@ public class SessionUnfinishedMembersAdapter extends RecyclerView.Adapter<Sessio
     private SessionCreatorNotificationCallBack cbCallBack;
 
     private Map<UUID, CheckBox> checkBoxMap;
+    private Map<UUID, LinearLayout> sentRequestBtnMap;
 
 
     public SessionUnfinishedMembersAdapter(Context context, List<SessionStatusMemberLinkerData> memberListData
@@ -47,6 +49,7 @@ public class SessionUnfinishedMembersAdapter extends RecyclerView.Adapter<Sessio
         this.cbCallBack = cbCallBack;
 
         checkBoxMap = new HashMap<>();
+        sentRequestBtnMap = new HashMap<>();
     }
 
     @Override
@@ -92,15 +95,35 @@ public class SessionUnfinishedMembersAdapter extends RecyclerView.Adapter<Sessio
         });
 
 
+        sentRequestBtnMap.put(thisUser.getUuid(), holder.btnSendRequest);
         // TODO: 해당 유저에게 송금 요청을 보냅니다
         holder.btnSendRequest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 cbCallBack.sendFinishRequest(thisUser.getUuid(), membersLinkerData.getPersonalCost());
+
+                changeRequestBtnStatus((LinearLayout) v);
             }
         });
 
     }
+
+    public void changeAllRequestBtn() {
+
+        for (LinearLayout btnRequest : sentRequestBtnMap.values()) {
+
+            changeRequestBtnStatus(btnRequest);
+
+        }
+
+    }
+
+    private void changeRequestBtnStatus(LinearLayout btnRequest) {
+
+        btnRequest.setBackground(ResourcesCompat.getDrawable(context.getResources(), R.drawable.shape_light_main_bg, null));
+        btnRequest.setEnabled(false);
+    }
+
 
     public void checkConfirmingUser(List<UUID> stateChangedUserUuid) {
 

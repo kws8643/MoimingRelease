@@ -6,19 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".MyPageDeleteAccountActivity">
 
-    <Button
-        android:id="@+id/btn_delete_account"
-        android:layout_width="328dp"
-        android:layout_height="48dp"
-        android:layout_marginBottom="16dp"
-        android:background="@drawable/shape_light_main_bg"
-        android:lineSpacingExtra="8sp"
-        android:text="회원 탈퇴"
-        android:textSize="16sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
-
     <CheckBox
         android:id="@+id/cb_resign"
         android:layout_width="wrap_content"
@@ -31,18 +18,54 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@id/text_resign" />
 
-
     <CheckBox
-        android:id="@+id/cb_unsatis"
+        android:id="@+id/cb_hard"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginRight="36dp"
         android:buttonTint="@color/moimingTheme"
         android:minWidth="0dp"
         android:minHeight="0dp"
-        app:layout_constraintBottom_toBottomOf="@id/text_unsatis"
+        app:layout_constraintBottom_toBottomOf="@id/text_hard"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="@id/text_unsatis" />
+        app:layout_constraintTop_toTopOf="@id/text_hard" />
+
+
+    <CheckBox
+        android:id="@+id/cb_system_fuck"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="36dp"
+        android:buttonTint="@color/moimingTheme"
+        android:minWidth="0dp"
+        android:minHeight="0dp"
+        app:layout_constraintBottom_toBottomOf="@id/text_system_fuck"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/text_system_fuck" />
+
+    <CheckBox
+        android:id="@+id/cb_other_service"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="36dp"
+        android:buttonTint="@color/moimingTheme"
+        android:minWidth="0dp"
+        android:minHeight="0dp"
+        app:layout_constraintBottom_toBottomOf="@id/text_other_service"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/text_other_service" />
+
+    <CheckBox
+        android:id="@+id/cb_no_use"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="36dp"
+        android:buttonTint="@color/moimingTheme"
+        android:minWidth="0dp"
+        android:minHeight="0dp"
+        app:layout_constraintBottom_toBottomOf="@id/text_no_use"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/text_no_use" />
 
     <CheckBox
         android:id="@+id/cb_delete_agree"
@@ -63,7 +86,7 @@
         android:layout_marginLeft="40dp"
         android:layout_marginTop="27dp"
         android:lineSpacingExtra="8sp"
-        android:text="재 가입 또는 로그인 변경"
+        android:text="재 가입 또는 아이디 변경"
         android:textColor="@color/textDark"
         android:textSize="14sp"
         android:textStyle="normal"
@@ -71,19 +94,60 @@
         app:layout_constraintTop_toBottomOf="@id/text_delete_session_1" />
 
     <TextView
-        android:id="@+id/text_unsatis"
+        android:id="@+id/text_hard"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="40dp"
         android:layout_marginTop="16dp"
         android:lineSpacingExtra="8sp"
-        android:text="서비스 불만족"
+        android:text="사용방법이 어려움"
         android:textColor="@color/textDark"
         android:textSize="14sp"
         android:textStyle="normal"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/text_resign" />
 
+    <TextView
+        android:id="@+id/text_system_fuck"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="40dp"
+        android:layout_marginTop="16dp"
+        android:lineSpacingExtra="8sp"
+        android:text="잦은 시스템 오류"
+        android:textColor="@color/textDark"
+        android:textSize="14sp"
+        android:textStyle="normal"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/text_hard" />
+
+    <TextView
+        android:id="@+id/text_other_service"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="40dp"
+        android:layout_marginTop="16dp"
+        android:lineSpacingExtra="8sp"
+        android:text="타서비스 이용"
+        android:textColor="@color/textDark"
+        android:textSize="14sp"
+        android:textStyle="normal"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/text_system_fuck" />
+
+    <TextView
+        android:id="@+id/text_no_use"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="40dp"
+        android:layout_marginTop="16dp"
+        android:lineSpacingExtra="8sp"
+        android:text="자주 이용하지 않음"
+        android:textColor="@color/textDark"
+        android:textSize="14sp"
+        android:textStyle="normal"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/text_other_service" />
 
     <TextView
         android:id="@+id/text_delete_session_1"
@@ -100,6 +164,17 @@
         app:layout_constraintTop_toBottomOf="@id/app_bar_delete_account" />
 
     <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="4dp"
+        android:text="(필수)"
+        android:textColor="@color/textDark"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@id/text_delete_session_1"
+        app:layout_constraintLeft_toRightOf="@id/text_delete_session_1" />
+
+    <TextView
         android:id="@+id/text_delete_agree"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -112,6 +187,33 @@
         android:textStyle="normal"
         app:layout_constraintBottom_toTopOf="@id/btn_delete_account"
         app:layout_constraintLeft_toLeftOf="parent" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="38dp"
+        android:layout_marginBottom="16dp"
+        android:lineSpacingExtra="5sp"
+        android:text="모이밍 탈퇴 시 관련된 모든 정보 및 내역이 삭제되며,\n복구가 불가합니다"
+        android:textColor="@color/moimingRed"
+        android:textSize="12sp"
+        android:textStyle="normal"
+        app:layout_constraintBottom_toTopOf="@id/text_delete_agree"
+        app:layout_constraintLeft_toLeftOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_delete_account"
+        android:layout_width="328dp"
+        android:layout_height="48dp"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/shape_light_main_bg"
+        android:lineSpacingExtra="8sp"
+        android:text="회원 탈퇴"
+        android:textColor="@color/moimingWhite"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -152,11 +254,11 @@
         android:id="@+id/layout_notice_info"
         android:layout_width="328dp"
         android:layout_height="108dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="24dp"
         android:background="@drawable/shape_round_bg_notice_change"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/text_unsatis">
+        app:layout_constraintTop_toBottomOf="@id/text_no_use">
 
 
         <EditText

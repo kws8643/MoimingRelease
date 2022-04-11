@@ -24,9 +24,9 @@ public interface GroupPaymentRetrofitService {
     @GET("api/payment/{uuid}")
     Observable<TransferModel<List<GroupPaymentResponseDTO>>> getGroupPayments(@Path("uuid") String groupUuid);
 
-    @PUT("api/payment/update")
+    @PUT("api/payment/update/{uuid}")
     Observable<TransferModel<GroupPaymentResponseDTO>> updatePayment(@Body TransferModel<PaymentAndSenderDTO> requestModel, @Path("uuid") String paymentUuid);
 
-    @DELETE("api/payment/{uuid}")
-    Observable<TransferModel> deleteGroupPayment(@Path("uuid") String paymentUuid);
+    @POST("api/payment/delete")
+    Observable<TransferModel> deleteGroupPayment(@Body TransferModel<List<String>> requestModel); // 0번: paymentUuid, 1번: senderUuid
 }

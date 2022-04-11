@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="260dp"
+    android:layout_height="126dp"
+    android:background="@drawable/shape_round_bg_white">
+
+    <TextView
+        android:id = "@+id/text_cancel_dialog_1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="16dp"
+        android:lineSpacingExtra="7sp"
+        android:text="이전 페이지로 돌아가시겠습니까?"
+        android:textColor="@color/textDark"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id = "@+id/text_cancel_dialog_2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="normal"
+        android:textSize="12sp"
+        android:textColor="@color/textBoldGray"
+        android:lineSpacingExtra="6sp"
+        android:layout_marginTop="20dp"
+        android:text="텍스트를 받습니다"
+        app:layout_constraintStart_toStartOf="@id/text_cancel_dialog_1"
+        app:layout_constraintTop_toBottomOf="@id/text_cancel_dialog_1"/>
+
+    <TextView
+        android:id="@+id/btn_cancel_cancel"
+        android:layout_width="48dp"
+        android:layout_height="32dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="6dp"
+        android:gravity="center"
+        android:lineSpacingExtra="9sp"
+        android:text="취소"
+        android:textColor="@color/moimingTheme"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/btn_confirm_cancel" />
+
+
+    <TextView
+        android:id="@+id/btn_confirm_cancel"
+        android:layout_width="48dp"
+        android:layout_height="32dp"
+        android:layout_marginRight="6dp"
+        android:layout_marginBottom="6dp"
+        android:gravity="center"
+        android:lineSpacingExtra="9sp"
+        android:text="확인"
+        android:textColor="@color/moimingTheme"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

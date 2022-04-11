@@ -46,7 +46,7 @@ public class PreviousFundingMemberInfoAdapter extends RecyclerView.Adapter<Previ
         PreviousSessionMemberStatusData sessionMemberData =  memberStatusList.get(position);
 
         holder.textMemberName.setText(sessionMemberData.getUserName());
-        holder.textMemberCost.setText(String.valueOf(sessionMemberData.getUserCost()));
+        holder.textMemberCost.setText(String.valueOf(sessionMemberData.getUserCost()) + " 원");
 
     }
 

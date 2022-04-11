@@ -1,410 +1,609 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.amar.library.ui.StickyScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    app:layout_constraintTop_toTopOf="parent"
-    app:stickyFooter="@id/session_creation_bottom_view"
-    app:stickyHeader="@id/app_bar_session">
+    android:background="@color/moimingBackgroundLightGrayTheme"
+    tools:context=".SessionCreationActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layout_session_result"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        >
+        android:layout_height="70dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/moimingTheme"
+        android:visibility="gone">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/session_creation_bottom_view"
+        <TextView
+            android:id="@+id/layout_result_ref"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginTop="20dp"
+            android:text="총 인원 수 (명)"
+            android:textColor="@color/moimingWhite"
+            android:textSize="10dp"
+            android:textStyle="bold"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent">
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-            <Button
-                android:id="@+id/btn_creation_next_2"
-                android:layout_width="328dp"
-                android:layout_height="48dp"
-                android:background="@drawable/shape_main_bg"
-                android:lineSpacingExtra="8sp"
-                android:text="완 료"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent" />
+
+        <TextView
+            android:id="@+id/text_result_member"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="1dp"
+            android:lineSpacingExtra="9sp"
+            android:text="10"
+            android:textColor="@color/moimingWhite"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:layout_constraintLeft_toLeftOf="@id/layout_result_ref"
+            app:layout_constraintTop_toBottomOf="@id/layout_result_ref" />
+
+
+        <TextView
+            android:id="@+id/layout_result_right"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="36dp"
+            android:text="인당 금액 (원)"
+            android:textColor="@color/moimingWhite"
+            android:textSize="10sp"
+            android:textStyle="bold"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@id/layout_result_ref" />
+
+
+        <TextView
+            android:id="@+id/text_result_personal_cost"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="1dp"
+            android:lineSpacingExtra="9sp"
+            android:text="1,000,000"
+            android:textColor="@color/moimingWhite"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:layout_constraintLeft_toLeftOf="@id/layout_result_right"
+            app:layout_constraintTop_toBottomOf="@id/layout_result_right" />
+
+        <TextView
+            android:id="@+id/view_edited_cost"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="3dp"
+            android:lineSpacingExtra="15sp"
+            android:paddingBottom="2dp"
+            android:text="±"
+            android:textColor="@color/moimingOrange"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/layout_result_right"
+            app:layout_constraintLeft_toRightOf="@id/layout_result_right"
+            app:layout_constraintTop_toTopOf="@id/layout_result_right" />
+
+        <TextView
+            android:id="@+id/layout_result_left"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="27dp"
+            android:text="총 금액 (원)"
+            android:textColor="@color/moimingWhite"
+            android:textSize="10sp"
+            android:textStyle="bold"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="@id/layout_result_ref" />
+
+
+        <TextView
+            android:id="@+id/text_result_cost"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="1dp"
+            android:lineSpacingExtra="1sp"
+            android:text="10000"
+            android:textColor="@color/moimingWhite"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:layout_constraintLeft_toLeftOf="@id/layout_result_left"
+            app:layout_constraintTop_toBottomOf="@id/layout_result_left" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/app_bar_session_creation"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_alignParentTop="true"
+        android:background="@color/moimingBackgroundLightGrayTheme">
+
+
+        <ImageView
+            android:id="@+id/btn_back_session_creation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="16dp"
+            android:src="@drawable/ic_app_back"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+        <TextView
+            android:id="@+id/btn_finish_create_session"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="16dp"
+            android:enabled="false"
+            android:lineSpacingExtra="7sp"
+            android:text="완료"
+            android:textColor="@color/moimingBoldGray"
+            android:textSize="16sp"
+            android:textStyle="normal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/text_session_type"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:lineSpacingExtra="7sp"
+            android:text="새 모금 생성"
+            android:textColor="@color/moimingBlack"
+            android:textSize="16sp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/session_creation_scroll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/layout_session_result"
+        android:layout_below="@id/app_bar_session_creation"
+        android:fillViewport="true"
+        android:overScrollMode="never">
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clipToPadding="false"
+            android:paddingBottom="40dp">
 
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/layout_session_result"
-                android:layout_width="328dp"
-                android:layout_height="80dp"
-                android:layout_marginBottom="16dp"
-                android:background="@drawable/shape_light_purple"
-                android:elevation="8dp"
-                app:layout_constraintBottom_toTopOf="@id/btn_creation_next_2"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent">
+                android:id="@+id/layout_2"
+                android:layout_width="344dp"
+                android:layout_height="64dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/shape_round_bg_white"
+                app:layout_constraintLeft_toLeftOf="@id/layout_1"
+                app:layout_constraintTop_toBottomOf="@id/layout_1">
 
+                <EditText
+                    android:id="@+id/input_cost"
+                    android:layout_width="240dp"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/transparent"
+                    android:hint="모금 인당 금액 입력"
+                    android:imeOptions="actionDone"
+                    android:inputType="number"
+                    android:paddingLeft="16dp"
+                    android:singleLine="true"
+                    android:textColor="@color/textDark"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toRightOf="@id/text_2"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
-                    android:id="@+id/layout_result_ref"
+                    android:id="@+id/text_cost_type_indicator"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:text="총 인원 수 (명)"
-                    android:textSize="11dp"
+                    android:layout_marginEnd="12dp"
+                    android:lineSpacingExtra="11sp"
+                    android:text="총 금액 (원)"
+                    android:textColor="@color/textDark"
+                    android:textSize="12sp"
+                    android:textStyle="normal"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="@id/btn_edit_cost"
+                    app:layout_constraintRight_toLeftOf="@id/btn_edit_cost"
+                    app:layout_constraintTop_toTopOf="@id/btn_edit_cost" />
+
+                <TextView
+                    android:id="@+id/btn_edit_cost"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="16dp"
+                    android:background="@drawable/ic_edit_black"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/text_2"
+                    android:layout_width="40dp"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/shape_round_bg_medgray"
+                    android:gravity="center"
+                    android:text="2"
+                    android:textColor="@color/moimingWhite"
+                    android:textSize="24sp"
                     android:textStyle="bold"
                     app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/layout_3"
+                android:layout_width="344dp"
+                android:layout_height="160dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/shape_round_bg_white"
+                app:layout_constraintLeft_toLeftOf="@id/layout_2"
+                app:layout_constraintTop_toBottomOf="@id/layout_2">
+
+                <HorizontalScrollView
+                    android:layout_width="280dp"
+                    android:layout_height="77dp"
+                    android:scrollbars="none"
+                    app:layout_constraintLeft_toLeftOf="@id/text_invite_cnt_out"
+                    app:layout_constraintTop_toBottomOf="@id/text_invite_cnt_out">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:id="@+id/layout_users_holder_out"
+                            android:layout_width="match_parent"
+                            android:layout_height="53dp"
+                            android:layout_gravity="left"
+                            android:orientation="horizontal" />
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/viewer_non_moiming_member_out"
+                            android:layout_width="wrap_content"
+                            android:layout_height="53dp"
+                            android:visibility="gone">
+
+                            <LinearLayout
+                                android:id="@+id/view_nmu_user_out"
+                                android:layout_width="32dp"
+                                android:layout_height="32dp"
+                                android:background="@drawable/shape_add_non_moiming_oval"
+                                android:gravity="center"
+                                android:orientation="vertical"
+                                app:layout_constraintLeft_toLeftOf="parent"
+                                app:layout_constraintTop_toTopOf="parent">
+
+                                <TextView
+                                    android:id="@+id/text_nmu_cnt_out"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center_horizontal"
+                                    android:lineSpacingExtra="10sp"
+                                    android:text="+"
+                                    android:textSize="12sp"
+                                    android:textStyle="bold" />
+
+                            </LinearLayout>
+
+                            <TextView
+                                android:id="@+id/text_user_name_out"
+                                android:layout_width="29dp"
+                                android:layout_height="19dp"
+                                android:layout_marginTop="6dp"
+                                android:lineSpacingExtra="12sp"
+                                android:text="비회원"
+                                android:textColor="@color/textDark"
+                                android:textSize="10sp"
+                                app:layout_constraintLeft_toLeftOf="@id/view_nmu_user_out"
+                                app:layout_constraintRight_toRightOf="@id/view_nmu_user_out"
+                                app:layout_constraintTop_toBottomOf="@id/view_nmu_user_out" />
+
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+                    </LinearLayout>
+
+                </HorizontalScrollView>
+
+                <TextView
+                    android:id="@+id/btn_choose_members"
+                    android:layout_width="88dp"
+                    android:layout_height="40dp"
+                    android:layout_marginRight="8dp"
+                    android:background="@drawable/shape_session_filter_selected"
+                    android:gravity="center"
+                    android:text="인원 설정"
+                    android:textColor="@color/moimingTheme"
+                    android:textSize="14dp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="@id/text_3_1"
                     app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/text_3_1" />
+
+                <TextView
+                    android:id="@+id/text_3_1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginTop="16dp"
+                    android:text="인원 설정"
+                    android:textColor="@color/moimingBoldGray"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    app:layout_constraintLeft_toRightOf="@id/text_3"
+                    app:layout_constraintTop_toTopOf="@id/layout_3"
+
+                    />
+
+                <TextView
+                    android:id="@+id/text_3"
+                    android:layout_width="40dp"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/shape_round_bg_medgray"
+                    android:gravity="center_horizontal"
+                    android:paddingTop="16dp"
+                    android:text="3"
+                    android:textColor="@color/moimingWhite"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/text_invite_cnt_out"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginTop="16dp"
+                    android:lineSpacingExtra="13sp"
+                    android:text="총 1명"
+                    android:textColor="@color/textDark"
+                    android:textSize="10sp"
+                    android:textStyle="bold"
+                    app:layout_constraintLeft_toRightOf="@id/text_3"
+                    app:layout_constraintTop_toBottomOf="@id/text_3_1" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/layout_1"
+                android:layout_width="344dp"
+                android:layout_height="64dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/shape_round_bg_white"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+
+                <EditText
+                    android:id="@+id/input_session_name"
+                    android:layout_width="240dp"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/transparent"
+                    android:hint="모금 이름 입력"
+                    android:imeOptions="actionNext"
+                    android:inputType="text"
+                    android:paddingLeft="16dp"
+                    android:singleLine="true"
+                    android:textColor="@color/textDark"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toRightOf="@id/text_1"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/btn_edit_session_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="8dp"
+                    android:background="@drawable/ic_edit_black"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintRight_toLeftOf="@id/btn_callback_fundings"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/btn_callback_fundings"
+                    android:layout_width="64dp"
+                    android:layout_height="40dp"
+                    android:layout_marginRight="8dp"
+                    android:background="@drawable/shape_round_bg_main"
+                    android:gravity="center"
+                    android:lineSpacingExtra="5sp"
+                    android:text="이전 모금\n불러오기"
+                    android:textColor="@color/moimingWhite"
+                    android:textSize="10sp"
+                    android:textStyle="normal"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/text_1"
+                    android:layout_width="40dp"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/shape_round_bg_lightpurple"
+                    android:gravity="center"
+                    android:text="1"
+                    android:textColor="@color/moimingWhite"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/layout_4"
+                android:layout_width="344dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/shape_round_bg_white"
+                app:layout_constraintLeft_toLeftOf="@id/layout_3"
+                app:layout_constraintTop_toBottomOf="@id/layout_3">
+
+                <RelativeLayout
+                    android:id="@+id/layout_drawer"
+                    android:layout_width="304dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:visibility="gone"
+                    app:layout_constraintLeft_toRightOf="@id/view_4"
+                    app:layout_constraintTop_toBottomOf="@id/text_4_1">
+
+                    <TextView
+                        android:id="@+id/a"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentTop="true"
+                        android:layout_marginLeft="16dp"
+                        android:lineSpacingExtra="12sp"
+                        android:text="모이밍 회원"
+                        android:textColor="@color/textOtherGray"
+                        android:textSize="9sp"
+                        android:textStyle="normal" />
+
+                    <TextView
+                        android:id="@+id/text_member_invite_cnt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/a"
+                        android:layout_alignStart="@id/a"
+                        android:layout_marginTop="2dp"
+                        android:lineSpacingExtra="8sp"
+                        android:text="0 명"
+                        android:textColor="@color/textDark"
+                        android:textSize="13sp"
+                        android:textStyle="normal" />
+
+                    <TextView
+                        android:id="@+id/b"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/invite_session_member_recycler"
+                        android:layout_alignStart="@id/a"
+                        android:layout_marginTop="24dp"
+                        android:lineSpacingExtra="12sp"
+                        android:text="비회원"
+                        android:textColor="@color/textOtherGray"
+                        android:textSize="9sp"
+                        android:textStyle="normal" />
+
+
+                    <TextView
+                        android:id="@+id/text_nmu_invite_cnt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/b"
+                        android:layout_alignStart="@id/b"
+                        android:layout_marginTop="2dp"
+                        android:lineSpacingExtra="8sp"
+                        android:text="0 명"
+                        android:textColor="@color/textDark"
+                        android:textSize="13sp"
+                        android:textStyle="normal"
+                        app:layout_constraintLeft_toLeftOf="@id/b"
+                        app:layout_constraintTop_toBottomOf="@id/b" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/invite_session_member_recycler"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/text_member_invite_cnt"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="12dp" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/invite_session_nmu_recycler"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/text_nmu_invite_cnt"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="12dp" />
+
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/text_4_1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:text="개인별 금액 조정"
+                    android:textColor="@color/moimingBoldGray"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    app:layout_constraintLeft_toRightOf="@id/view_4"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/view_4"
+                    android:layout_width="40dp"
+                    android:layout_height="0dp"
+                    android:background="@drawable/shape_round_bg_medgray"
+                    android:textColor="@color/textDark"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
 
                 <TextView
+                    android:id="@+id/btn_reset"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:text="1"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    app:layout_constraintLeft_toLeftOf="@id/layout_result_ref"
-                    app:layout_constraintTop_toBottomOf="@id/layout_result_ref" />
+                    android:layout_marginEnd="16dp"
+                    android:background="@drawable/ic_refresh"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="@id/text_4_1"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/text_4_1" />
 
 
-                <TextView
-                    android:id="@+id/layout_result_right"
-                    android:layout_width="wrap_content"
+                <!--<androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/layout_drawer"
+                    android:layout_width="304dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="40dp"
-                    android:text="인당 금액 (원)"
-                    android:textSize="11sp"
-                    android:textStyle="bold"
-                    app:layout_constraintLeft_toRightOf="@id/layout_result_ref"
-                    app:layout_constraintTop_toTopOf="@id/layout_result_ref" />
+                    android:layout_marginTop="24dp"
+                    app:layout_constraintLeft_toRightOf="@id/view_4"
+                    app:layout_constraintTop_toBottomOf="@id/text_4_1">-->
 
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:text="126,640"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    app:layout_constraintLeft_toLeftOf="@id/layout_result_right"
-                    app:layout_constraintTop_toBottomOf="@id/layout_result_right" />
-
-
-                <TextView
-                    android:id="@+id/layout_result_left"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="40dp"
-                    android:text="총 금액 (명)"
-                    android:textSize="11sp"
-                    android:textStyle="bold"
-                    app:layout_constraintRight_toLeftOf="@id/layout_result_ref"
-                    app:layout_constraintTop_toTopOf="@id/layout_result_ref" />
-
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:text="126,640"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    app:layout_constraintLeft_toLeftOf="@id/layout_result_left"
-                    app:layout_constraintTop_toBottomOf="@id/layout_result_left" />
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/layout_personal_cost"
-                    android:layout_width="328dp"
-                    android:layout_height="300dp"
-                    android:background="@color/moimingWhite"
-                    android:elevation="10dp">
-
-                    <TextView
-                        android:id="@+id/text_4_1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="16dp"
-                        android:layout_marginTop="16dp"
-                        android:text="개인별 금액 조정"
-                        android:textColor="@color/moimingBoldGray"
-                        android:textSize="20sp"
-                        android:textStyle="bold"
-                        app:layout_constraintLeft_toRightOf="@id/text_4"
-                        app:layout_constraintTop_toTopOf="@id/layout_personal_cost"
-
-                        />
-
-
-                    <TextView
-                        android:id="@+id/text_4"
-                        android:layout_width="48dp"
-                        android:layout_height="match_parent"
-                        android:background="@color/lightGrayBg"
-                        android:gravity="center"
-                        android:textColor="@color/textDark"
-                        android:textSize="24sp"
-                        android:textStyle="bold"
-                        app:layout_constraintLeft_toLeftOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
+                <View
+                    android:id="@+id/size_matcher"
+                    android:layout_width="1dp"
+                    android:layout_height="16dp"
+                    app:layout_constraintLeft_toLeftOf="@id/text_4_1"
+                    app:layout_constraintTop_toBottomOf="@id/text_4_1" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/app_bar_session"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+    </androidx.core.widget.NestedScrollView>
 
 
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="8dp"
-                android:background="@android:color/transparent"
-                android:text="이전 모금\n불러오기"
-                android:textColor="@color/moimingTheme"
-                android:textSize="10sp"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="@id/title_create_session"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="@id/title_create_session" />
-
-
-            <ImageView
-                android:id="@+id/btn_back_session_creation"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginTop="16dp"
-                android:src="@drawable/ic_app_back"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/title_create_session"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:lineSpacingExtra="7sp"
-                android:text="새 모금 생성"
-                android:textColor="@color/moimingBlack"
-                android:textSize="16sp"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/layout_2"
-            android:layout_width="328dp"
-            android:layout_height="64dp"
-            android:layout_marginTop="16dp"
-            android:background="@color/moimingWhite"
-            android:elevation="10dp"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/layout_1">
-
-            <EditText
-                android:id="@+id/input_cost"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@android:color/transparent"
-                android:hint="모금 인당 금액 입력"
-                android:imeOptions="actionDone"
-                android:inputType="number"
-                android:paddingLeft="16dp"
-                android:singleLine="true"
-                android:textColor="@color/textDark"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toRightOf="@id/text_2"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/btn_edit_cost"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="16dp"
-                android:background="@drawable/ic_edit_black"
-
-                android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/text_2"
-                android:layout_width="48dp"
-                android:layout_height="match_parent"
-                android:background="@color/lightGrayBg"
-                android:gravity="center"
-                android:text="2"
-                android:textColor="@color/textDark"
-                android:textSize="24sp"
-                android:textStyle="bold"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/layout_3"
-            android:layout_width="328dp"
-            android:layout_height="160dp"
-            android:layout_marginTop="16dp"
-            android:background="@color/moimingWhite"
-            android:elevation="10dp"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/layout_2">
-
-            <HorizontalScrollView
-                android:layout_width="280dp"
-                android:layout_height="77dp"
-                android:scrollbars="none"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/text_invite_cnt_out">
-
-                <LinearLayout
-                    android:id="@+id/layout_users_holder_out"
-                    android:layout_width="match_parent"
-                    android:layout_height="53dp"
-                    android:layout_gravity="left"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginTop="16dp"
-                    android:orientation="horizontal" />
-
-            </HorizontalScrollView>
-
-            <TextView
-                android:id="@+id/btn_choose_members"
-                android:layout_width="84dp"
-                android:layout_height="40dp"
-                android:layout_marginRight="8dp"
-                android:background="@drawable/shape_session_filter_selected"
-                android:gravity="center"
-                android:text="인원 설정"
-                android:textColor="@color/moimingTheme"
-                android:textSize="14dp"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="@id/text_3_1"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="@id/text_3_1" />
-
-            <TextView
-                android:id="@+id/text_3_1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginTop="16dp"
-                android:text="인원 설정"
-                android:textColor="@color/moimingBoldGray"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                app:layout_constraintLeft_toRightOf="@id/text_3"
-                app:layout_constraintTop_toTopOf="@id/layout_3"
-
-                />
-
-            <TextView
-                android:id="@+id/text_3"
-                android:layout_width="48dp"
-                android:layout_height="match_parent"
-                android:background="@color/lightGrayBg"
-                android:gravity="center_horizontal"
-                android:paddingTop="16dp"
-                android:text="3"
-                android:textColor="@color/textDark"
-                android:textSize="24sp"
-                android:textStyle="bold"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-
-            <TextView
-                android:id="@+id/text_invite_cnt_out"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginTop="16dp"
-                android:lineSpacingExtra="13sp"
-                android:text="총 1명"
-                android:textColor="@color/textDark"
-                android:textSize="10sp"
-                android:textStyle="bold"
-                app:layout_constraintLeft_toRightOf="@id/text_3"
-                app:layout_constraintTop_toBottomOf="@id/text_3_1" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/layout_1"
-            android:layout_width="328dp"
-            android:layout_height="64dp"
-            android:layout_marginTop="16dp"
-            android:background="@color/moimingWhite"
-            android:elevation="8dp"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/app_bar_session">
-
-
-            <EditText
-                android:id="@+id/input_session_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@android:color/transparent"
-                android:hint="모금 이름 입력"
-                android:imeOptions="actionDone"
-                android:inputType="text"
-                android:paddingLeft="16dp"
-                android:singleLine="true"
-                android:textColor="@color/textDark"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toRightOf="@id/text_1"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/btn_edit_session_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="16dp"
-                android:background="@drawable/ic_edit_black"
-                android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/text_1"
-                android:layout_width="48dp"
-                android:layout_height="match_parent"
-                android:background="@color/moimingLightTheme"
-                android:gravity="center"
-                android:text="1"
-                android:textColor="@color/moimingWhite"
-                android:textSize="24sp"
-                android:textStyle="bold"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-</com.amar.library.ui.StickyScrollView>
+</RelativeLayout>

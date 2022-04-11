@@ -13,12 +13,12 @@
         android:layout_marginLeft="40dp"
         android:layout_marginTop="19dp"
         android:lineSpacingExtra="8sp"
+        android:text="카카오톡 채널"
         android:textColor="@color/textDark"
         android:textSize="14sp"
         android:textStyle="normal"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/app_bar_my_page_service"
-        tools:text="카카오톡 채널" />
+        app:layout_constraintTop_toBottomOf="@id/app_bar_my_page_service" />
 
     <TextView
         android:id="@+id/text_moiming_kakao_href"
@@ -26,13 +26,16 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="40dp"
         android:layout_marginTop="10dp"
+        android:autoLink="web"
+        android:background="@android:color/transparent"
         android:lineSpacingExtra="8sp"
+        android:text="http://pf.kakao.com/_lExgeb"
         android:textColor="@color/moimingTheme"
+        android:textColorLink="@color/moimingTheme"
         android:textSize="14sp"
         android:textStyle="normal"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/text_service_1"
-        tools:text="www.kakaochannel/nugamoiming.com" />
+        app:layout_constraintTop_toBottomOf="@id/text_service_1" />
 
     <TextView
         android:id="@+id/text_service_2"
@@ -41,12 +44,12 @@
         android:layout_marginLeft="40dp"
         android:layout_marginTop="32dp"
         android:lineSpacingExtra="8sp"
+        android:text="이메일"
         android:textColor="@color/textDark"
         android:textSize="14sp"
         android:textStyle="normal"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/text_moiming_kakao_href"
-        tools:text="이메일" />
+        app:layout_constraintTop_toBottomOf="@id/text_moiming_kakao_href" />
 
     <TextView
         android:id="@+id/text_moiming_email_href"
@@ -55,12 +58,12 @@
         android:layout_marginLeft="40dp"
         android:layout_marginTop="10dp"
         android:lineSpacingExtra="8sp"
+        android:text="moimingnuga@gmail.com"
         android:textColor="@color/moimingTheme"
         android:textSize="14sp"
         android:textStyle="normal"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/text_service_2"
-        tools:text="moimingnuga@gmail.com" />
+        app:layout_constraintTop_toBottomOf="@id/text_service_2" />
 
     <TextView
         android:id="@+id/text_service_3"
@@ -69,12 +72,12 @@
         android:layout_marginLeft="40dp"
         android:layout_marginTop="32dp"
         android:lineSpacingExtra="8sp"
+        android:text="인스타그램"
         android:textColor="@color/textDark"
         android:textSize="14sp"
         android:textStyle="normal"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/text_moiming_email_href"
-        tools:text="인스타그램" />
+        app:layout_constraintTop_toBottomOf="@id/text_moiming_email_href" />
 
     <TextView
         android:id="@+id/text_moiming_insta_href"
@@ -82,20 +85,22 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="40dp"
         android:layout_marginTop="10dp"
+        android:autoLink="web"
+        android:background="@android:color/transparent"
         android:lineSpacingExtra="8sp"
+        android:text="https://www.instagram.com/moiming.official/"
         android:textColor="@color/moimingTheme"
+        android:textColorLink="@color/moimingTheme"
         android:textSize="14sp"
         android:textStyle="normal"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/text_service_3"
-        tools:text="_@moiming_official" />
+        app:layout_constraintTop_toBottomOf="@id/text_service_3" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/app_bar_my_page_service"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:layout_alignParentTop="true"
-        android:background="@color/moimingWhite"
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageView

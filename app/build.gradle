@@ -92,8 +92,5 @@ dependencies {
     // Sliding Panel Layout for Group Activity
     implementation 'com.sothree.slidinguppanel:library:3.4.0'
 
-    // Sticky View for Session Creation Activity
-    implementation 'com.github.amarjain07:StickyScrollView:1.0.2'
-
 
 }

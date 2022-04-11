@@ -85,8 +85,11 @@ public class InviteSessionGroupMembersRecyclerAdapter extends RecyclerView.Adapt
 
                 CheckBox cb = (CheckBox) v;
 
-                checkedMemberList.add(member.getUuid().toString());
-
+                if(cb.isChecked()) {
+                    checkedMemberList.add(member.getUuid().toString());
+                }else{
+                    checkedMemberList.remove(member.getUuid().toString());
+                }
                 checkBoxListener.onCheckBoxClick(cb.isChecked(), member);
 
             }

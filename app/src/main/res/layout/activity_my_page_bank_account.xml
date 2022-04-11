@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MyPageBankAccountActivity">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:gravity="center_horizontal"
+        android:lineSpacingExtra="11sp"
+        android:text="등록한 계좌정보는 내가 생성한 더치페이와 모금의\n참여자에게 공개됩니다."
+        android:textColor="@color/moimingTheme"
+        android:textSize="12sp"
+        android:textStyle="normal"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/layout_user_bank_info" />
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layout_user_bank_info"
+        android:layout_width="328dp"
+        android:layout_height="116dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/shape_round_bg_pale_gray"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/app_bar_my_page_bank_account">
+
+        <ImageView
+            android:id="@+id/view_bank_logo"
+            android:layout_width="24dp"
+            android:layout_height="18dp"
+            android:layout_marginEnd="4dp"
+            android:src="@drawable/ic_kakao_login"
+            app:layout_constraintBottom_toBottomOf="@id/text_user_bank"
+            app:layout_constraintRight_toLeftOf="@id/text_user_bank"
+            app:layout_constraintTop_toTopOf="@id/text_user_bank" />
+
+        <TextView
+            android:id="@+id/text_user_bank"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="28dp"
+            android:lineSpacingExtra="10sp"
+            android:text="국민은행"
+            android:textColor="@color/textDark"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/text_user_bank_account_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:lineSpacingExtra="10sp"
+            android:text="110488878570"
+            android:textColor="@color/textDark"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/text_user_bank" />
+
+        <TextView
+            android:id="@+id/text_no_bank_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:lineSpacingExtra="10sp"
+            android:text="우측상단 편집 버튼으로\n계좌 정보를 등록해주세요!"
+            android:textColor="@color/textDark"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/app_bar_my_page_bank_account"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_alignParentTop="true"
+        android:background="@color/moimingWhite"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/btn_finish_my_page_bank_account"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="16dp"
+            android:src="@drawable/ic_app_back"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/btn_edit_bank_account"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="20dp"
+            android:background="@drawable/ic_edit_black"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:lineSpacingExtra="7sp"
+            android:text="계좌 관리"
+            android:textColor="@color/textDark"
+            android:textSize="16sp"
+            android:textStyle="normal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

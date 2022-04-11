@@ -3,41 +3,29 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingBottom="24dp">
+    android:paddingBottom="12dp">
 
     <TextView
-        android:id = "@+id/text_session_member_1"
+        android:id="@+id/text_session_member_1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="21dp"
+        android:layout_marginRight="24dp"
         android:lineSpacingExtra="15sp"
         android:text="완료 처리"
         android:textColor="@color/moimingBoldGray"
-        android:textSize="8sp"
-        android:textStyle="normal"
-        app:layout_constraintBottom_toBottomOf="@id/text_moiming_members"
-        app:layout_constraintLeft_toRightOf="@id/btn_send_all_members"
-        app:layout_constraintTop_toTopOf="@id/text_moiming_members" />
-
-    <TextView
-        android:id="@+id/btn_send_all_members"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="117dp"
-        android:lineSpacingExtra="5sp"
-        android:text="일괄 송금 요청"
-        android:textColor="@color/moimingTheme"
         android:textSize="10sp"
         android:textStyle="normal"
-        app:layout_constraintLeft_toRightOf="@id/text_moiming_members"
+        app:layout_constraintBottom_toBottomOf="@id/text_moiming_members"
+        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@id/text_moiming_members" />
+
 
     <TextView
         android:id="@+id/text_moiming_members"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="27dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="16dp"
         android:lineSpacingExtra="13sp"
         android:text="모이밍 회원"
         android:textColor="@color/textOtherGray"
@@ -47,65 +35,114 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
+        android:id="@+id/text_nmu_ref_1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="24dp"
+        android:lineSpacingExtra="15sp"
+        android:text="완료 처리"
+        android:textColor="@color/moimingBoldGray"
+        android:textSize="10sp"
+        android:textStyle="normal"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@id/text_nmu_members"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/text_nmu_members" />
+
+    <TextView
         android:id="@+id/text_nmu_members"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="24dp"
         android:lineSpacingExtra="13sp"
         android:text="비회원"
         android:textColor="@color/textOtherGray"
         android:textSize="10sp"
         android:textStyle="normal"
-        app:layout_constraintLeft_toLeftOf="@id/text_moiming_members"
+        app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/session_moiming_member_status" />
 
-
-    <TextView
-        android:id = "@+id/text_session_nmu_1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="12dp"
-        android:lineSpacingExtra="15sp"
-        android:text="완료 처리"
-        android:textColor="@color/moimingBoldGray"
-        android:textSize="8sp"
-        android:textStyle="normal"
-        app:layout_constraintBottom_toBottomOf="@id/text_nmu_members"
-        app:layout_constraintLeft_toRightOf="@id/btn_send_kakao_request"
-        app:layout_constraintTop_toTopOf="@id/text_nmu_members" />
-
-
-    <TextView
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/btn_send_kakao_request"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="128dp"
-        android:lineSpacingExtra="5sp"
-        android:text="카카오톡 송금 요청"
-        android:textColor="@color/moimingTheme"
-        android:textSize="10sp"
-        android:textStyle="normal"
-        app:layout_constraintLeft_toRightOf="@id/text_nmu_members"
-        app:layout_constraintTop_toTopOf="@id/text_nmu_members" />
+        android:layout_height="16dp"
+        android:layout_marginRight="24dp"
+        app:layout_constraintRight_toLeftOf="@id/text_nmu_ref_1"
+        app:layout_constraintTop_toBottomOf="@id/text_nmu_members">
+
+        <ImageView
+            android:id="@+id/img_kakao"
+            android:layout_width="12dp"
+            android:layout_height="12dp"
+            android:src="@drawable/ic_from_kakao"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="4dp"
+            android:lineSpacingExtra="5sp"
+            android:text="송금 요청"
+            android:textColor="@color/textBoldGray"
+            android:textSize="10sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@id/img_kakao"
+            app:layout_constraintLeft_toRightOf="@id/img_kakao"
+            app:layout_constraintTop_toTopOf="@id/img_kakao" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/btn_send_all_members"
+        android:layout_width="wrap_content"
+        android:layout_height="16dp"
+        android:layout_marginRight="22dp"
+        app:layout_constraintRight_toLeftOf="@id/text_session_member_1"
+        app:layout_constraintTop_toBottomOf="@id/text_session_member_1">
+
+        <ImageView
+            android:id="@+id/img_ref"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:src="@drawable/ic_check"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="4dp"
+            android:lineSpacingExtra="5sp"
+            android:text="전체 요청"
+            android:textColor="@color/textBoldGray"
+            android:textSize="10sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@id/img_ref"
+            app:layout_constraintLeft_toRightOf="@id/img_ref"
+            app:layout_constraintTop_toTopOf="@id/img_ref" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/session_moiming_member_status"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:overScrollMode="never"
+        android:layout_marginTop="10dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/text_moiming_members" />
+        app:layout_constraintTop_toBottomOf="@id/btn_send_all_members" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/session_nmu_member_status"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:overScrollMode="never"
+        android:layout_marginTop="10dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/text_nmu_members" />
+        app:layout_constraintTop_toBottomOf="@id/btn_send_kakao_request" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -7,20 +7,22 @@
     android:background="@color/moimingBackgroundTheme"
     tools:context=".MainActivity">
 
-
     <FrameLayout
         android:id="@+id/frame_main"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@id/main_navigation" />
+        android:layout_height="wrap_content"
+        android:layout_above="@id/layout_std_view"
+        android:layout_below="@id/text_home_1"
+        android:layout_marginTop="8dp" />
 
 
     <ImageView
         android:id="@+id/btn_setting"
         android:layout_width="24dp"
         android:layout_height="24dp"
-        android:layout_gravity="top|right"
-        android:layout_marginTop="16dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="20dp"
         android:layout_marginRight="16dp"
         android:src="@drawable/ic_main_setting" />
 
@@ -28,48 +30,70 @@
         android:id="@+id/btn_notification"
         android:layout_width="24dp"
         android:layout_height="24dp"
-        android:layout_gravity="top|right"
-        android:layout_marginTop="16dp"
-        android:layout_marginRight="48dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="8dp"
+        android:layout_toStartOf="@id/btn_setting"
         android:src="@drawable/ic_main_notification" />
 
     <ImageView
         android:id="@+id/btn_add"
         android:layout_width="24dp"
         android:layout_height="24dp"
-        android:layout_gravity="top|right"
-        android:layout_marginTop="16dp"
-        android:layout_marginRight="80dp"
-        android:src="@drawable/ic_main_add"
-        android:visibility="visible" />
-
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="8dp"
+        android:layout_toStartOf="@id/btn_notification"
+        android:src="@drawable/ic_main_add" />
 
     <ImageView
         android:id="@+id/btn_search"
         android:layout_width="24dp"
         android:layout_height="24dp"
-        android:layout_gravity="top|right"
-        android:layout_marginTop="16dp"
-        android:layout_marginRight="112dp"
-        android:src="@drawable/ic_main_search"
-        android:visibility="visible" />
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="8dp"
+        android:layout_toStartOf="@id/btn_add"
+        android:src="@drawable/ic_main_search" />
 
 
     <TextView
-        android:id = "@+id/view_notification_cnt"
+        android:id="@+id/text_home_1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="21dp"
+        android:layout_marginTop="16dp"
+        android:lineSpacingExtra="45sp"
+        android:text="Moim"
+        android:textColor="@color/moimingTheme"
+        android:textSize="24sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/text_home_2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/text_home_1"
+        android:layout_toRightOf="@id/text_home_1"
+        android:lineSpacingExtra="45sp"
+        android:text="ing"
+        android:textColor="@color/moimingBlack"
+        android:textSize="24sp"
+        android:textStyle="bold" />
+
+
+    <TextView
+        android:id="@+id/view_notification_cnt"
         android:layout_width="16dp"
         android:layout_height="14dp"
-        android:layout_marginTop="12dp"
-        android:layout_marginEnd="45dp"
+        android:layout_alignTop="@id/btn_notification"
+        android:layout_alignRight="@id/btn_notification"
         android:background="@drawable/shape_round_bg_red"
         android:gravity="center"
-        android:text="10"
         android:maxLength="2"
+        android:text="10"
         android:textColor="@color/moimingWhite"
         android:textSize="8sp"
-        android:textStyle="bold"
-        app:layout_anchor="@+id/btn_notification"
-        app:layout_anchorGravity="end|top" />
+        android:textStyle="bold" />
 
     <View
         android:id="@+id/transparent_bg"
@@ -79,62 +103,78 @@
         android:visibility="gone" />
 
 
-    <com.google.android.material.bottomappbar.BottomAppBar
+    <View
+        android:id="@+id/layout_std_view"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="?attr/actionBarSize"
+        android:visibility="invisible" />
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/layout_coordinator"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom">
+        android:layout_alignParentBottom="true">
 
-        <com.google.android.material.bottomnavigation.BottomNavigationView
-            android:id="@+id/main_navigation"
+        <com.google.android.material.bottomappbar.BottomAppBar
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginEnd="16dp"
-            android:background="@color/moimingWhite"
-            app:itemIconTint="@drawable/selector_main_btn"
-            app:itemTextColor="@drawable/selector_main_btn"
-            app:menu="@menu/bottom_nav_menu" />
+            android:layout_height="?attr/actionBarSize"
+            android:layout_gravity="bottom">
 
-    </com.google.android.material.bottomappbar.BottomAppBar>
+            <com.google.android.material.bottomnavigation.BottomNavigationView
+                android:id="@+id/main_navigation"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:layout_marginEnd="16dp"
+                android:background="@color/moimingWhite"
+                app:itemIconTint="@drawable/selector_main_btn"
+                app:itemTextColor="@drawable/selector_main_btn"
+                app:menu="@menu/bottom_nav_menu" />
+        </com.google.android.material.bottomappbar.BottomAppBar>
 
-
-    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-        android:id="@+id/btn_dutchpay"
-        android:layout_width="56dp"
-        android:layout_height="56dp"
-        app:backgroundTint="@color/moimingTheme"
-        app:icon="@drawable/ic_main_add"
-        app:iconSize="36dp"
-        app:iconTint="@color/moimingWhite"
-        app:layout_anchor="@id/main_navigation" />
+        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+            android:id="@+id/btn_dutchpay"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center"
+            android:layout_marginBottom="20dp"
+            app:backgroundTint="@color/moimingTheme"
+            app:icon="@drawable/ic_main_add"
+            app:iconSize="36dp"
+            app:iconTint="@color/moimingWhite"
+            app:layout_anchor="@id/main_navigation"
+            app:layout_anchorGravity="center" />
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
         android:id="@+id/btn_dutchpay_old"
         android:layout_width="264dp"
         android:layout_height="41dp"
-        android:layout_gravity="center|bottom"
-        android:layout_marginBottom="50dp"
+        android:layout_above="@id/layout_coordinator"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="10dp"
         android:backgroundTint="@color/moimingWhite"
         android:gravity="center"
-        android:lineSpacingExtra="9sp"
         android:text="기존 그룹원들과 함께"
         android:textColor="@color/textBoldGray"
         android:textSize="14sp"
-        android:visibility="gone"
-
-        />
+        android:visibility="gone" />
 
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
         android:id="@+id/btn_dutchpay_new"
         android:layout_width="264dp"
         android:layout_height="41dp"
-        android:layout_gravity="center|bottom"
-        android:layout_marginBottom="99dp"
+        android:layout_above="@id/btn_dutchpay_old"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="10dp"
         android:backgroundTint="@color/moimingWhite"
         android:gravity="center"
-        android:lineSpacingExtra="9sp"
         android:text="새 그룹원들과 함께"
         android:textColor="@color/textBoldGray"
         android:textSize="14sp"
         android:visibility="gone" />
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+</RelativeLayout>

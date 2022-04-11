@@ -21,6 +21,8 @@ import androidx.fragment.app.Fragment;
 import com.bumptech.glide.Glide;
 import com.example.moimingrelease.LoginActivity;
 import com.example.moimingrelease.MainActivity;
+import com.example.moimingrelease.WelcomeActivity;
+import com.example.moimingrelease.moiming_model.dialog.AppProcessDialog;
 import com.example.moimingrelease.moiming_model.extras.UserAndPolicyAgreeDTO;
 import com.example.moimingrelease.moiming_model.request_dto.MoimingUserRequestDTO;
 import com.example.moimingrelease.moiming_model.request_dto.PolicyAgreeRequestDTO;
@@ -71,6 +73,8 @@ public class SignupCheckInfoFragment extends Fragment {
 
     private Map<Integer, Boolean> userPolicyMap = new HashMap<>();
 
+    private AppProcessDialog processDialog;
+
 
     @Override
     public void onCreate(@Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
@@ -103,6 +107,7 @@ public class SignupCheckInfoFragment extends Fragment {
             @Override
             public void onClick(View view) {
 
+                processDialog.show();
                 signupUser();
 
             }
@@ -115,6 +120,8 @@ public class SignupCheckInfoFragment extends Fragment {
     private void initParams() {
 
         signupActivity = (SignupActivity) getActivity();
+
+        processDialog = new AppProcessDialog(signupActivity);
 
         firebaseAuth = FirebaseAuth.getInstance();
 
@@ -261,12 +268,12 @@ public class SignupCheckInfoFragment extends Fragment {
 
                                         getFirebaseAccessToken(savedUser);
 
-                                        // 2 신규 유저 데이터를 전달한다.
-                                        Intent startMoiming = new Intent(signupActivity, MainActivity.class);
-                                        startMoiming.putExtra("moiming_user", savedUser);
-
-                                        signupActivity.startActivity(startMoiming);
-                                        signupActivity.finish();
+//                                        // 2 신규 유저 데이터를 전달한다.
+//                                        Intent startMoiming = new Intent(signupActivity, MainActivity.class);
+//                                        startMoiming.putExtra("moiming_user", savedUser);
+//
+//                                        signupActivity.startActivity(startMoiming);
+//                                        signupActivity.finish();
                                     } else {
 
                                         Toast.makeText(signupActivity.getApplicationContext()
@@ -316,6 +323,17 @@ public class SignupCheckInfoFragment extends Fragment {
                     @Override
                     public void onSuccess(Void unused) {
 
+                        // 신규 유저에 대해 Welcome Activity 를 실행한다
+                        Intent welcome = new Intent(signupActivity, WelcomeActivity.class);
+                        welcome.putExtra(getResources().getString(R.string.moiming_user_data_key), savedUser);
+                        welcome.putExtra("first_user", true);
+
+                        processDialog.finish();
+
+                        signupActivity.startActivity(welcome);
+                        signupActivity.finish();
+
+
                         Log.d(SignupActivity.SIGNUP_TAG, "All Registered Successfully");
                     }
                 })
@@ -339,6 +357,7 @@ public class SignupCheckInfoFragment extends Fragment {
 
                         if (task.isSuccessful()) {
                             registerFirebaseStore(task.getResult(), savedUser);
+
                         } else {
                             Log.w(SignupActivity.SIGNUP_TAG, task.getException().toString());
                             Toast.makeText(signupActivity.getApplicationContext()

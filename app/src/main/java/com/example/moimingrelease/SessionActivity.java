@@ -9,11 +9,14 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -21,12 +24,18 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.moimingrelease.app_adapter.SessionConfirmNotificationAdapter;
+import com.example.moimingrelease.app_listener_interface.CancelActivityCallBack;
+import com.example.moimingrelease.app_listener_interface.CustomDialogCallBack;
 import com.example.moimingrelease.app_listener_interface.SessionCreatorNotificationCallBack;
 import com.example.moimingrelease.app_listener_interface.SessionCreatorNmuCheckboxCallBack;
 import com.example.moimingrelease.app_listener_interface.SessionCreatorSentCheckboxCallBack;
 import com.example.moimingrelease.app_listener_interface.SessionDialogCallBack;
+import com.example.moimingrelease.frag_session.TabFinishedSession;
 import com.example.moimingrelease.frag_session.TabSessionFinishedMembers;
 import com.example.moimingrelease.frag_session.TabSessionUnFinishedMembers;
+import com.example.moimingrelease.moiming_model.dialog.AppProcessDialog;
+import com.example.moimingrelease.moiming_model.dialog.CancelActivityDialog;
+import com.example.moimingrelease.moiming_model.dialog.CustomConfirmDialog;
 import com.example.moimingrelease.moiming_model.dialog.SessionDeleteDialog;
 import com.example.moimingrelease.moiming_model.dialog.SessionSettingDialog;
 import com.example.moimingrelease.moiming_model.extras.MoimingMembersDTO;
@@ -51,6 +60,7 @@ import com.example.moimingrelease.network.USLinkerRetrofitService;
 import com.example.moimingrelease.network.fcm.FCMRequest;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.tabs.TabItem;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -79,11 +89,12 @@ import okhttp3.RequestBody;
 
 public class SessionActivity extends AppCompatActivity {
 
+    private AppProcessDialog processDialog = new AppProcessDialog(SessionActivity.this);
+
     // 여기는 일단 Session UUID 를 가져올 수 있도록 하고, 해당 으로 유저들과 비모이밍 유저들을 가져올 수 있도록 해보자.
     private MoimingUserVO curUser;
     private MoimingGroupVO curGroup;
     private MoimingSessionVO curSession;
-
     private MoimingMembersDTO creatorInfo;
 
     // 현재 유저가 어떤 유저인지에 따라 바뀌는 ..
@@ -95,6 +106,10 @@ public class SessionActivity extends AppCompatActivity {
     private RecyclerView confirmNotiRecycler;
     private ImageView btnEditSession;
     private TextView textFinished;
+
+    // 멤버들 용 Creator Info
+    private ImageView btnCopyNumber;
+    private TextView textCreatorName, textCreatorBank, textCreatorBankNumber;
 
 
     // 1. 정산 안한 유저
@@ -116,11 +131,15 @@ public class SessionActivity extends AppCompatActivity {
     private TextView textSessionName, textCurCost, textTotalCost, textCurSenderCnt, textTotalSenderCnt;
     private TextView textSessionCreateInfo;
     private TabLayout sessionStatusTab;
+    private TabItem unfinishedTab, finishedTab;
+
     private ProgressBar sessionProgressBar;
     private Button btnSessionStatusChange;
 
     TabSessionFinishedMembers finishedMembersTab;
     TabSessionUnFinishedMembers unfinishedMembersTab;
+    TabFinishedSession finishedSessionTab;
+
     private FragmentManager fragmentManager;
 
     public boolean isSessionRefreshing = false;
@@ -188,12 +207,18 @@ public class SessionActivity extends AppCompatActivity {
 
     };
 
+    boolean isFcmResending = false;
 
     public void sendFinishFCMRequest(boolean isAllSend, UUID memberUuid, int personalCost) {
 
         // 1. 개별 요청
         if (!isAllSend) {
 
+            String msg = curUser.getUserName() + ": " + curSession.getSessionName() + " 정산을 위해 "
+                    + personalCost + "원을 보내주세요! 송금하셨다면 편하게 모이밍을 통해 알려주세요";
+
+
+            // TODO: 여기가 개별 요청하는 곳.
             NotificationRequestDTO sentConfirm = new NotificationRequestDTO(
                     memberUuid
                     , curUser.getUuid()
@@ -201,8 +226,9 @@ public class SessionActivity extends AppCompatActivity {
                     , curGroup.getUuid()
                     , curSession.getUuid()
                     , 1
-                    , personalCost + "원 송금 요청 하셨습니다!"
+                    , msg
             );
+
 
             List<NotificationRequestDTO> notiList = new ArrayList<>();
             notiList.add(sentConfirm);
@@ -222,6 +248,13 @@ public class SessionActivity extends AppCompatActivity {
                         @Override
                         public void onNext(@NonNull TransferModel<List<String>> responseModel) {
 
+
+                            String isRe = responseModel.getData().get(0).substring(0, 2);
+
+                            if (isRe.equals("R:")) {
+                                isFcmResending = true;
+
+                            }
                         }
 
                         @Override
@@ -237,11 +270,19 @@ public class SessionActivity extends AppCompatActivity {
                         @Override
                         public void onComplete() {
 
-                            // TODO: 알림을 Creator Uuid 에게 푸시 알림을 전송한다.
                             try {
 
-                                sendFcmNotification("송금 요청", curUser.getUserName() + "님이 " + personalCost + "원 송금 요청을 하셨습니다!"
-                                        , fcmTokenMap.get(memberUuid));
+                                if (!isFcmResending) {
+                                    sendFcmNotification(String.valueOf(1), "정산 요청", msg, fcmTokenMap.get(memberUuid));
+                                } else {
+                                    String reMsg = curUser.getUserName() + "님이 " + curSession.getSessionName() + " 정산을 기다리고 있어요! " +
+                                            "송금하셨다면 편하게 모이밍을 통해 알려주세요";
+
+                                    sendFcmNotification(String.valueOf(1), "정산 요청", reMsg, fcmTokenMap.get(memberUuid));
+                                }
+
+                                isFcmResending = false;
+                                Toast.makeText(getApplicationContext(), "정산 요청을 완료하였습니다", Toast.LENGTH_SHORT).show();
 
 
                             } catch (JSONException e) {
@@ -263,6 +304,9 @@ public class SessionActivity extends AppCompatActivity {
 
                 UserSessionLinkerVO usLinker = unfinishedMemberLinkerList.get(i);
 
+                String msg = curUser.getUserName() + ": " + curSession.getSessionName() + " 정산을 위해 "
+                        + usLinker.getPersonalCost() + "원을 보내주세요! 송금하셨다면 편하게 모이밍을 통해 알려주세요";
+
                 NotificationRequestDTO sentConfirm = new NotificationRequestDTO(
                         usLinker.getMoimingUser().getUuid()
                         , curUser.getUuid()
@@ -270,7 +314,7 @@ public class SessionActivity extends AppCompatActivity {
                         , curGroup.getUuid()
                         , curSession.getUuid()
                         , 1
-                        , usLinker.getPersonalCost() + "원 송금 요청 하셨습니다!"
+                        , msg
                 );
 
                 notiList.add(sentConfirm);
@@ -291,8 +335,8 @@ public class SessionActivity extends AppCompatActivity {
                         @Override
                         public void onNext(@NonNull TransferModel<List<String>> responseModel) {
 
+                            // FCM 보내야 되는 uuid list
                             fcmRequestList = responseModel.getData();
-
 
                         }
 
@@ -304,23 +348,44 @@ public class SessionActivity extends AppCompatActivity {
                         @Override
                         public void onComplete() {
 
+                            boolean isResending = false;
+
                             // 여기서 보내준다?
                             for (int i = 0; i < fcmRequestList.size(); i++) {
 
                                 String userUuid = fcmRequestList.get(i);
+                                String isRe = userUuid.substring(0, 2);
+
+                                if (isRe.equals("R:")) {
+                                    isResending = true;
+                                }
+
+                                String tgUuid = "";
+                                if (isResending) tgUuid = userUuid.substring(2);
+                                else tgUuid = userUuid;
 
                                 for (int j = 0; j < unfinishedMemberLinkerList.size(); j++) {
 
                                     UserSessionLinkerVO usVo = unfinishedMemberLinkerList.get(j);
 
-                                    if (userUuid.equals(usVo.getMoimingUser().getUuid().toString())) {
+                                    String msg;
+
+                                    if (!isResending) {
+                                        msg = curUser.getUserName() + ": " + curSession.getSessionName() + " 정산을 위해 "
+                                                + usVo.getPersonalCost() + "원을 보내주세요! 송금하셨다면 편하게 모이밍을 통해 알려주세요";
+                                    } else {
+                                        msg = curUser.getUserName() + "님이 " + curSession.getSessionName() + " 정산을 기다리고 있어요! " +
+                                                "송금하셨다면 편하게 모이밍을 통해 알려주세요";
+                                    }
+                                    if (tgUuid.equals(usVo.getMoimingUser().getUuid().toString())) {
 
                                         try {
 
-                                            sendFcmNotification("송금 요청", curUser.getUserName() + "님이 "
-                                                            + usVo.getPersonalCost() + "원 송금 요청을 하셨습니다!"
-                                                    , fcmTokenMap.get(usVo.getMoimingUser().getUuid()));
+                                            sendFcmNotification(String.valueOf(1), "정산 요청", msg, fcmTokenMap.get(UUID.fromString(tgUuid)));
 
+                                            Toast.makeText(getApplicationContext(), "정산 요청을 완료하였습니다", Toast.LENGTH_SHORT).show();
+
+                                            unfinishedMembersTab.allBtnChangeToAdapter();
 
                                         } catch (JSONException e) {
 
@@ -434,7 +499,10 @@ public class SessionActivity extends AppCompatActivity {
         }
     };
 
+    // TODO: 송금 확인 요청 알림 수정해야함.
     private void createConfirmNotification() {
+
+        String msg = curUser.getUserName() + ": " + curSession.getSessionName() + " 정산을 완료했어요! 확인 후 송금상태를 변경해주세요";
 
         NotificationRequestDTO sentConfirm = new NotificationRequestDTO(
                 creatorInfo.getUuid()
@@ -443,7 +511,7 @@ public class SessionActivity extends AppCompatActivity {
                 , curGroup.getUuid()
                 , curSession.getUuid()
                 , 2
-                , "송금 확인을 요청하였습니다!"
+                , msg
         );
 
         List<NotificationRequestDTO> notiList = new ArrayList<>();
@@ -482,7 +550,9 @@ public class SessionActivity extends AppCompatActivity {
                         // TODO: 알림을 Creator Uuid 에게 푸시 알림을 전송한다.
                         try {
 
-                            sendFcmNotification("송금 확인 요청", curUser.getUserName() + "님이 송금 확인 요청하셨습니다!", sessionCreatorFcmToken);
+                            GroupActivity.SESSION_LIST_REFRESH_FLAG = true;
+
+                            sendFcmNotification(String.valueOf(2), "송금 확인 요청", curUser.getUserName() + "님이 송금 확인 요청하셨습니다!", sessionCreatorFcmToken);
 
                             // 버튼 변경
                             btnSendConfirm.setClickable(false);
@@ -503,9 +573,10 @@ public class SessionActivity extends AppCompatActivity {
     }
 
 
-    private void sendFcmNotification(String title, String text, String receiverToken) throws JSONException {
+    private void sendFcmNotification(String type, String title, String text, String receiverToken) throws JSONException {
 
-        JSONObject jsonSend = FCMRequest.getInstance().buildJsonBody(title, text, receiverToken);
+        JSONObject jsonSend = FCMRequest.getInstance().buildFcmJsonData("session", type
+                , title, text, "", curGroup.getUuid().toString(), curSession.getUuid().toString(), receiverToken);
 
         RequestBody reBody = RequestBody.create(MediaType.parse("application/json, charset-utf8")
                 , String.valueOf(jsonSend));
@@ -516,6 +587,8 @@ public class SessionActivity extends AppCompatActivity {
 
     // 송금 완료된 인원들의 상태를 바꾼다, 혹은
     private void changeSessionStatus() {
+
+        processDialog.show();
 
         // TODO: 이거 보내면 됨.
         SessionStatusChangeDTO sessionStatusChange = new SessionStatusChangeDTO(curSession.getUuid(), stateChangedUserUuid, stateChangedNmuUuid
@@ -600,6 +673,8 @@ public class SessionActivity extends AppCompatActivity {
 
     private void checkSendCheckNotification() {
 
+        processDialog.show();
+
         NotificationRetrofitService notiRetro = GlobalRetrofit.getInstance().getRetrofit().create(NotificationRetrofitService.class);
         NotificationUserAndActivityDTO uuidInfo = new NotificationUserAndActivityDTO(curUser.getUuid(), null, curSession.getUuid());
 
@@ -630,6 +705,10 @@ public class SessionActivity extends AppCompatActivity {
 
                     @Override
                     public void onComplete() {
+
+                        if (processDialog.isShowing()) {
+                            processDialog.finish();
+                        }
 
                         if (confirmNotificationList.size() != 0) {
 
@@ -662,10 +741,32 @@ public class SessionActivity extends AppCompatActivity {
 
     }
 
+    private ImageView btnBack;
+
+    @Override
+    public void onBackPressed() {
+
+        btnBack.performClick();
+    }
+
+    private CancelActivityCallBack finishCallBack = new CancelActivityCallBack() {
+        @Override
+        public void finishActivity() {
+            finish();
+        }
+    };
+
     private void initView() {
 
-        layoutTotal = findViewById(R.id.layout_session_total);
+        btnBack = findViewById(R.id.btn_back_session);
 
+        //Creator Info (멤버용)
+        btnCopyNumber = findViewById(R.id.btn_copy_bank_number);
+        textCreatorName = findViewById(R.id.text_creator_name);
+        textCreatorBank = findViewById(R.id.text_creator_bank);
+        textCreatorBankNumber = findViewById(R.id.text_creator_bank_number);
+
+        layoutTotal = findViewById(R.id.layout_session_total);
         sessionProgressBar = findViewById(R.id.progress_session);
 
         textSessionName = findViewById(R.id.text_session_name); // 상단 앱바에 세션 이름
@@ -683,8 +784,10 @@ public class SessionActivity extends AppCompatActivity {
         sessionStatusTab = findViewById(R.id.tab_session_activity);
         sessionStatusTab.addOnTabSelectedListener(tabListener);
 
-        layoutSessionStatus = findViewById(R.id.layout_session_status);
+        unfinishedTab = findViewById(R.id.tab_unfinished);
+        finishedTab = findViewById(R.id.tab_finished);
 
+        layoutSessionStatus = findViewById(R.id.layout_session_status);
 
         imgCreator = findViewById(R.id.img_creator);
         if (curSession.getSessionCreatorUuid().toString().equals(curUser.getUuid().toString())) {
@@ -708,13 +811,24 @@ public class SessionActivity extends AppCompatActivity {
             btnEditSession.setVisibility(View.GONE);
         }
 
+
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!curSession.getFinished()) {
+                    CancelActivityDialog dialog = new CancelActivityDialog(SessionActivity.this, finishCallBack
+                            , "변경 사항이 저장되지 않습니다");
+                    dialog.show();
+                } else {
+                    finish();
+                }
+            }
+        });
+
         btnEditSession.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                // TODO: 다이얼로그 발생, 현재 삭제 밖에 없음.
                 settingDialog.show();
-
             }
         });
 
@@ -725,9 +839,10 @@ public class SessionActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                // TODO: 확인요청을 보내시겠습니까 Dialog 발생
-                createConfirmNotification();
+                CustomConfirmDialog customDialog = new CustomConfirmDialog(SessionActivity.this, confirmNotiCallback
+                        , "송금 완료 알림을 보내시겠습니까?", creatorInfo.getUserName() + "에게 송금을 완료했다고 알립니다");
 
+                customDialog.show();
             }
         });
 
@@ -748,6 +863,12 @@ public class SessionActivity extends AppCompatActivity {
 
     }
 
+    private CustomDialogCallBack confirmNotiCallback = new CustomDialogCallBack() {
+        @Override
+        public void onConfirm() {
+            createConfirmNotification();
+        }
+    };
 
     private void setSessionUi() {
 
@@ -769,20 +890,42 @@ public class SessionActivity extends AppCompatActivity {
 
     private void setCreateInfoText() {
 
-        // TODO: 여기에 통장 Info 도 표시해주면 되겠다.
-
         LocalDateTime createdDateTime = curSession.getCreatedAt();
 
         String createInfoText = transferDateToText(createdDateTime);
 
         String creatorName = creatorInfo.getUserName();
 
-        createInfoText = createInfoText + "에 " + creatorName + "님이 생성";
-
         if (creatorInfo.getUuid().equals(curUser.getUuid())) {
             createInfoText = createInfoText + "에 내가 생성";
+        } else {
+            createInfoText = createInfoText + "에 " + creatorName + "님이 생성";
         }
         textSessionCreateInfo.setText(createInfoText);
+
+    }
+
+    private void setSessionCreatorInfo() {
+
+        String creatorName = creatorInfo.getUserName();
+        String creatorBank = creatorInfo.getBankName(); // TODO: 은행 파싱하는 거 필요함
+        String creatorBankNumber = creatorInfo.getBankNumber();
+
+        textCreatorName.setText(creatorName);
+        textCreatorBank.setText(creatorBank);
+        textCreatorBankNumber.setText(creatorBankNumber);
+
+        btnCopyNumber.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ClipboardManager clipboardManager = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+                ClipData clipData = ClipData.newPlainText("MOIMING", textCreatorBankNumber.getText().toString()); //클립보드에 ID라는 이름표로 id 값을 복사하여 저장
+                clipboardManager.setPrimaryClip(clipData);
+
+                //복사가 되었다면 토스트메시지 노출
+                Toast.makeText(getApplicationContext(), "계좌번호가 복사되었습니다", Toast.LENGTH_SHORT).show();
+            }
+        });
 
     }
 
@@ -830,23 +973,22 @@ public class SessionActivity extends AppCompatActivity {
 
     }
 
+
+    /**
+     * 0 = 내 정산 1 = 송금 필요 2 = 송금 완료 3 = 송금 확인 중 4 = 미참여
+     */
+
     private void parseStatus() {
 
         ConstraintSet sessionStatusSet = new ConstraintSet();
 
-        /**
-         0 = 내 정산 (메인색)
-         1 = 송금 필요 (주황색)
-         2 = 송금 완료  (주황색)
-         3 = 송금 확인 중 (주황색 / light)
-         4 = 미참여 (회색) (완료도 회색)
-         */
         if (!curSession.getFinished()) {
+
             if (curUserStatus != 0) { // 이 정산은 내가 보내야 하는 정산!
 
                 layoutCreator.setVisibility(View.GONE);
                 imgCreator.setVisibility(View.GONE);
-                btnSessionStatusChange.setVisibility(View.GONE);
+                btnSessionStatusChange.setVisibility(View.INVISIBLE);
                 sessionProgressBar.setProgressDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.shape_progress_bar_session_sender, null));
 
                 if (curUserStatus == 1 || curUserStatus == 3) { // 송금 필요함 (송금 확인중일 떄도 따로)
@@ -864,7 +1006,7 @@ public class SessionActivity extends AppCompatActivity {
                     sessionStatusSet.clone(layoutTotal);
                     sessionStatusSet.connect(layoutSessionStatus.getId(), ConstraintSet.TOP, layoutMember.getId(), ConstraintSet.BOTTOM);
 
-                } else if (curUserStatus == 2) { // 송금 완료 함
+                } else if (curUserStatus == 2) { // 송금 완료 함 // 나만 끝남.
 
                     layoutMember.setVisibility(View.GONE);
                     textMemberFinished.setVisibility(View.VISIBLE);
@@ -906,24 +1048,54 @@ public class SessionActivity extends AppCompatActivity {
 
         } else { // 정산이 끝났을 경우
 
-            textMemberFinished.setVisibility(View.GONE);
+            /*textMemberFinished.setVisibility(View.GONE);
             layoutMember.setVisibility(View.GONE);
             layoutCreator.setVisibility(View.GONE);
-            btnSessionStatusChange.setVisibility(View.GONE);
+            btnSessionStatusChange.setVisibility(View.INVISIBLE);
 
             // TODO imgCreator 회색으로 변경 필요.
             imgCreator.setImageResource(R.drawable.ic_creator_gray);
 
-            if(curSession.getSessionType() == 1){ // 더치페이
+            if (curSession.getSessionType() == 1) { // 더치페이
                 textFinished.setText("정산 완료");
-            }else{ // 모금
+            } else { // 모금
                 textFinished.setText("모금 완료");
             }
 
             sessionProgressBar.setProgressDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.shape_progress_bar_session_finished, null));
-
-
+*/
         }
+    }
+
+    private void setFinishedSession() {
+
+        textMemberFinished.setVisibility(View.GONE);
+        layoutMember.setVisibility(View.GONE);
+        layoutCreator.setVisibility(View.GONE);
+        btnSessionStatusChange.setVisibility(View.INVISIBLE);
+        sessionStatusTab.setVisibility(View.GONE);// 탭 숨기고, Fragment 뒤에걸로만 고정 시켜놓기.
+
+        // TODO imgCreator 회색으로 변경 필요.
+        imgCreator.setImageResource(R.drawable.ic_creator_gray);
+
+        if (curSession.getSessionType() == 1) { // 더치페이
+            textFinished.setText("정산 완료");
+        } else { // 모금
+            textFinished.setText("모금 완료");
+        }
+
+        sessionProgressBar.setProgressDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.shape_progress_bar_session_finished, null));
+
+
+        if (processDialog.isShowing()) {
+            processDialog.finish();
+        }
+
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+
+        transaction.add(R.id.frame_session_status, finishedSessionTab)
+                .hide(finishedMembersTab).hide(unfinishedMembersTab).commit();
+
     }
 
     private SessionDialogCallBack settingCallback = new SessionDialogCallBack() {
@@ -954,7 +1126,6 @@ public class SessionActivity extends AppCompatActivity {
         adapter = new SessionConfirmNotificationAdapter(getApplicationContext(), confirmNotificationList, checkBoxCallback, curSession.getUuid());
         confirmNotiRecycler.setAdapter(adapter);
 
-
     }
 
     private void initParams() {
@@ -973,6 +1144,7 @@ public class SessionActivity extends AppCompatActivity {
         // 현재 리스트는 직접 접근해서 가져감.
         finishedMembersTab = new TabSessionFinishedMembers();
         unfinishedMembersTab = new TabSessionUnFinishedMembers();
+        finishedSessionTab = new TabFinishedSession();
 
         fragmentManager = getSupportFragmentManager();
 
@@ -983,6 +1155,10 @@ public class SessionActivity extends AppCompatActivity {
     }
 
     private void initSessionMembers() {
+
+        if (!processDialog.isShowing()) {
+            processDialog.show();
+        }
 
         USLinkerRetrofitService linkerRetrofit = GlobalRetrofit.getInstance().getRetrofit().create(USLinkerRetrofitService.class);
 
@@ -1001,6 +1177,10 @@ public class SessionActivity extends AppCompatActivity {
                         SessionMembersDTO sessionMembers = receivedDTO.getData();
 
                         creatorInfo = sessionMembers.getSessionCreatorInfo();
+
+                        if (curUserStatus == 1 || curUserStatus == 3) {
+                            setSessionCreatorInfo();
+                        }
 
                         List<USLinkerResponseDTO> memberLinkerDTO = sessionMembers.getSessionMoimingMemberList();
                         List<NonMoimingUserResponseDTO> nmuLinkerDTO = sessionMembers.getSessionNmuList();
@@ -1063,20 +1243,36 @@ public class SessionActivity extends AppCompatActivity {
                     @Override
                     public void onComplete() {
 
-                        if (!isSessionRefreshing) {
-                            prepareFcmTokens();
+                        if (!isSessionRefreshing) { // 처음 들어오는 거임
+                            if (!curSession.getFinished()) {
+                                prepareFcmTokens();
+                            } else {// 끝난 정산임
+                                setFinishedSession();
+                            }
+
                         } else { // RecyclerView Tab 내 Refresh
 
-                            unfinishedMembersTab.initRecyclerView();
-                            finishedMembersTab.initRecyclerView();
+                            if (processDialog.isShowing()) {
+
+                                processDialog.finish();
+                            }
+
+                            if (!curSession.getFinished()) { // Refresh 해야 할 때
+
+                                unfinishedMembersTab.initRecyclerView();
+                                finishedMembersTab.initRecyclerView();
+
+                            } else { // Refresh 했는데 끝난 정산일 때
+                                setFinishedSession();
+                            }
                         }
 
                         setSessionUi();
 
-                        //TODO: 여기서 Progress Bar?
-                        if (curUserStatus == 0) { // 총무는 받은 알림요청이 있는지 확인한다.
+                        if (curUserStatus == 0 && !curSession.getFinished()) { // 총무는 받은 알림요청이 있는지 확인한다.
 
                             checkSendCheckNotification();
+
                         }
 
                         if (isSessionRefreshing) {
@@ -1165,6 +1361,10 @@ public class SessionActivity extends AppCompatActivity {
                             Log.e("Firebase Error", "해당 유저의 토큰 정보가 없습니다");
                         }
 
+                        if (processDialog.isShowing()) {
+
+                            processDialog.show();
+                        }
                         // 여기서 마무리 하는 것
                         FragmentTransaction transaction = fragmentManager.beginTransaction();
 
@@ -1211,6 +1411,11 @@ public class SessionActivity extends AppCompatActivity {
                             }
 
                             if (tokenMapSize == 0) {
+
+                                if (processDialog.isShowing()) {
+
+                                    processDialog.show();
+                                }
 
                                 // 여기서 마무리 하는 것
                                 FragmentTransaction transaction = fragmentManager.beginTransaction();

@@ -3,6 +3,7 @@ package com.example.moimingrelease;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -12,6 +13,7 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
@@ -20,12 +22,15 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.moimingrelease.app_adapter.GroupSessionViewAdapter;
 import com.example.moimingrelease.app_listener_interface.GroupExitDialogListener;
 import com.example.moimingrelease.fragments_main.MoimingHomeFragment;
+import com.example.moimingrelease.moiming_model.dialog.AppProcessDialog;
 import com.example.moimingrelease.moiming_model.dialog.GroupExitConfirmDialog;
 import com.example.moimingrelease.moiming_model.dialog.GroupExitInGroupDialog;
 import com.example.moimingrelease.moiming_model.extras.MoimingGroupAndMembersDTO;
@@ -93,10 +98,12 @@ public class GroupActivity extends AppCompatActivity {
 
     // Functions
     private CreateSessionDialog createSessionDialog;
+    private AppProcessDialog processDialog;
 
     // Views
+//    private ScrollView groupScroll;
     private SlidingUpPanelLayout slidingLayout;
-    private ImageView btnFinishGroupActivity, btnPayment, btnGroupMore, btnGroupInfo, btnEditBgImg, btnInviteMembers, imgGroupBg;
+    private ImageView btnFinish, btnPayment, btnGroupMore, btnGroupInfo, btnEditBgImg, btnInviteMembers, imgGroupBg;
     private TextView textGroupName, textNoResult;
     private LinearLayout btnCreateSession;
     private RadioGroup sessionFilter;
@@ -111,7 +118,8 @@ public class GroupActivity extends AppCompatActivity {
     private ConstraintLayout layoutMembersView;
 
     //Sliding Panel Layout Views
-    private ConstraintLayout drawerLayout;
+//    private ConstraintLayout drawerLayout;
+    private RelativeLayout drawerLayout;
     private EditText searchSession;
 
     GroupExitDialogListener exitDialogListener = new GroupExitDialogListener() {
@@ -249,6 +257,7 @@ public class GroupActivity extends AppCompatActivity {
             sessionViewsAdapter.setSessionList(sessionAdapterData);
             sessionViewsAdapter.notifyDataSetChanged();
 
+
         } else { // 전체 필터가 아닐 경우
 
             if (index == 1) { // 더치페이 필터
@@ -287,20 +296,17 @@ public class GroupActivity extends AppCompatActivity {
             sessionViewsAdapter.setSessionList(sessionFilteredAdapterData);
             sessionViewsAdapter.notifyDataSetChanged();
         }
+
+//        groupSessionViews.scrollToPosition(0);
+
     }
 
     private void sendInvitedUserFcm(String fcmToken) throws JSONException {
 
         String textNoti = curUser.getUserName() + "님이 회원님을 " + curGroup.getGroupName() + "에 초대하셨습니다. 같이 즐거운 모임 만들어 나가세요!";
 
-        JSONObject jsonSend = FCMRequest.getInstance().buildFcmJsonData("새로운 모임"
+        JSONObject jsonSend = FCMRequest.getInstance().buildFcmJsonData("group", String.valueOf(1), "새로운 모임"
                 , textNoti, "", curGroup.getUuid().toString(), "", fcmToken);
-
-/*
-
-        JSONObject jsonSend = FCMRequest.getInstance()
-                .buildJsonBody("모임 추가 알림", curGroup.getGroupName() + " 모임에 추가되셨습니다!", fcmToken);
-*/
 
         RequestBody reBody = RequestBody.create(MediaType.parse("application/json, charset-utf8")
                 , String.valueOf(jsonSend));
@@ -310,6 +316,7 @@ public class GroupActivity extends AppCompatActivity {
     }
 
 
+    // 처음에 가져올 경우
     private void receiveFcmTokens(List<String> addingMemberUuid, boolean isMemberAdded) {
 
         for (int i = 0; i < addingMemberUuid.size(); i++) {
@@ -335,7 +342,7 @@ public class GroupActivity extends AppCompatActivity {
 
                             groupMemberFcmTokenMap.put(UUID.fromString(userUuid), memberFcmToken);
 
-                            if (isMemberAdded) {
+                            if (isMemberAdded || isCreatedWithSession) { // 멤버 추가하고 돌아왔거나, 정산활동 동시생성 중이거나
 
                                 try {
 
@@ -366,6 +373,36 @@ public class GroupActivity extends AppCompatActivity {
         }
 
 
+    }
+
+    private View heightLocator;
+    private boolean isPanelHeightSet = false;
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+
+        if (!isPanelHeightSet) {
+
+            setPanelHeight();
+        }
+
+    }
+
+    private void setPanelHeight() {
+
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        int getDeviceHeightPx = displayMetrics.heightPixels;
+
+        int[] location = new int[2];
+        heightLocator.getLocationOnScreen(location);
+        int locatorHeightPx = location[1];
+
+        int panelHeightPx = getDeviceHeightPx - locatorHeightPx;
+
+        slidingLayout.setPanelHeight(panelHeightPx);
+
+        isPanelHeightSet = true;
     }
 
 
@@ -415,6 +452,7 @@ public class GroupActivity extends AppCompatActivity {
             }
         });
 
+
         // 이후 Focus 가 지속되는 동안 다시 눌러도 동일한 작동 필요
         searchSession.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -458,7 +496,9 @@ public class GroupActivity extends AppCompatActivity {
                 Intent toGroupPaymentActivity = new Intent(GroupActivity.this, GroupPaymentActivity.class);
 
                 toGroupPaymentActivity.putExtra(getResources().getString(R.string.moiming_user_data_key), curUser);
-                toGroupPaymentActivity.putExtra("group_uuid", curGroup.getUuid().toString());
+                toGroupPaymentActivity.putExtra(getResources().getString(R.string.moiming_group_data_key), (Serializable) curGroup);
+
+//                toGroupPaymentActivity.putExtra("group_uuid", curGroup.getUuid().toString());
                 toGroupPaymentActivity.putExtra(getResources().getString(R.string.fcm_token_map), (Serializable) groupMemberFcmTokenMap);
 
                 startActivity(toGroupPaymentActivity);
@@ -472,15 +512,15 @@ public class GroupActivity extends AppCompatActivity {
                 // TODO: AlertDialog 위치 조정하기. 해당 View 와 연동해서 코딩하기. , 그냥 정수를 넣어도 뭔가 잘 안되는 듯.
 
                 GroupExitInGroupDialog exitDialog = new GroupExitInGroupDialog(GroupActivity.this, exitDialogListener, curGroup.getUuid().toString());
-
-                WindowManager.LayoutParams params = exitDialog.getWindow().getAttributes();
-
+//
+//                WindowManager.LayoutParams params = exitDialog.getWindow().getAttributes();
+//
 //                params.x = Math.round(v.getX());
 //                params.y = Math.round(v.getY());
-
-                params.x = 100;
-                params.y = 10;
-                exitDialog.getWindow().setAttributes(params);
+//
+//                params.x = 100;
+//                params.y = 10;
+//                exitDialog.getWindow().setAttributes(params);
 
                 exitDialog.show();
             }
@@ -499,18 +539,29 @@ public class GroupActivity extends AppCompatActivity {
                 inviteMembersActivity.putExtra(getResources().getString(R.string.fcm_token_map), (Serializable) groupMemberFcmTokenMap);
 
 
-                startActivity(inviteMembersActivity); // 해당 그룹의 uuid 전달 필요
+                startActivityForResult(inviteMembersActivity, 102); // 해당 그룹의 uuid 전달 필요
             }
         });
 
-        Toast.makeText(getApplicationContext(), curGroup.getGroupName() + " 그룹에 오신걸 환영합니다!", Toast.LENGTH_SHORT).show();
+        btnFinish.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                finish();
+            }
+        });
 
 //        getGroupMembers();
         getGroupSessions();
 
     }
 
+
     private void initView() {
+
+//        groupScroll = findViewById(R.id.noti_main_scroll);
+
+        heightLocator = findViewById(R.id.view_height_locator);
 
         textGroupName = findViewById(R.id.text_group_name);
         textGroupName.setText(curGroup.getGroupName());
@@ -519,7 +570,7 @@ public class GroupActivity extends AppCompatActivity {
         btnInviteMembers = findViewById(R.id.btn_invite_members);
         groupSessionViews = findViewById(R.id.session_recycler_view);
         btnPayment = findViewById(R.id.btn_to_payment);
-
+        btnFinish = findViewById(R.id.btn_finish_group_activity);
         btnGroupMore = findViewById(R.id.btn_group_more);
 
         // Sliding Panel
@@ -551,6 +602,7 @@ public class GroupActivity extends AppCompatActivity {
     private void initParams() {
 
         createSessionDialog = new CreateSessionDialog(GroupActivity.this);
+        processDialog = new AppProcessDialog(GroupActivity.this);
 
         sessionAdapterData = new ArrayList<>();
         sessionRawDataHolder = new ArrayList<>();
@@ -596,7 +648,7 @@ public class GroupActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable @org.jetbrains.annotations.Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == 100) {
+        if (requestCode == 100 || requestCode == 102) { // 두 경로로 초대
             if (resultCode == RESULT_OK) {
 
                 if (data != null) { // 멤버가 추가될때마다 FCM Map 에 추가된다.
@@ -613,10 +665,10 @@ public class GroupActivity extends AppCompatActivity {
                 setNoticeView();
             }
         }
-
     }
 
     private String movingSessionUuid;
+    private boolean isCreatedWithSession;
 
     private void receiveIntent() {
 
@@ -641,10 +693,9 @@ public class GroupActivity extends AppCompatActivity {
             } // 나는 뺀다.
         }
 
-
         movingSessionUuid = dataIntent.getExtras().getString(getResources().getString(R.string.group_move_to_session_key), "");
+        isCreatedWithSession = dataIntent.getExtras().getBoolean("created_with_session", false);
 
-        Log.w("TAG", curGroup.toString());
 
     }
 
@@ -661,6 +712,8 @@ public class GroupActivity extends AppCompatActivity {
             sessionAdapterData.addAll(sessionRawDataHolder);
             groupSessionViews.setVisibility(View.VISIBLE);
             textNoResult.setVisibility(View.GONE);
+            sortSessionList(sessionAdapterData);
+
 
         } else {
 
@@ -714,6 +767,8 @@ public class GroupActivity extends AppCompatActivity {
 
     private void getRefreshedGroupInfos() {
 
+        processDialog.show();
+
         GroupRetrofitService groupRetrofit = GlobalRetrofit.getInstance().getRetrofit().create(GroupRetrofitService.class);
 
         groupRetrofit.getGroupAndMembers(curGroup.getUuid().toString())
@@ -744,6 +799,14 @@ public class GroupActivity extends AppCompatActivity {
 
                             } // 나는 뺀다.
                         }
+
+                        groupMembersUuid.clear(); // 아답터 전송 용도 같이 Refresh
+
+                        for (int i = 0; i < groupMembers.size(); i++) {
+
+                            groupMembersUuid.add((groupMembers.get(i)).getUuid().toString());
+
+                        }
                     }
 
                     @Override
@@ -763,6 +826,8 @@ public class GroupActivity extends AppCompatActivity {
 
                         GROUP_INFO_REFRESH_FLAG = false;
                         MainActivity.IS_MAIN_GROUP_INFO_REFRESH_NEEDED = true;
+
+                        processDialog.finish();
                     }
                 });
     }
@@ -781,10 +846,13 @@ public class GroupActivity extends AppCompatActivity {
 
         Collections.sort(preSortingList, byDate);
 
+
     }
 
 
     private void getGroupSessions() {
+
+        processDialog.show();
 
         GroupRetrofitService groupRetrofit = GlobalRetrofit.getInstance().getRetrofit().create(GroupRetrofitService.class);
 
@@ -846,8 +914,10 @@ public class GroupActivity extends AppCompatActivity {
                         // sortGroupSessionList();
                         if (!SESSION_LIST_REFRESH_FLAG) { // 초기화가 아닌 경우. (그냥 액티비티 들어왔을 떄)
                             initRecyclerView();
+//                            groupSessionViews.scrollToPosition(0);
 
-                        } else { // 초기화인 경우
+
+                        } else { // 재활용인 경우
 
                             Toast.makeText(getApplicationContext(), "세션 리스트를 재생성합니다아", Toast.LENGTH_SHORT).show();
 
@@ -887,6 +957,8 @@ public class GroupActivity extends AppCompatActivity {
 
                             movingSessionUuid = "";
                         }
+
+                        processDialog.finish();
                     }
                 });
     }

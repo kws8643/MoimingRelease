@@ -82,28 +82,32 @@ public class MoimingSessionResponseDTO {
         moimingSessionVO.setCurCost(curCost);
         moimingSessionVO.setFinished(isFinished);
 
-        if(userSessionList != null) {
-            List<UserSessionLinkerVO> usLinkerList = new ArrayList<>();
+        if (userSessionList != null) {
+            if (!userSessionList.isEmpty()) {
+                List<UserSessionLinkerVO> usLinkerList = new ArrayList<>();
 
-            for (USLinkerResponseDTO usLinker : userSessionList) {
-                UserSessionLinkerVO usLinkerVO = usLinker.convertToVO();
-                usLinkerList.add(usLinkerVO);
+                for (USLinkerResponseDTO usLinker : userSessionList) {
+                    UserSessionLinkerVO usLinkerVO = usLinker.convertToVO();
+                    usLinkerList.add(usLinkerVO);
+                }
+                moimingSessionVO.setUsLinkerList(usLinkerList);
             }
-            moimingSessionVO.setUsLinkerList(usLinkerList);
         }
 
-        if(nmuList != null) {
-            List<NonMoimingUserVO> nmuVoList = new ArrayList<>();
+        if (nmuList != null) {
+            if (!nmuList.isEmpty()) {
 
-            for (NonMoimingUserResponseDTO nmuDTO : nmuList) {
+                List<NonMoimingUserVO> nmuVoList = new ArrayList<>();
 
-                NonMoimingUserVO nmu = nmuDTO.convertToVO();
-                nmuVoList.add(nmu);
+                for (NonMoimingUserResponseDTO nmuDTO : nmuList) {
 
+                    NonMoimingUserVO nmu = nmuDTO.convertToVO();
+                    nmuVoList.add(nmu);
+
+                }
+                moimingSessionVO.setNmuList(nmuVoList);
             }
-            moimingSessionVO.setNmuList(nmuVoList);
         }
-
 
         LocalDateTime createdAtForm = LocalDateTime.parse(this.createdAt, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss"));
         moimingSessionVO.setCreatedAt(createdAtForm.truncatedTo(ChronoUnit.SECONDS));

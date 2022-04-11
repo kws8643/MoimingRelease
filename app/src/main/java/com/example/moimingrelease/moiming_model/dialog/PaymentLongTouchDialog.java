@@ -62,7 +62,7 @@ public class PaymentLongTouchDialog extends Dialog {
             @Override
             public void onClick(View v) {
 
-                paymentDialogListener.touchDelete(paymentData.getUuid().toString());
+                paymentDialogListener.touchDelete(paymentData.getUuid().toString(), paymentData.getPaymentName());
                 
                 finish();
 

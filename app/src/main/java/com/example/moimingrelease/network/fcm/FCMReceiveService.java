@@ -6,6 +6,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 
@@ -16,6 +17,9 @@ import androidx.core.app.NotificationManagerCompat;
 import com.example.moimingrelease.MainActivity;
 import com.example.moimingrelease.R;
 import com.example.moimingrelease.SplashActivity;
+import com.example.moimingrelease.moiming_model.request_dto.NotificationRequestDTO;
+import com.example.moimingrelease.network.GlobalRetrofit;
+import com.example.moimingrelease.network.NotificationRetrofitService;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
@@ -23,6 +27,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 // 안드 Comp. 중 Service 사용 --> Background State 에서도 액션을 받아준다
@@ -31,32 +36,114 @@ import java.util.UUID;
 
 public class FCMReceiveService extends FirebaseMessagingService {
 
+    private boolean isAppNotice;
+    private boolean isSessionRequest;
+    private boolean isSessionConfirm;
+    private boolean isGroupInvite;
+    private boolean isGroupPayment;
+
     public FCMReceiveService() {
 
         super();
 
     }
 
+//    UUID toUserUuid, UUID sentUserUuid, String sentActivity
+//            , UUID sentGroupUuid, UUID sentSessionUuid, Integer msgType, String msgText
+
+    // TODO: 서버에 공지사항 알림을 저장한다.
+    private void saveSystemNotification() {
+
+//        NotificationRequestDTO notiRequest = new NotificationRequestDTO();
+
+
+//        NotificationRetrofitService notiRetro = GlobalRetrofit.getInstance().getRetrofit().create(NotificationRetrofitService.class);
+
+//        notiRetro.createSystemNotification()
+
+
+    }
+
+
     @Override
     public void onMessageReceived(@NonNull @NotNull RemoteMessage remoteMessage) {
 
         super.onMessageReceived(remoteMessage);
 
+        Map<String, String> map = remoteMessage.getData(); // 설정한 key, value 들어있음
+        String getFrom = remoteMessage.getFrom();
+        String msgId = remoteMessage.getMessageId();
+        RemoteMessage.Notification noti = remoteMessage.getNotification(); // title, text 정보 들어있음
+
+
         if (remoteMessage.getData().size() > 0) {
 
-            String title = remoteMessage.getData().get("title");
-            String text = remoteMessage.getData().get("text");
-            String groupUuid = remoteMessage.getData().get("groupUuid");
-            String sessionUuid = remoteMessage.getData().get("sessionUuid");
+            checkFcmSettingInSp();
+
+            boolean isSending = false;
+
+            String activity = remoteMessage.getData().get("activity");
+            int type = Integer.parseInt(remoteMessage.getData().get("type"));
+
 
             MainActivity.IS_MAIN_GROUP_INFO_REFRESH_NEEDED = true; // 어떤 메시지가 오든 Main Layout 은 다시 형성한다.
 
+            if (activity.equals("system")) { // 공지사항 처리 필요한 경우
 
-            sendNotification(title, text, groupUuid, sessionUuid);
+                String title = remoteMessage.getNotification().getTitle();
+                String text = remoteMessage.getNotification().getBody();
+
+                // 포그라운드일 경우 > FCM 을 보내주면 된다. But
+                if (isAppNotice) isSending = true;
+
+                if (isSending) { //
+                    sendNotification(title, text, "", "");
+                }
+
+
+            } else { // 공지사항 외는 흐르는대로 흘리면 된다.
+
+                String title = remoteMessage.getData().get("title");
+                String text = remoteMessage.getData().get("text");
+                String groupUuid = remoteMessage.getData().get("groupUuid");
+                String sessionUuid = remoteMessage.getData().get("sessionUuid");
+
+
+                if (activity.equals("group")) {
+                    if (type == 0 || type == 1) {
+                        if (isGroupInvite) isSending = true;
+                    } else if (type == 2) {
+                        if (isGroupPayment) isSending = true;
+                    }
+                } else if (activity.equals("session")) {
+                    if (type == 1) {
+                        if (isSessionRequest) isSending = true;
+                    } else if (type == 2) {
+                        if (isSessionConfirm) isSending = true;
+                    }
+                }
+
+                if (isSending) {
+                    sendNotification(title, text, groupUuid, sessionUuid);
+                }
+
+            }
+
 
         }
     }
 
+    private void checkFcmSettingInSp() {
+
+        SharedPreferences spFcm = getSharedPreferences(SplashActivity.NOTI_SP_NAME, MODE_PRIVATE);
+
+        isAppNotice = spFcm.getBoolean("fcm_app_notice", true);
+        isSessionRequest = spFcm.getBoolean("fcm_session_request", true);
+        isSessionConfirm = spFcm.getBoolean("fcm_session_confirm", true);
+        isGroupInvite = spFcm.getBoolean("fcm_group_invite", true);
+        isGroupPayment = spFcm.getBoolean("fcm_group_payment", true);
+
+    }
 
     // 예시. 팝업 UI 처리하는 곳
     private void sendNotification(String title, String text, String groupUuid, String sessionUuid) {
@@ -73,11 +160,14 @@ public class FCMReceiveService extends FirebaseMessagingService {
 
         Intent intent = new Intent(getBaseContext(), SplashActivity.class);
         intent.putExtra("is_fcm_clicked", true);
+        intent.putExtra(getResources().getString(R.string.main_move_to_group_key), groupUuid);
+        intent.putExtra(getResources().getString(R.string.group_move_to_session_key), sessionUuid);
         intent.setAction(Intent.ACTION_MAIN);
         intent.addCategory(Intent.CATEGORY_LAUNCHER);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         PendingIntent pIntent = PendingIntent.getActivity(getBaseContext()
                 , 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
         /*
         Intent pendingIntent = new Intent(this, MainActivity.class);
         pendingIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

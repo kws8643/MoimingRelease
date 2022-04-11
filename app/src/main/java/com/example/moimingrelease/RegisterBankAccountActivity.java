@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -63,6 +64,7 @@ public class RegisterBankAccountActivity extends AppCompatActivity {
     private ConstraintLayout btnSelectBank;
     private TextView textSelectedBank;
     private EditText inputBankNumber;
+    private ImageView btnBack;
 
     private String selectedBankName;
     private String bankNumber;
@@ -76,7 +78,6 @@ public class RegisterBankAccountActivity extends AppCompatActivity {
             curUser = (MoimingUserVO) receivedIntent.getSerializableExtra(getResources().getString(R.string.moiming_user_data_key));
 
         }
-
     }
 
     @Override
@@ -89,6 +90,13 @@ public class RegisterBankAccountActivity extends AppCompatActivity {
         initView();
 
         initParams();
+
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
         btnUpdateAccount.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -118,6 +126,8 @@ public class RegisterBankAccountActivity extends AppCompatActivity {
     }
 
     private void initView() {
+
+        btnBack = findViewById(R.id.btn_back_bank_account);
 
         btnUpdateAccount = findViewById(R.id.btn_register_bank_account);
         textSelectedBank = findViewById(R.id.text_selected_bank);
@@ -177,6 +187,8 @@ public class RegisterBankAccountActivity extends AppCompatActivity {
                     @Override
                     public void onComplete() {
 
+                        isEdited = true;
+
                         Intent finishedRegister = new Intent();
 
                         MainActivity.IS_USER_UPDATED = true;
@@ -188,6 +200,17 @@ public class RegisterBankAccountActivity extends AppCompatActivity {
                         finish();
                     }
                 });
+    }
+
+    private boolean isEdited = false;
+
+    @Override
+    public void finish() {
+
+        if (!isEdited) {
+            setResult(RESULT_CANCELED);
+        }
+        super.finish();
     }
 
 }

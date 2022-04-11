@@ -38,7 +38,6 @@ public class SessionCreationPreviousFundingActivity extends AppCompatActivity {
             curUser = (MoimingUserVO) receivedIntent.getSerializableExtra(getResources().getString(R.string.moiming_user_data_key));
 
         }
-
     }
 
     @Override

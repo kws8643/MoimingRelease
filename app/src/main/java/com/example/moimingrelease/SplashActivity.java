@@ -32,7 +32,11 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
 public class SplashActivity extends AppCompatActivity {
 
     private final String SPLASH_TAG = "SPLASH_TAG";
+    public final static String NOTI_SP_NAME = "FCM_SETTING_SP";
     private boolean isFcmClicked = false;
+
+    private String movingGroupUuid;
+    private String movingSessionUuid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +44,8 @@ public class SplashActivity extends AppCompatActivity {
         setContentView(R.layout.activity_splash);
 
         receiveIntent();
+
+        checkNotificationSetting();
 
         Handler hd = new Handler();
         hd.postDelayed(new SplashHandler(), 200);
@@ -52,8 +58,38 @@ public class SplashActivity extends AppCompatActivity {
         if (receivedIntent.getExtras() != null) {
 
             isFcmClicked = receivedIntent.getBooleanExtra("is_fcm_clicked", false);
+            movingGroupUuid = receivedIntent.getExtras().getString(getResources().getString(R.string.main_move_to_group_key), "");
+            movingSessionUuid = receivedIntent.getExtras().getString(getResources().getString(R.string.group_move_to_session_key), "");
 
         }
+    }
+
+    private void checkNotificationSetting(){
+
+        SharedPreferences sharedPreferences = getSharedPreferences(NOTI_SP_NAME, MODE_PRIVATE);
+
+        boolean isNotiSet = sharedPreferences.getBoolean("is_notification_set", false);
+
+        if(!isNotiSet){
+
+            SharedPreferences.Editor spEdit = sharedPreferences.edit();
+            //1. app notice
+            spEdit.putBoolean("fcm_app_notice", true);
+            //2. send request
+            spEdit.putBoolean("fcm_session_request", true);
+            //3. send confirm
+            spEdit.putBoolean("fcm_session_confirm", true);
+            //4. group invite
+            spEdit.putBoolean("fcm_group_invite", true);
+            //5. group payment
+            spEdit.putBoolean("fcm_group_payment", true);
+
+            spEdit.putBoolean("is_notification_set", true);
+
+            spEdit.apply();
+
+        }
+
     }
 
 
@@ -62,6 +98,8 @@ public class SplashActivity extends AppCompatActivity {
         SharedPreferences sharedPreferences = getSharedPreferences(LoginActivity.SP_TOKEN, MODE_PRIVATE);
 
         String savedJwtToken = sharedPreferences.getString("jwt_token", "");
+
+//        String savedJwtToken = "";
 
         if (savedJwtToken.equals("")) { // 토큰이 없음.
 
@@ -100,7 +138,10 @@ public class SplashActivity extends AppCompatActivity {
                             // 3 현 로그인 유저를 VO로 넘기고, MainActivity를 실행한다.
                             Intent startMoiming = new Intent(SplashActivity.this, MainActivity.class);
                             startMoiming.putExtra("is_fcm_clicked", isFcmClicked);
-                            startMoiming.putExtra("moiming_user", loginUser);
+                            startMoiming.putExtra(getResources().getString(R.string.moiming_user_data_key), loginUser);
+                            startMoiming.putExtra(getResources().getString(R.string.main_move_to_group_key), movingGroupUuid);
+                            startMoiming.putExtra(getResources().getString(R.string.group_move_to_session_key), movingSessionUuid);
+
                             startActivity(startMoiming);
                             finish();
 

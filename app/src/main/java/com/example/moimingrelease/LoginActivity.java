@@ -19,6 +19,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.moimingrelease.moiming_model.dialog.AppProcessDialog;
 import com.example.moimingrelease.moiming_model.moiming_vo.MoimingUserVO;
 import com.example.moimingrelease.moiming_model.response_dto.MoimingUserResponseDTO;
 import com.example.moimingrelease.network.GlobalRetrofit;
@@ -44,6 +45,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.core.Observer;
+import io.reactivex.rxjava3.disposables.Disposable;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 import kotlin.Unit;
 import kotlin.jvm.functions.Function2;
 import retrofit2.Call;
@@ -59,19 +64,21 @@ public class LoginActivity extends AppCompatActivity {
     private SharedPreferences sharedPreferences;
 
     private ConstraintLayout btnKakao;
-    private Button btnToSignup;
     private FirebaseAuth firebaseAuth;
+
+    private AppProcessDialog processDialog;
+
 
     private void initView() {
 
         btnKakao = findViewById(R.id.btnKakao);
-        btnToSignup = findViewById(R.id.btn_to_signup);
 
     }
 
     private void initParams() {
 
         firebaseAuth = FirebaseAuth.getInstance();
+        processDialog = new AppProcessDialog(LoginActivity.this);
 
     }
 
@@ -88,25 +95,19 @@ public class LoginActivity extends AppCompatActivity {
         btnKakao.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                processDialog.show();
+
                 kakaoLogin();
             }
         });
-
-
-        btnToSignup.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                startActivity(new Intent(LoginActivity.this, SignupActivity.class));
-
-            }
-        });
-
     }
 
 
     //---------------------------------------------------------------------------------Kakao OAuth
 
+
+    private TransferModel<Map<String, Object>> responseDataModel;
 
     private void kakaoLogin() {
 
@@ -115,7 +116,9 @@ public class LoginActivity extends AppCompatActivity {
             public Unit invoke(OAuthToken token, Throwable error) { //OAuthToken 객체: 액토, 리토, 각각 만료시간의 정보를 담는 객체.
                 if (error != null) {
 
-                    Log.e(LOGIN_TAG, "카카오 로그인 실패:: ", error);
+                    Toast.makeText(getApplicationContext(), "카카오 로그인을 다시 시도하여 주세요", Toast.LENGTH_SHORT).show();
+                    processDialog.finish();
+
 
                 } else {
 
@@ -141,83 +144,94 @@ public class LoginActivity extends AppCompatActivity {
                     // 액토를 전달을 통한 API 서버의 인증 진행
                     AuthRetrofitService authService = GlobalRetrofit.getInstance().getRetrofit().create(AuthRetrofitService.class);
 
-                    authService.loginOrSignupUser(accessToken).enqueue(new Callback<TransferModel<Map<String, Object>>>() {
-                        @Override
-                        public void onResponse(Call<TransferModel<Map<String, Object>>> call, Response<TransferModel<Map<String, Object>>> response) {
+                    authService.loginOrSignupUser2(accessToken)
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(new Observer<TransferModel<Map<String, Object>>>() {
+                                @Override
+                                public void onSubscribe(@io.reactivex.rxjava3.annotations.NonNull Disposable d) {
 
-                            Log.w(LOGIN_TAG, response.body().toString());
+                                }
 
-                            if (response.isSuccessful()) {
+                                @Override
+                                public void onNext(@io.reactivex.rxjava3.annotations.NonNull TransferModel<Map<String, Object>> responseModel) {
 
-                                TransferModel<Map<String, Object>> authResponse = response.body();
-                                Map<String, Object> responseData = authResponse.getData();
-
-
-                                boolean isUser = (boolean) responseData.get("isUser");
-
-                                if (isUser) { // 우리 유저임을 확인
-
-                                    // 1 헤더에 있는 JWT 토큰을 꺼낸 뒤 저장한다.
-                                    String jwtToken = authResponse.getAuthentication();
-                                    Log.w(LOGIN_TAG, jwtToken);
-
-                                    SharedPreferences.Editor spEditor = sharedPreferences.edit();
-                                    spEditor.putString("jwt_token", jwtToken);
-                                    spEditor.commit();      // 참고) commit - 즉시 동기 저장, apply - 비동기 저장.
-
-                                    // 2 객체에 담겨있는 MoimingUser 데이터들을 통해서 현재 로그인한 객체를 만든다
-                                    MoimingUserVO loginUser = MoimingUserVO.parseDataToVO((Map<String, Object>) responseData.get("loginUser"));
-                                    Log.w(LOGIN_TAG, loginUser.toString());
-
-                                    //TODO: Login 시 Firebase Auth 도 받은 이메일로 로그인을 진행한다.
-                                    loginWithFirebase(loginUser);
+                                    responseDataModel = responseModel;
 
 
-                                } else { // 우리 유저가 아님. 회원가입을 실행
+                                }
 
-                                    // 1 카카오를 통해 서버단에서 전달해준 데이터들을 회원가입으로 전달해준다
-                                    Intent toSignup = new Intent(LoginActivity.this, SignupActivity.class);
+                                @Override
+                                public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {
 
-                                    String kakaoUid = (String) responseData.get("oauthUid");
-                                    String oauthEmail = (String) responseData.get("oauthEmail");
-                                    String userPfImg = "";
+                                    Toast.makeText(getApplicationContext(), "카카오를 연동할 수 없습니다. 다시 시도해주세요.", Toast.LENGTH_SHORT).show();
 
-                                    if (responseData.get("userPfImg") != null) {
-                                        userPfImg = (String) responseData.get("userPfImg");
+                                    if (e.getMessage() != null) {
+                                        Log.e(LOGIN_TAG, e.getMessage());
+                                    }
+                                }
+
+                                @Override
+                                public void onComplete() {
+
+                                    Map<String, Object> responseData = responseDataModel.getData();
+
+                                    boolean isOurUser = (boolean) responseData.get("isUser");
+
+                                    if (isOurUser) { // 우리 유저임을 확인
+
+                                        // 1 헤더에 있는 JWT 토큰을 꺼낸 뒤 저장한다.
+                                        String jwtToken = responseDataModel.getAuthentication();
+                                        Log.w(LOGIN_TAG, jwtToken);
+
+                                        SharedPreferences.Editor spEditor = sharedPreferences.edit();
+                                        spEditor.putString("jwt_token", jwtToken);
+                                        spEditor.commit();      // 참고) commit - 즉시 동기 저장, apply - 비동기 저장.
+
+                                        // 2 객체에 담겨있는 MoimingUser 데이터들을 통해서 현재 로그인한 객체를 만든다
+                                        MoimingUserVO loginUser = MoimingUserVO.parseDataToVO((Map<String, Object>) responseData.get("loginUser"));
+                                        Log.w(LOGIN_TAG, loginUser.toString());
+
+
+                                        //TODO: Login 시 Firebase Auth 도 받은 이메일로 로그인을 진행한다.
+                                        loginWithFirebase(loginUser);
+
+
+                                    } else { // 우리 유저가 아님. 회원가입을 실행
+
+                                        // 1 카카오를 통해 서버단에서 전달해준 데이터들을 회원가입으로 전달해준다
+                                        Intent toSignup = new Intent(LoginActivity.this, SignupActivity.class);
+
+                                        String kakaoUid = (String) responseData.get("oauthUid");
+                                        String oauthEmail = (String) responseData.get("oauthEmail");
+                                        String userPfImg = "";
+
+                                        if (responseData.get("userPfImg") != null) {
+                                            userPfImg = (String) responseData.get("userPfImg");
+                                        }
+
+                                        // 2 받은 데이터들을 Intent 에 담고 회원가입을 실행한다
+                                        toSignup.putExtra("oauth_uid", kakaoUid);
+                                        toSignup.putExtra("oauth_email", oauthEmail);
+                                        toSignup.putExtra("user_pf_img", userPfImg);
+
+                                        processDialog.finish();
+
+                                        startActivity(toSignup);
+
+                                        finish();
                                     }
 
-                                    // 2 받은 데이터들을 Intent 에 담고 회원가입을 실행한다
-                                    toSignup.putExtra("oauth_uid", kakaoUid);
-                                    toSignup.putExtra("oauth_email", oauthEmail);
-                                    toSignup.putExtra("user_pf_img", userPfImg);
-
-                                    startActivity(toSignup);
-
-                                    finish();
                                 }
-                            } else {
-
-                            }
-
-                        }
-
-                        @Override
-                        public void onFailure(Call<TransferModel<Map<String, Object>>> call, Throwable t) {
-
-                            Toast.makeText(getApplicationContext(), "카카오를 연동할 수 없습니다. 다시 시도해주세요.", Toast.LENGTH_SHORT).show();
-
-                            Log.e(LOGIN_TAG, t.getMessage());
-
-                        }
-                    });
-
-
+                            });
                 }
                 return null;
             }
         });
     }
 
+
+    // TODO: 얘는 꼭 필요한건지???? Splash 에서 자동로그인 하면 진행 안하는 Process, 로그인이 되어 있는 상태로 보는건지?
     private void loginWithFirebase(MoimingUserVO loginUser) { // 받아온 이메일과 oauthUid 로 진행.
 
 
@@ -229,7 +243,9 @@ public class LoginActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             // 3 현 로그인 유저를 VO로 넘기고, MainActivity를 실행한다.
                             Intent startMoiming = new Intent(LoginActivity.this, MainActivity.class);
-                            startMoiming.putExtra("moiming_user", loginUser);
+                            startMoiming.putExtra(getResources().getString(R.string.moiming_user_data_key), loginUser);
+
+                            processDialog.finish();
                             startActivity(startMoiming);
                             finish();
                         } else {

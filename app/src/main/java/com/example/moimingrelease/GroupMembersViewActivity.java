@@ -58,7 +58,7 @@ public class GroupMembersViewActivity extends AppCompatActivity {
         setContentView(R.layout.activity_group_members_view);
 
         receiveIntent();
-        
+
 
         initView();
 
@@ -78,9 +78,7 @@ public class GroupMembersViewActivity extends AppCompatActivity {
                 inviteMembersActivity.putExtra(getResources().getString(R.string.moiming_group_data_key), (Serializable) curGroup);
                 inviteMembersActivity.putExtra(getResources().getString(R.string.fcm_token_map), (Serializable) memberFcmTokenMap);
 
-                startActivity(inviteMembersActivity);
-
-                finish();
+                startActivityForResult(inviteMembersActivity, 100);
             }
         });
 
@@ -148,5 +146,36 @@ public class GroupMembersViewActivity extends AppCompatActivity {
         return (int) TypedValue.applyDimension
                 (TypedValue.COMPLEX_UNIT_DIP, dp, getResources().getDisplayMetrics());
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable @org.jetbrains.annotations.Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == 100) {
+            if (resultCode == RESULT_OK) {
+
+                if (data != null) { // 멤버가 추가될때마다 FCM Map 에 추가된다.
+
+                    List<String> addedUser = data.getStringArrayListExtra("added_user_uuid"); // 이걸 받아와서 그대로 전달.
+
+                    Intent finishIntent = new Intent();
+
+                    if (addedUser != null) {
+                        finishIntent.putStringArrayListExtra("added_user_uuid", (ArrayList<String>) addedUser);
+                        setResult(RESULT_OK, finishIntent);
+                    } else {
+                        setResult(RESULT_CANCELED);
+                    }
+
+                    finish();
+                }
+            } else { // 초대 하지 않음.
+
+                finish();
+
+            }
+        }
+    }
+
 
 }

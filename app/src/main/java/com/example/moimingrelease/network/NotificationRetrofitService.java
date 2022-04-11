@@ -16,6 +16,9 @@ import retrofit2.http.Path;
 
 public interface NotificationRetrofitService {
 
+    @POST("api/notification/createSystem")
+    Observable<TransferModel<String>> createSystemNotification(@Body TransferModel<NotificationRequestDTO> requestModel);
+
     @POST("api/notification/create")
     Observable<TransferModel<List<String>>> notificationCreateRequest(@Body TransferModel<List<NotificationRequestDTO>> requestModel);
 

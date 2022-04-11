@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -16,15 +17,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.moimingrelease.R;
-import com.example.moimingrelease.SessionCreationActivity;
 import com.example.moimingrelease.SessionCreationPreviousFundingActivity;
 import com.example.moimingrelease.app_adapter.PreviousFundingMemberInfoAdapter;
-import com.example.moimingrelease.app_adapter.PreviousFundingViewAdapter;
-import com.example.moimingrelease.moiming_model.extras.MoimingMembersDTO;
-import com.example.moimingrelease.moiming_model.moiming_vo.GroupPaymentVO;
-import com.example.moimingrelease.moiming_model.moiming_vo.MoimingGroupVO;
 import com.example.moimingrelease.moiming_model.moiming_vo.MoimingSessionVO;
-import com.example.moimingrelease.moiming_model.moiming_vo.MoimingUserVO;
 import com.example.moimingrelease.moiming_model.moiming_vo.NonMoimingUserVO;
 import com.example.moimingrelease.moiming_model.moiming_vo.UserSessionLinkerVO;
 import com.example.moimingrelease.moiming_model.recycler_view_model.PreviousSessionMemberStatusData;
@@ -39,11 +34,13 @@ public class ViewFundingInfoFragment extends Fragment {
 
     SessionCreationPreviousFundingActivity activity;
     private MoimingSessionVO curSession;
-
     private Button btnLoadPrevFunding;
 
-    private TextView textFundingCost, textFundingMemberCnt, textMoimingMemberCnt, textNmuCnt;
+    private TextView textFundingCost, textSingleCost, textFundingMemberCnt;
+    private boolean isSingleIdenticalVal = false;
+    private TextView isSingleIdentical, textNmuRef;
     private RecyclerView moimingMemberRecy, nmuRecy;
+    private ImageView btnBack;
 
     private List<PreviousSessionMemberStatusData> memberRecyclerDataList;
     private List<PreviousSessionMemberStatusData> nmuRecyclerDataList;
@@ -84,9 +81,16 @@ public class ViewFundingInfoFragment extends Fragment {
                 Intent loadFundingIntent = new Intent();
 
                 loadFundingIntent.putExtra(getResources().getString(R.string.moiming_session_data_key), (Serializable) curSession);
-
+                loadFundingIntent.putExtra("is_all_single_same", isSingleIdenticalVal);
                 activity.setResult(Activity.RESULT_OK, loadFundingIntent);
 
+                activity.finish();
+            }
+        });
+
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
                 activity.finish();
             }
         });
@@ -96,24 +100,59 @@ public class ViewFundingInfoFragment extends Fragment {
 
     private void initView(View view) {
 
+        btnBack = view.findViewById(R.id.btn_back_view_funding);
         btnLoadPrevFunding = view.findViewById(R.id.btn_load_funding);
 
         textFundingCost = view.findViewById(R.id.text_funding_total_cost);
         String cost = curSession.getTotalCost() + " 원";
         textFundingCost.setText(cost);
 
+        textSingleCost = view.findViewById(R.id.text_funding_single_cost);
+        String singleCost = curSession.getSingleCost() + "원";
+        textSingleCost.setText(singleCost);
+        isSingleIdentical = view.findViewById(R.id.is_single_cost_identical);
+        checkSingleIdentical();
+
         textFundingMemberCnt = view.findViewById(R.id.text_funding_member_cnt);
         String memberCnt = curSession.getSessionMemberCnt() + " 명";
         textFundingMemberCnt.setText(memberCnt);
 
-        // 아래 RecyList 들
-        textMoimingMemberCnt = view.findViewById(R.id.text_prev_moiming_cnt);
-        textNmuCnt = view.findViewById(R.id.text_prev_nmu_cnt);
-
         moimingMemberRecy = view.findViewById(R.id.funding_info_moiming_recy);
         nmuRecy = view.findViewById(R.id.funding_info_nmu_recy);
 
+        textNmuRef = view.findViewById(R.id.text_ref_4);
     }
+
+    private void checkSingleIdentical() {
+
+        int singleCost = curSession.getSingleCost();
+
+        for (UserSessionLinkerVO linker : curSession.getUsLinkerList()) {
+
+            if (singleCost != linker.getPersonalCost()) {
+                isSingleIdenticalVal = false;
+                isSingleIdentical.setVisibility(View.VISIBLE);
+                return;
+            }
+        }
+
+        if (curSession.getNmuList() != null) {
+            if (!curSession.getNmuList().isEmpty()) {
+                for (NonMoimingUserVO nmu : curSession.getNmuList()) {
+                    if (singleCost != nmu.getNmuPersonalCost()) {
+                        isSingleIdenticalVal = false;
+                        isSingleIdentical.setVisibility(View.VISIBLE);
+                        return;
+                    }
+                }
+            }
+        }
+
+        isSingleIdenticalVal = true;
+        isSingleIdentical.setVisibility(View.GONE);
+
+    }
+
 
     private void initParams() {
 
@@ -155,21 +194,22 @@ public class ViewFundingInfoFragment extends Fragment {
 
         // NMU 는 그냥 냅다  박으면 됨.
         if (curSession.getNmuList() != null) {
-            for (NonMoimingUserVO nmuVO : curSession.getNmuList()) {
-                PreviousSessionMemberStatusData nmuData = new PreviousSessionMemberStatusData(
-                        nmuVO.getNmuName()
-                        , nmuVO.getNmuPersonalCost()
-                );
-
-                nmuRecyclerDataList.add(nmuData);
+            if (!curSession.getNmuList().isEmpty()) {
+                for (NonMoimingUserVO nmuVO : curSession.getNmuList()) {
+                    PreviousSessionMemberStatusData nmuData = new PreviousSessionMemberStatusData(
+                            nmuVO.getNmuName()
+                            , nmuVO.getNmuPersonalCost()
+                    );
+                    nmuRecyclerDataList.add(nmuData);
+                }
+            } else { // 비어 있다면
+                textNmuRef.setVisibility(View.GONE);
+                nmuRecy.setVisibility(View.GONE);
             }
+        } else { // 없어도
+            textNmuRef.setVisibility(View.GONE);
+            nmuRecy.setVisibility(View.GONE);
         }
-
-        String mmCnt = memberRecyclerDataList.size() + " 명";
-        String nmuCnt = nmuRecyclerDataList.size() + " 명";
-
-        textMoimingMemberCnt.setText(mmCnt);
-        textNmuCnt.setText(nmuCnt);
 
     }
 

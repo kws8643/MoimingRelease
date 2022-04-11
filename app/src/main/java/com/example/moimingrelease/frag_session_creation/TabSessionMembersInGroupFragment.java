@@ -31,7 +31,7 @@ public class TabSessionMembersInGroupFragment extends Fragment {
     InviteSessionMembersInGroupActivity parentActivity;
 
     private ConstraintLayout layoutKmfSearch, layoutGroupMemberSearch;
-    private TextView btnSelectAll;
+    private TextView btnSelectAll, textNoResult;
     private EditText searchMember;
 
     boolean isNewGroupCreation;
@@ -63,7 +63,7 @@ public class TabSessionMembersInGroupFragment extends Fragment {
         }
     };
 
-    public void userRemoveBtnClicked(String memberUuid){
+    public void userRemoveBtnClicked(String memberUuid) {
 
         recyclerAdapter.removeMember(memberUuid);
     }
@@ -91,8 +91,11 @@ public class TabSessionMembersInGroupFragment extends Fragment {
         }
 
         if (adapterMembersList.size() == 0) { //  검색된 사람이 없을 경우
-
             // 결과 없다고 텍스트 보여주면 될 듯
+            textNoResult.setVisibility(View.VISIBLE);
+
+        } else {
+            textNoResult.setVisibility(View.GONE);
         }
 
         recyclerAdapter.notifyDataSetChanged();
@@ -140,6 +143,7 @@ public class TabSessionMembersInGroupFragment extends Fragment {
         layoutGroupMemberSearch = view.findViewById(R.id.layout_group_member_search);
         layoutKmfSearch = view.findViewById(R.id.layout_kmf_search);
 
+        textNoResult = view.findViewById(R.id.text_no_search_result);
         btnSelectAll = view.findViewById(R.id.btn_select_all_group_members);
 
         if (isNewGroupCreation) {
@@ -170,7 +174,8 @@ public class TabSessionMembersInGroupFragment extends Fragment {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(parentActivity);
         groupMembersRecyclerView.setLayoutManager(linearLayoutManager);
 
-        recyclerAdapter = new InviteSessionGroupMembersRecyclerAdapter(parentActivity.getApplicationContext(), adapterMembersList, parentActivity.getCheckBoxListener(), parentActivity.getPreInvitedMembersUuid(), isNewGroupCreation);
+        recyclerAdapter = new InviteSessionGroupMembersRecyclerAdapter(parentActivity.getApplicationContext()
+                , adapterMembersList, parentActivity.getCheckBoxListener(), parentActivity.getPreInvitedMembersUuid(), isNewGroupCreation);
         groupMembersRecyclerView.setAdapter(recyclerAdapter);
 
     }

@@ -17,4 +17,7 @@ public interface AuthRetrofitService {
     @GET("auth/login")
     Call<TransferModel<Map<String, Object>>> loginOrSignupUser(@Header("KakaoAccessToken") String accessToken);
 
+    @GET("auth/login")
+    Observable<TransferModel<Map<String, Object>>> loginOrSignupUser2(@Header("KakaoAccessToken") String accessToken);
+
 }

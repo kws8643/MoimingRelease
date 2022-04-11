@@ -76,8 +76,7 @@ public class SessionConfirmNotificationAdapter extends RecyclerView.Adapter<Sess
         NotificationResponseDTO notificationData = data.getNotification();
         UUID sentUserUuid = notificationData.getSentUserUuid();
 
-        String notiMsg = notificationData.getMsgText();
-        String showText = sentUser + "님이 " + notiMsg;
+        String showText = sentUser + "님이 확인 요청을 하였습니다!";
 
         holder.textMsg.setText(showText);
 

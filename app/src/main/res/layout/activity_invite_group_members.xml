@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:descendantFocusability="beforeDescendants"
@@ -9,42 +8,41 @@
 
 
     <Button
-        android:id = "@+id/btn_send_kakao_link"
+        android:id="@+id/btn_send_kakao_link"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignTop="@id/app_bar_invite_group_members"
+        android:layout_alignBottom="@id/app_bar_invite_group_members"
+        android:layout_alignParentRight="true"
         android:layout_marginRight="8dp"
         android:background="@android:color/transparent"
         android:text="카카오 초대장\n전송하기"
         android:textColor="@color/moimingTheme"
         android:textSize="10sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@id/app_bar_invite_group_members"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="@id/app_bar_invite_group_members" />
+        android:textStyle="bold" />
 
 
     <Button
         android:id="@+id/btn_send_invitation"
         android:layout_width="328dp"
         android:layout_height="48dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
         android:layout_marginBottom="16dp"
         android:background="@drawable/shape_main_bg"
         android:lineSpacingExtra="8sp"
         android:text="완료"
-        android:textSize="16sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
+        android:textSize="16sp" />
 
 
     <HorizontalScrollView
         android:id="@+id/horizontal_group_members_invite"
         android:layout_width="match_parent"
         android:layout_height="77dp"
+        android:layout_below="@id/text_invite_group_member_cnt"
+        android:layout_alignParentStart="true"
         android:scrollbars="none"
-        android:visibility="gone"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/text_invite_group_member_cnt">
+        android:visibility="gone">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -70,21 +68,23 @@
         android:id="@+id/text_invite_group_member_cnt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@id/app_bar_invite_group_members"
+        android:layout_alignParentLeft="true"
         android:layout_marginLeft="32dp"
         android:lineSpacingExtra="13sp"
         android:text="0명 초대"
         android:textColor="@color/textDark"
         android:textSize="10sp"
         android:textStyle="bold"
-        android:visibility="gone"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/app_bar_invite_group_members" />
+        android:visibility="gone" />
 
 
     <TextView
         android:id="@+id/text_kmf_no_result"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@id/layout_friends_search"
+        android:layout_centerHorizontal="true"
         android:layout_marginTop="48dp"
         android:lineSpacingExtra="7sp"
         android:text="친구를 찾을 수 없습니다"
@@ -101,12 +101,11 @@
         android:id="@+id/layout_friends_search"
         android:layout_width="328dp"
         android:layout_height="40dp"
+        android:layout_below="@id/horizontal_group_members_invite"
+        android:layout_centerHorizontal="true"
         android:layout_marginTop="8dp"
         android:background="@drawable/shape_gray_bg"
-        android:orientation="horizontal"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/horizontal_group_members_invite">
+        android:orientation="horizontal">
 
 
         <EditText
@@ -139,8 +138,7 @@
         android:id="@+id/app_bar_invite_group_members"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:layout_alignParentTop="true"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_alignParentTop="true">
 
         <ImageView
             android:id="@+id/btn_back_invite_members"
@@ -166,14 +164,19 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/friends_recycler_view"
+
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@id/layout_friends_search"
         android:layout_marginTop="24dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/layout_friends_search" />
+        android:fillViewport="true"
+        android:overScrollMode="never">
 
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/friends_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
+</RelativeLayout>

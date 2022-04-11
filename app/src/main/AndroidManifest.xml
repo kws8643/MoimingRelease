@@ -11,7 +11,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".MyPageServiceInfoActivity"></activity>
+        <activity android:name=".WelcomeActivity"></activity>
+        <activity android:name=".MyPageBankAccountActivity" />
+        <activity android:name=".MyPageServiceInfoActivity" />
         <activity android:name=".MyPageDeleteAccountActivity" />
         <activity android:name=".MyPageNotificationSettingActivity" />
         <activity android:name=".MyPageUserInfoActivity" />
@@ -27,7 +29,6 @@
         <activity android:name=".GroupPaymentActivity" />
         <activity android:name=".SearchGroupActivity" />
         <activity android:name=".SessionCreationInOldGroupActivity" />
-        <activity android:name=".InviteSessionMembersInMainActivity" />
         <activity
             android:name=".InviteSessionMembersInGroupActivity"
             android:windowSoftInputMode="adjustPan" />
@@ -46,7 +47,18 @@
         <activity
             android:name=".SessionCreationActivity"
             android:windowSoftInputMode="adjustPan" />
-        <activity android:name=".SessionActivity" />
+        <activity android:name=".SessionActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="kakaolink"
+                    android:scheme="@string/kakao_scheme" />
+            </intent-filter>
+        </activity>
         <activity android:name=".GroupCreationActivity" />
         <activity android:name=".GroupActivity" />
         <activity android:name=".SignupActivity" />

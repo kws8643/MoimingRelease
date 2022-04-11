@@ -149,10 +149,11 @@ public class NotificationResponseDTO implements Parcelable {
 
 
     protected NotificationResponseDTO(Parcel in) {
-
-        sentUserUuid = UUID.fromString(in.readString());
+        sentUserUuid = (UUID) in.readSerializable();
+//        sentUserUuid = UUID.fromString(in.readString());
         sentActivity = in.readString();
-        sentGroupUuid = UUID.fromString(in.readString());
+        sentGroupUuid = (UUID) in.readSerializable();
+//        sentGroupUuid = UUID.fromString(in.readString());
         sentSessionUuid = (UUID) in.readSerializable();
         msgType = in.readInt();
         msgText = in.readString();
@@ -162,9 +163,13 @@ public class NotificationResponseDTO implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(sentUserUuid.toString());
+
+
+//        dest.writeString(sentUserUuid.toString());
+        dest.writeSerializable(sentUserUuid);
         dest.writeString(sentActivity);
-        dest.writeString(sentGroupUuid.toString());
+        dest.writeSerializable(sentGroupUuid);
+//        dest.writeString(sentGroupUuid.toString());
         dest.writeSerializable(sentSessionUuid);
         dest.writeInt(msgType);
         dest.writeString(msgText);

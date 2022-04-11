@@ -15,9 +15,11 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.example.moimingrelease.app_listener_interface.CancelActivityCallBack;
 import com.example.moimingrelease.app_listener_interface.UserCheckBoxListener;
 import com.example.moimingrelease.frag_session_creation.TabNonMoimingSessionMembers;
 import com.example.moimingrelease.frag_session_creation.TabSessionMembersInGroupFragment;
+import com.example.moimingrelease.moiming_model.dialog.CancelActivityDialog;
 import com.example.moimingrelease.moiming_model.extras.MoimingMembersDTO;
 import com.example.moimingrelease.moiming_model.extras.KakaoMoimingFriendsDTO;
 import com.example.moimingrelease.moiming_model.moiming_vo.MoimingUserVO;
@@ -226,8 +228,32 @@ public class InviteSessionMembersInGroupActivity extends AppCompatActivity {
             }
         });
 
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CancelActivityDialog dialog = new CancelActivityDialog(InviteSessionMembersInGroupActivity.this, finishCallBack, "인원 설정이 적용되지 않습니다");
+
+                dialog.show();
+            }
+        });
+
 
     }
+
+    @Override
+    public void onBackPressed() {
+
+        btnBack.performClick();
+    }
+
+    private CancelActivityCallBack finishCallBack = new CancelActivityCallBack() {
+        @Override
+        public void finishActivity() {
+            setResult(RESULT_CANCELED);
+            finish();
+
+        }
+    };
 
     private void receiveIntent() {
 
@@ -252,9 +278,11 @@ public class InviteSessionMembersInGroupActivity extends AppCompatActivity {
         }
     }
 
+    private ImageView btnBack;
 
     private void initView() {
 
+        btnBack = findViewById(R.id.btn_back_invite_members_session);
         nmuInviteViewer = findViewById(R.id.viewer_non_moiming_member);
         textNmuCnt = findViewById(R.id.text_nmu_cnt);
         btnRemoveNmuViewer = findViewById(R.id.btn_remove_nmu_user);

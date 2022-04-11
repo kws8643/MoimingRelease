@@ -19,8 +19,10 @@ import androidx.core.content.res.ResourcesCompat;
 import com.example.moimingrelease.GroupPaymentActivity;
 import com.example.moimingrelease.GroupPaymentDateSelectActivity;
 import com.example.moimingrelease.R;
+import com.example.moimingrelease.app_listener_interface.PaymentSendFcmListener;
 import com.example.moimingrelease.moiming_model.extras.PaymentAndSenderDTO;
 import com.example.moimingrelease.moiming_model.moiming_vo.GroupPaymentVO;
+import com.example.moimingrelease.moiming_model.moiming_vo.MoimingGroupVO;
 import com.example.moimingrelease.moiming_model.moiming_vo.MoimingUserVO;
 import com.example.moimingrelease.moiming_model.request_dto.GroupPaymentRequestDTO;
 import com.example.moimingrelease.moiming_model.response_dto.GroupPaymentResponseDTO;
@@ -28,6 +30,8 @@ import com.example.moimingrelease.moiming_model.response_dto.MoimingGroupRespons
 import com.example.moimingrelease.network.GlobalRetrofit;
 import com.example.moimingrelease.network.GroupPaymentRetrofitService;
 import com.example.moimingrelease.network.TransferModel;
+
+import org.json.JSONException;
 
 import java.text.SimpleDateFormat;
 import java.time.DayOfWeek;
@@ -46,7 +50,7 @@ public class CreatePaymentDialog extends Dialog {
     private Context context;
 
     private MoimingUserVO curUser;
-    private String groupUuid;
+    private MoimingGroupVO curGroup;
 
     private ConstraintLayout btnSelectDate;
     private EditText inputName, inputCost;
@@ -58,6 +62,8 @@ public class CreatePaymentDialog extends Dialog {
 
     private LocalDate paymentDate = LocalDate.now();
     private boolean isPaymentAdded = false; // 통신 결과상 payment 가 added 되었는가?
+
+    private PaymentSendFcmListener fcmListener;
 
     // Update 중일때 필요한 변수들.
     private boolean isPaymentUpdating = false;
@@ -75,7 +81,7 @@ public class CreatePaymentDialog extends Dialog {
     }
 
 
-    public CreatePaymentDialog(@NonNull Context context, String groupUuid, MoimingUserVO curUser) {
+    public CreatePaymentDialog(@NonNull Context context, PaymentSendFcmListener fcmListener, MoimingGroupVO curGroup, MoimingUserVO curUser) {
 
         super(context);
         this.setCancelable(true);
@@ -83,7 +89,8 @@ public class CreatePaymentDialog extends Dialog {
         this.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
         this.context = context;
-        this.groupUuid = groupUuid;
+        this.fcmListener = fcmListener;
+        this.curGroup = curGroup;
         this.curUser = curUser;
 
     }
@@ -248,7 +255,7 @@ public class CreatePaymentDialog extends Dialog {
         Integer paymentCost = Integer.parseInt(inputCost.getText().toString());
         Boolean paymentType = type;
 
-        GroupPaymentRequestDTO paymentRequest = new GroupPaymentRequestDTO(UUID.fromString(groupUuid), paymentName, paymentCost, paymentType, paymentDate.toString());
+        GroupPaymentRequestDTO paymentRequest = new GroupPaymentRequestDTO(curGroup.getUuid(), paymentName, paymentCost, paymentType, paymentDate.toString());
         PaymentAndSenderDTO paymentData = new PaymentAndSenderDTO(curUser.getUuid(), paymentRequest);
 
         TransferModel<PaymentAndSenderDTO> requestModel = new TransferModel<>(paymentData);
@@ -287,11 +294,19 @@ public class CreatePaymentDialog extends Dialog {
 
                             isPaymentAdded = true;
 
-                            // TODO: FCM 알림을 보낸다
+                            String msg = curUser.getUserName() + "님이 " + curGroup.getGroupName() + "의 회계장부에서 "
+                                    + paymentName + "을 추가했어요";
 
+                            // TODO: FCM 알림을 보낸다
+                            try {
+                                fcmListener.sendFcm(msg);
+                            } catch (JSONException e) {
+                                if (e.getMessage() != null) {
+                                    Log.e("FCM Error:: ", e.getMessage());
+                                }
+                            }
                             // 3. dialog dismiss 를 한다.
                             finish();
-                            // 4. Activity의 RecyclerView 를 초기화한다.
 
                         }
                     });
@@ -326,6 +341,18 @@ public class CreatePaymentDialog extends Dialog {
                         @Override
                         public void onComplete() {
                             isPaymentAdded = true;
+
+                            String msg = curUser.getUserName() + "님이 " + curGroup.getGroupName() + "의 회계장부에서 "
+                                    + paymentName + "을 수정했어요";
+
+                            // TODO: FCM 알림을 보낸다
+                            try {
+                                fcmListener.sendFcm(msg);
+                            } catch (JSONException e) {
+                                if (e.getMessage() != null) {
+                                    Log.e("FCM Error:: ", e.getMessage());
+                                }
+                            }
 
                             finish(); // Dismiss 하면 알아서 자동으로 List Re-update 한다.
                         }
