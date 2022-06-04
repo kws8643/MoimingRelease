@@ -75,6 +75,18 @@ public class FCMRequest {
         JSONObject jsonSend = new JSONObject();
         jsonSend.put("message", jsonMessage);
 
+
+        /*{
+            "message":{
+                "token": "a8123123123123123",
+                "data":{
+
+                    "activity": "session",
+                    "":""
+                }
+            }
+        }*/
+
         return jsonSend;
 
     }

@@ -1,5 +1,6 @@
 package com.example.moimingrelease.app_adapter;
 
+import android.app.Notification;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.ShapeDrawable;
@@ -26,6 +27,7 @@ import com.example.moimingrelease.moiming_model.recycler_view_model.MainRecycler
 import com.example.moimingrelease.moiming_model.moiming_vo.MoimingGroupVO;
 import com.example.moimingrelease.moiming_model.moiming_vo.MoimingUserVO;
 import com.example.moimingrelease.moiming_model.dialog.GroupLongTouchDialog;
+import com.example.moimingrelease.moiming_model.response_dto.NotificationResponseDTO;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -104,8 +106,11 @@ public class MainRecyclerAdapter extends RecyclerView.Adapter<MainRecyclerAdapte
         holder.mainRecyclerGroupName.setText(itemData.getGroupData().getMoimingGroup().getGroupName());
 
         String groupUuid = itemData.getGroupData().getMoimingGroup().getUuid().toString();
+
         if (fixedGroupUuidList.contains(groupUuid)) {
+
             holder.imgPinned.setVisibility(View.VISIBLE);
+
         } else {
             holder.imgPinned.setVisibility(View.GONE);
 
@@ -123,8 +128,8 @@ public class MainRecyclerAdapter extends RecyclerView.Adapter<MainRecyclerAdapte
 
                 if (!groupNotiList.get(i).getNotification().getRead()) { // 하나라도 안읽은게 있다면
 
-                    holder.imgNotice.setVisibility(View.VISIBLE); // 발견하자마자 그걸로 세팅한다
-                    recentNoti = groupNotiList.get(i);
+                    holder.imgNotice.setVisibility(View.VISIBLE);
+                    recentNoti = groupNotiList.get(i); // 발견하자마자 그걸로 세팅한다
                     break;
                 }
             }
@@ -133,9 +138,9 @@ public class MainRecyclerAdapter extends RecyclerView.Adapter<MainRecyclerAdapte
                 recentNoti = groupNotiList.get(0);
             }
 
-            String msg = recentNoti.getNotification().getMsgText();
+            String strMsg = parseNoticeText(recentNoti);
 
-            holder.mainRecyclerGroupRecentNotice.setText(msg);
+            holder.mainRecyclerGroupRecentNotice.setText(strMsg);
 
 
         } else {
@@ -145,6 +150,86 @@ public class MainRecyclerAdapter extends RecyclerView.Adapter<MainRecyclerAdapte
         }
 
     }
+
+
+    /**
+     * 알림 종류: sentActivity = group / session
+     * <p>
+     * group
+     * 0) 내가 있는 그룹에 (누군가)가 (새유저)를 초대함
+     * 1) (누군가)가 (*나*)를 (새로운 그룹)에 초대함
+     * 2) (기존 그룹)의 회계장부에 변경사항이 생김
+     * <p>
+     * session
+     * 1) (총무)가 (*나*) 에게 (정산활동)에 대한 정산요청을 보냄
+     * 2) (정산참여인원)이 (나:총무)에게 정산확인 요청을 보냄
+     */
+
+
+    private String parseNoticeText(ReceivedNotificationDTO recentNoti) {
+
+        NotificationResponseDTO sentNoti = recentNoti.getNotification();
+
+        if (sentNoti.getSentActivity().equals("group")) {
+
+            String strMsg = "";
+            String inviter = recentNoti.getSentUserName();
+
+
+            switch (sentNoti.getMsgType()) {
+                case 0:
+
+                    int index = sentNoti.getMsgText().indexOf("이");
+                    String invitedMembers = sentNoti.getMsgText().substring(0, index);
+
+                    strMsg += invitedMembers;
+                    strMsg += "이 " + inviter + "님에게 초대됨";
+                    break;
+
+                case 1:
+                    strMsg = "회원님이 " + inviter + "님에게 초대됨";
+                    break;
+
+                case 2:
+
+                    String changer = recentNoti.getSentUserName();
+                    strMsg = changer + "님이 회계장부 내역을 ";
+                    if (sentNoti.getMsgText().contains("추가")) {
+                        strMsg += "추가";
+                    } else if (sentNoti.getMsgText().contains("수정")) {
+                        strMsg += "수정";
+                    } else { // 삭제
+                        strMsg += "삭제";
+                    }
+                    break;
+
+            }
+
+            return strMsg;
+
+
+        } else if (sentNoti.getSentActivity().equals("session")) {
+
+            String strMsg = "";
+            String sessionName = recentNoti.getSentSessionName();
+            String sender = recentNoti.getSentUserName();
+
+            switch (sentNoti.getMsgType()) {
+                case 1:
+                    strMsg = sender + "님의 '" + sessionName + "' 정산 요청";
+                    break;
+                case 2:
+                    strMsg = sender + "님의 '" + sessionName + "' 송금 확인 요청";
+                    break;
+            }
+
+            return strMsg;
+
+        } else { // 이샹한게 여기로 들어옴.
+            return recentNoti.getNotification().getMsgText();
+        }
+    }
+
 
     @Override
     public int getItemCount() {

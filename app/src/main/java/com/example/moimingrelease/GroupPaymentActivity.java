@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.moimingrelease.app_adapter.AppExtraMethods;
 import com.example.moimingrelease.app_adapter.GroupPaymentViewAdapter;
 import com.example.moimingrelease.app_listener_interface.PaymentSendFcmListener;
 import com.example.moimingrelease.app_listener_interface.PaymentSettingDialogListener;
@@ -83,7 +84,6 @@ public class GroupPaymentActivity extends AppCompatActivity {
                         .buildFcmJsonData("group", String.valueOf(2), "회계 장부", fcmMsg, ""
                                 , curGroup.getUuid().toString()
                                 , "", fcmTokenList.get(i));
-
 
                 RequestBody reBody = RequestBody.create(MediaType.parse("application/json, charset-utf8")
                         , String.valueOf(jsonSend));
@@ -379,7 +379,7 @@ public class GroupPaymentActivity extends AppCompatActivity {
 
         }
 
-        String modify = calculated + " 원";
+        String modify = AppExtraMethods.moneyToWonWon(calculated) + " 원";
         textCurCost.setText(modify);
 
         Collections.reverse(paymentRecyclerList);

@@ -6,6 +6,9 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -19,6 +22,7 @@ import androidx.core.content.res.ResourcesCompat;
 import com.example.moimingrelease.GroupPaymentActivity;
 import com.example.moimingrelease.GroupPaymentDateSelectActivity;
 import com.example.moimingrelease.R;
+import com.example.moimingrelease.app_adapter.AppExtraMethods;
 import com.example.moimingrelease.app_listener_interface.PaymentSendFcmListener;
 import com.example.moimingrelease.moiming_model.extras.PaymentAndSenderDTO;
 import com.example.moimingrelease.moiming_model.moiming_vo.GroupPaymentVO;
@@ -65,6 +69,8 @@ public class CreatePaymentDialog extends Dialog {
 
     private PaymentSendFcmListener fcmListener;
 
+    private String moneyResult = "";
+
     // Update 중일때 필요한 변수들.
     private boolean isPaymentUpdating = false;
     private String updatingPaymentUuid;
@@ -95,12 +101,38 @@ public class CreatePaymentDialog extends Dialog {
 
     }
 
+    private TextWatcher moneyWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
+
+            if (!TextUtils.isEmpty(charSequence.toString()) && !charSequence.toString().equals(moneyResult)) {
+
+                moneyResult = AppExtraMethods.wonFormat.format(Double.parseDouble(charSequence.toString().replaceAll(",", "")));
+                inputCost.setText(moneyResult);
+                inputCost.setSelection(moneyResult.length());
+            }
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.view_dialog_payment_add);
 
         initView();
+
+        inputCost.addTextChangedListener(moneyWatcher);
 
         btnCreate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -252,7 +284,7 @@ public class CreatePaymentDialog extends Dialog {
 
         // 2. payment creation 을 진행한다.
         String paymentName = inputName.getText().toString();
-        Integer paymentCost = Integer.parseInt(inputCost.getText().toString());
+        Integer paymentCost = Integer.parseInt(AppExtraMethods.wonToNormal(inputCost.getText().toString()));
         Boolean paymentType = type;
 
         GroupPaymentRequestDTO paymentRequest = new GroupPaymentRequestDTO(curGroup.getUuid(), paymentName, paymentCost, paymentType, paymentDate.toString());

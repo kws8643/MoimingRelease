@@ -70,13 +70,20 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/payment_recycler"
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="21dp"
-        app:layout_constraintTop_toBottomOf="@id/text_ref" />
+        app:layout_constraintTop_toBottomOf="@id/text_ref" >
 
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/payment_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            />
+
+    </androidx.core.widget.NestedScrollView>
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
         android:id="@+id/btn_add_payment"
         android:layout_width="56dp"

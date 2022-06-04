@@ -18,6 +18,7 @@ import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.moimingrelease.GroupActivity;
 import com.example.moimingrelease.MainActivity;
@@ -86,6 +87,8 @@ public class MoimingHomeFragment extends Fragment {
     public RecyclerView mainRecyclerView;
     private ScrollView notiScroll;
     MainRecyclerAdapter mainRecyclerAdapter;
+
+    private SwipeRefreshLayout layoutSwipe;
 
     public void setAdapterRecyclerClickable(boolean isClickable) {
 
@@ -197,6 +200,16 @@ public class MoimingHomeFragment extends Fragment {
 
         getUgLinkers();
 
+        layoutSwipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+
+                mainActivity.refreshBySwipe();
+
+                layoutSwipe.setRefreshing(false);
+            }
+        });
+
         return view;
 
     }
@@ -207,6 +220,8 @@ public class MoimingHomeFragment extends Fragment {
         mainRecyclerView = view.findViewById(R.id.main_recycler_view);
 
         notiScroll = view.findViewById(R.id.noti_main_scroll);
+
+        layoutSwipe = view.findViewById(R.id.layout_swipe_main);
 
     }
 
@@ -285,12 +300,10 @@ public class MoimingHomeFragment extends Fragment {
 
                             ReceivedNotificationDTO dto = mainActivity.rawNotificationList.get(i);
 
-                            if (dto.getNotification().getSentGroupUuid() != null) {
-                                if (dto.getNotification().getSentGroupUuid().toString().length() != 0) {
-                                    List<ReceivedNotificationDTO> value = mainActivity.rawNotificationMap.get(dto.getNotification().getSentGroupUuid());
-                                    value.add(dto);
-                                    mainActivity.rawNotificationMap.put(dto.getNotification().getSentGroupUuid(), value);
-                                }
+                            if (!dto.getNotification().getSentActivity().equals("system")) {
+                                List<ReceivedNotificationDTO> value = mainActivity.rawNotificationMap.get(dto.getNotification().getSentGroupUuid());
+                                value.add(dto);
+                                mainActivity.rawNotificationMap.put(dto.getNotification().getSentGroupUuid(), value);
                             }
                         }
 
@@ -432,16 +445,22 @@ public class MoimingHomeFragment extends Fragment {
 
         }
 
+        // System 노티 때문에 에러 발생
+
+        // 받은 노티가 있어서 돌리는데,
         for (int i = 0; i < mainActivity.rawNotificationList.size(); i++) { // TODO 2: 앞에서 Raw Notification Map 에 노티 하나씩 돌려가면서 맞는 위치에 넣어준다.
 
+            // dto 는 시스템 공지인데,
             ReceivedNotificationDTO dto = mainActivity.rawNotificationList.get(i);
 
-            List<ReceivedNotificationDTO> value = mainActivity.rawNotificationMap.get(dto.getNotification().getSentGroupUuid()); // 쌓여있는 List 를 가져와서,
+            if (!dto.getNotification().getSentActivity().equals("system")) {
+                // 시스템 노티 이므로 해당하는 group 이 없어서, value 객체가 null
+                List<ReceivedNotificationDTO> value = mainActivity.rawNotificationMap.get(dto.getNotification().getSentGroupUuid()); // 쌓여있는 List 를 가져와서,
 
-            value.add(dto); // 이번 dto 를 추가해주고,
+                value.add(dto); // 이번 dto 를 추가해주고,
 
-            mainActivity.rawNotificationMap.put(dto.getNotification().getSentGroupUuid(), value); // set 해준다.
-
+                mainActivity.rawNotificationMap.put(dto.getNotification().getSentGroupUuid(), value); // set 해준다.
+            }
         }
 
         for (int i = 0; i < rawDataList.size(); i++) {

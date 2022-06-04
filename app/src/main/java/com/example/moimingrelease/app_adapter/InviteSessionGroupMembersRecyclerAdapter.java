@@ -38,7 +38,10 @@ public class InviteSessionGroupMembersRecyclerAdapter extends RecyclerView.Adapt
 
     private Map<String, CheckBox> checkBoxMap;
 
-    public InviteSessionGroupMembersRecyclerAdapter(Context context, List<MoimingMembersDTO> groupMembers, UserCheckBoxListener checkBoxListener, List<String> preInvitedMembersUuid, boolean fromNewGroupCreation) {
+    public InviteSessionGroupMembersRecyclerAdapter(Context context, List<MoimingMembersDTO> groupMembers
+            , UserCheckBoxListener checkBoxListener
+            , List<String> preInvitedMembersUuid
+            , boolean fromNewGroupCreation) {
 
         this.context = context;
         this.groupMembers = groupMembers;
@@ -72,9 +75,9 @@ public class InviteSessionGroupMembersRecyclerAdapter extends RecyclerView.Adapt
         Glide.with(context).load(member.getUserPfImg()).into(holder.memberRecyclerImg);
 
 
-        if(checkedMemberList.contains(member.getUuid().toString())){
+        if (checkedMemberList.contains(member.getUuid().toString())) {
             holder.memberIsChecked.setChecked(true);
-        }else{
+        } else {
             holder.memberIsChecked.setChecked(false);
         }
 
@@ -85,21 +88,34 @@ public class InviteSessionGroupMembersRecyclerAdapter extends RecyclerView.Adapt
 
                 CheckBox cb = (CheckBox) v;
 
-                if(cb.isChecked()) {
+                if (cb.isChecked()) {
                     checkedMemberList.add(member.getUuid().toString());
-                }else{
+                } else {
                     checkedMemberList.remove(member.getUuid().toString());
                 }
                 checkBoxListener.onCheckBoxClick(cb.isChecked(), member);
-
             }
         });
 
+        // set 상태만 바꿔주고, call onClick 을 통해서 listener 를 작동시킨다.
         if (preInvitedMembersUuid.contains(member.getUuid().toString())) {
 
             holder.memberIsChecked.setChecked(true);
             holder.memberIsChecked.callOnClick();
             preInvitedMembersUuid.remove(member.getUuid().toString());
+        }
+    }
+
+    public void addAllMember() {
+
+        for (MoimingMembersDTO memberDto : groupMembers) {
+
+            String memberUuid = memberDto.getUuid().toString();
+            if(!checkedMemberList.contains(memberUuid)){
+                checkBoxMap.get(memberUuid).setChecked(true);
+                checkBoxMap.get(memberUuid).callOnClick();
+            }
+
         }
     }
 

@@ -68,13 +68,6 @@ public class FCMReceiveService extends FirebaseMessagingService {
     @Override
     public void onMessageReceived(@NonNull @NotNull RemoteMessage remoteMessage) {
 
-        super.onMessageReceived(remoteMessage);
-
-        Map<String, String> map = remoteMessage.getData(); // 설정한 key, value 들어있음
-        String getFrom = remoteMessage.getFrom();
-        String msgId = remoteMessage.getMessageId();
-        RemoteMessage.Notification noti = remoteMessage.getNotification(); // title, text 정보 들어있음
-
 
         if (remoteMessage.getData().size() > 0) {
 
@@ -85,19 +78,19 @@ public class FCMReceiveService extends FirebaseMessagingService {
             String activity = remoteMessage.getData().get("activity");
             int type = Integer.parseInt(remoteMessage.getData().get("type"));
 
-
             MainActivity.IS_MAIN_GROUP_INFO_REFRESH_NEEDED = true; // 어떤 메시지가 오든 Main Layout 은 다시 형성한다.
 
             if (activity.equals("system")) { // 공지사항 처리 필요한 경우
 
-                String title = remoteMessage.getNotification().getTitle();
-                String text = remoteMessage.getNotification().getBody();
+                String title = remoteMessage.getData().get("title");
+                String text = remoteMessage.getData().get("text");
+                String groupUuid = remoteMessage.getData().get("groupUuid");
+                String sessionUuid = remoteMessage.getData().get("sessionUuid");
 
-                // 포그라운드일 경우 > FCM 을 보내주면 된다. But
                 if (isAppNotice) isSending = true;
 
                 if (isSending) { //
-                    sendNotification(title, text, "", "");
+                sendNotification(title, text, groupUuid, sessionUuid);
                 }
 
 
@@ -185,8 +178,9 @@ public class FCMReceiveService extends FirebaseMessagingService {
                 .setContentTitle(title)
                 .setContentText(text)
                 .setAutoCancel(true)
-                .setPriority(NotificationCompat.PRIORITY_HIGH)
-                .setContentIntent(pIntent);
+                .setFullScreenIntent(pIntent, true)
+                .setPriority(NotificationCompat.PRIORITY_HIGH);
+//                .setContentIntent(pIntent);
 
         NotificationManager notiManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
@@ -212,16 +206,4 @@ public class FCMReceiveService extends FirebaseMessagingService {
         super.onNewToken(s);
     }
 
-
-    private boolean isAppRunning(Context context) {
-        ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-        List<ActivityManager.RunningAppProcessInfo> procInfos = activityManager.getRunningAppProcesses();
-        for (int i = 0; i < procInfos.size(); i++) {
-            if (procInfos.get(i).processName.equals(context.getPackageName())) {
-                return true;
-            }
-        }
-
-        return false;
-    }
 }

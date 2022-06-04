@@ -144,7 +144,7 @@ public class NotificationRecyclerAdapter extends RecyclerView.Adapter<Notificati
                         moveIntent.putExtra(mContext.getResources().getString(R.string.group_move_to_session_key), notiDto.getSentSessionUuid().toString());
 
                     }
-                } else { // System
+                } else { // System // Type 도 좀 ㅎ
 
                     moveIntent = new Intent(mContext, WelcomeActivity.class);
 

@@ -77,7 +77,6 @@ public class MainActivity extends AppCompatActivity {
     public MoimingUserVO curMoimingUser;
 
     private ExtendedFloatingActionButton btnDutchpay, btnDutchpayOld, btnDutchpayNew;
-    private FrameLayout mainFrame;
     private View transparent_bg;
     //    private Animation main_fab_open, main_fab_close;
 
@@ -123,8 +122,6 @@ public class MainActivity extends AppCompatActivity {
                     break;
 
                 case R.id.btn_main_reserve:
-
-
 /*
                     fragmentTransaction.replace(R.id.frame_main, reserveFragment).commit();
 
@@ -152,8 +149,6 @@ public class MainActivity extends AppCompatActivity {
                     break;
 
                 case R.id.btn_dutchpay_old:
-                    Toast.makeText(getApplicationContext(), "기존 그룹원들과 더치페이를 합니다.", Toast.LENGTH_SHORT).show();
-
                     Intent toSessionInOldGroup = new Intent(MainActivity.this, SessionCreationInOldGroupActivity.class);
 
                     toSessionInOldGroup.putExtra(getResources().getString(R.string.moiming_user_data_key), curMoimingUser);
@@ -166,8 +161,6 @@ public class MainActivity extends AppCompatActivity {
                     break;
 
                 case R.id.btn_dutchpay_new:
-
-                    Toast.makeText(getApplicationContext(), "새 그룹원들과 더치페이를 합니다.", Toast.LENGTH_SHORT).show();
 
                     Intent toSessionInNewGroup = new Intent(MainActivity.this, SessionCreationActivity.class);
 
@@ -404,6 +397,11 @@ public class MainActivity extends AppCompatActivity {
                         Log.e("Working Log 9: ", "WORKS!");
                         parseNotification();
 
+                        if (!isActivityResuming) { // Resume 후에만 refresh 진행한다. 아닐 경우 그냥 다 initialize.
+                            IS_NOTIFICATION_REFRESH_NEEDED = false;
+                            IS_MAIN_GROUP_INFO_REFRESH_NEEDED = false;
+                        }
+
                         // 나머지 아답터에 전달해서 아답터에서 해결!
                         if (IS_NOTIFICATION_REFRESH_NEEDED || IS_MAIN_GROUP_INFO_REFRESH_NEEDED) { //  이거 중이라서 여기 온거면
                             Log.e("Working Log 10: ", "WORKS!" + IS_NOTIFICATION_REFRESH_NEEDED + "," + IS_MAIN_GROUP_INFO_REFRESH_NEEDED);
@@ -488,7 +486,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void initView() {
 
-        mainFrame = findViewById(R.id.frame_main);
         viewNotification = findViewById(R.id.view_notification_cnt);
 
         mainNavigation = findViewById(R.id.main_navigation);
@@ -553,11 +550,23 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public void refreshBySwipe(){
+
+        isActivityResuming = true;
+        IS_MAIN_GROUP_INFO_REFRESH_NEEDED = true;
+        receiveNotification();
+
+    }
+
+    private boolean isActivityResuming = false;
+
     // 다른 액티비티 후에 돌아올 경우 onRestart 가 실행된다.
     @Override
     protected void onRestart() {
         super.onRestart();
         Log.e("FLAG_TAG: 4", String.valueOf(MainActivity.IS_MAIN_GROUP_INFO_REFRESH_NEEDED));
+
+        isActivityResuming = true;
 
         if (IS_USER_UPDATED) { // Refresh 가 필요한 경우
 

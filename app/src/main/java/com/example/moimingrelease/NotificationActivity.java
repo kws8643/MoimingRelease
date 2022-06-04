@@ -96,7 +96,7 @@ public class NotificationActivity extends AppCompatActivity {
 
         // 1. system Comes First
         for (int i = 0; i < tempList.size(); i++) {
-            if (tempList.get(i).getNotification().getSentActivity().equals("system")) {
+            if (tempList.get(i).getNotification().getSentActivity().equals("system")) { // 시스템인 것들을 하나씩 넣는다.
                 notificationList.add(tempList.get(i));
                 tempList.remove(i);
                 i--; // 제거 시 하나가 밀림
@@ -105,13 +105,21 @@ public class NotificationActivity extends AppCompatActivity {
 
         Collections.sort(notificationList, byDate);
 
+        for(int i =0 ; i < notificationList.size(); i++){
+            if(i != 0){
+                notificationList.remove(i);
+                i--;
+            }
+        }// 최근 시스템 알림을 제외하고 모두 삭제
+
+
         // 2. Else goes as time
         Collections.sort(tempList, byDate);
         notificationList.addAll(tempList);
 
     }
 
-
+    // 최근 것이 앞쪽으로 온다
     Comparator<ReceivedNotificationDTO> byDate = new Comparator<ReceivedNotificationDTO>() {
         @Override
         public int compare(ReceivedNotificationDTO dto1, ReceivedNotificationDTO dto2) {

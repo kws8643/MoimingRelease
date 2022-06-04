@@ -45,7 +45,7 @@ public class ViewGroupInfoFragment extends Fragment {
     private MoimingGroupVO selectedGroup;
     private MoimingUserVO curUser;
 
-    private ImageView imgGroupPf;
+    private ImageView imgGroupPf, btnFinish;
     private TextView textGroupName, textGroupInfo, textMemberCnt;
     private GridLayout layoutMembersGrid;
     private Button btnChooseGroup;
@@ -86,6 +86,13 @@ public class ViewGroupInfoFragment extends Fragment {
 
         fillGridLayout();
 
+        btnFinish.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                activity.onBackPressed();
+            }
+        });
+
         btnChooseGroup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -98,6 +105,7 @@ public class ViewGroupInfoFragment extends Fragment {
                 createDutchpay.putParcelableArrayListExtra(GroupActivity.MOIMING_GROUP_MEMBERS_KEY, (ArrayList<MoimingMembersDTO>) membersList);
 //                createDutchpay.putExtra(activity.getResources().getString(R.string.session_creation_from_group_activity_flag), false);
                 createDutchpay.putExtra(activity.getResources().getString(R.string.session_creation_with_new_group_flag), false);
+                createDutchpay.putExtra("from_main_activity", true);
 
                 activity.startActivity(createDutchpay);
 
@@ -128,6 +136,7 @@ public class ViewGroupInfoFragment extends Fragment {
 
         layoutMembersGrid = view.findViewById(R.id.layout_grid_members);
 
+        btnFinish = view.findViewById(R.id.btn_back_view_group);
     }
 
     private void initParams() {

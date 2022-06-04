@@ -70,7 +70,7 @@ public class SessionUnfinishedMembersAdapter extends RecyclerView.Adapter<Sessio
 
         holder.textName.setText(thisUser.getUserName());
 
-        String text = membersLinkerData.getPersonalCost() + "원";
+        String text = AppExtraMethods.moneyToWonWon(membersLinkerData.getPersonalCost()) + "원";
         holder.textPersonalCost.setText(text);
 
         holder.isFinished.setChecked(false);
@@ -96,6 +96,7 @@ public class SessionUnfinishedMembersAdapter extends RecyclerView.Adapter<Sessio
 
 
         sentRequestBtnMap.put(thisUser.getUuid(), holder.btnSendRequest);
+
         // TODO: 해당 유저에게 송금 요청을 보냅니다
         holder.btnSendRequest.setOnClickListener(new View.OnClickListener() {
             @Override

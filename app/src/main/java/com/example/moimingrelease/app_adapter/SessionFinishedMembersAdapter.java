@@ -91,7 +91,7 @@ public class SessionFinishedMembersAdapter extends RecyclerView.Adapter<SessionF
 
             }
 
-            cost = memberData.getPersonalCost() + " 원";
+            cost = AppExtraMethods.moneyToWonWon(memberData.getPersonalCost()) + " 원";
 
             holder.isNotSent.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -112,7 +112,7 @@ public class SessionFinishedMembersAdapter extends RecyclerView.Adapter<SessionF
             NonMoimingUserVO thisMember = memberData.getNmuUser();
 
             name = thisMember.getNmuName();
-            cost = thisMember.getNmuPersonalCost() + " 원";
+            cost = AppExtraMethods.moneyToWonWon(thisMember.getNmuPersonalCost()) + " 원";
 
             holder.imgCreator.setVisibility(View.GONE);
 

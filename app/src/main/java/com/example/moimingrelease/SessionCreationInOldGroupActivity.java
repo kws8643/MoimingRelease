@@ -37,6 +37,8 @@ public class SessionCreationInOldGroupActivity extends AppCompatActivity {
     private MoimingUserVO curUser;
     private ArrayList<MoimingGroupAndMembersDTO> groupAndMembersRawList;
 
+
+
     private FragmentManager manager;
     ChooseOldGroupFragment fragChooseOldGroup;
     ViewGroupInfoFragment fragViewGroupInfo;

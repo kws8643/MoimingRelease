@@ -53,7 +53,8 @@ public class SessionUnfinishedNmusAdapter extends RecyclerView.Adapter<SessionUn
         NonMoimingUserVO thisUser = nmuLinkerData.getNmuUser();
 
         holder.textName.setText(thisUser.getNmuName());
-        holder.textPersonalCost.setText(String.valueOf(thisUser.getNmuPersonalCost()));
+        String nmuCost = AppExtraMethods.moneyToWonWon(thisUser.getNmuPersonalCost()) + " 원";
+        holder.textPersonalCost.setText(nmuCost);
 
         holder.isNmuChecked.setChecked(false);
         holder.isNmuChecked.setOnClickListener(new View.OnClickListener() {

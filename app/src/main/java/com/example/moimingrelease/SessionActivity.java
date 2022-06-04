@@ -23,6 +23,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.moimingrelease.app_adapter.AppExtraMethods;
 import com.example.moimingrelease.app_adapter.SessionConfirmNotificationAdapter;
 import com.example.moimingrelease.app_listener_interface.CancelActivityCallBack;
 import com.example.moimingrelease.app_listener_interface.CustomDialogCallBack;
@@ -89,7 +90,7 @@ import okhttp3.RequestBody;
 
 public class SessionActivity extends AppCompatActivity {
 
-    private AppProcessDialog processDialog = new AppProcessDialog(SessionActivity.this);
+    private AppProcessDialog processDialog;
 
     // 여기는 일단 Session UUID 를 가져올 수 있도록 하고, 해당 으로 유저들과 비모이밍 유저들을 가져올 수 있도록 해보자.
     private MoimingUserVO curUser;
@@ -873,8 +874,8 @@ public class SessionActivity extends AppCompatActivity {
     private void setSessionUi() {
 
         // 금액 세팅
-        textCurCost.setText(String.valueOf(curSession.getCurCost()));
-        String totalCost = curSession.getTotalCost() + " 원";
+        textCurCost.setText(AppExtraMethods.moneyToWonWon(curSession.getCurCost()));
+        String totalCost = AppExtraMethods.moneyToWonWon(curSession.getTotalCost()) + " 원";
         textTotalCost.setText(totalCost);
 
         // 인원 세팅
@@ -1130,6 +1131,8 @@ public class SessionActivity extends AppCompatActivity {
 
     private void initParams() {
 
+        processDialog = new AppProcessDialog(SessionActivity.this);
+
         stateChangedUserUuid = new ArrayList<>();
         stateChangedNmuUuid = new ArrayList<>();
         stateChangedSentUserUuid = new ArrayList<>();
@@ -1363,7 +1366,7 @@ public class SessionActivity extends AppCompatActivity {
 
                         if (processDialog.isShowing()) {
 
-                            processDialog.show();
+                            processDialog.finish();
                         }
                         // 여기서 마무리 하는 것
                         FragmentTransaction transaction = fragmentManager.beginTransaction();
@@ -1414,7 +1417,7 @@ public class SessionActivity extends AppCompatActivity {
 
                                 if (processDialog.isShowing()) {
 
-                                    processDialog.show();
+                                    processDialog.finish();
                                 }
 
                                 // 여기서 마무리 하는 것

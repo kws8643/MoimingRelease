@@ -63,7 +63,7 @@ public class CreateSessionDialog extends Dialog {
                 createDutchpay.putParcelableArrayListExtra(GroupActivity.MOIMING_GROUP_MEMBERS_KEY, (ArrayList<MoimingMembersDTO>) curGroupMembers);
 //                createDutchpay.putExtra(mContext.getResources().getString(R.string.session_creation_from_group_activity_flag), true);
                 createDutchpay.putExtra(mContext.getResources().getString(R.string.session_creation_with_new_group_flag), false);
-
+                createDutchpay.putExtra("from_main_activity", false);
 
                 mContext.startActivity(createDutchpay);
 
@@ -84,6 +84,7 @@ public class CreateSessionDialog extends Dialog {
                 createFunding.putParcelableArrayListExtra(GroupActivity.MOIMING_GROUP_MEMBERS_KEY, (ArrayList<MoimingMembersDTO>) curGroupMembers);
 //                createFunding.putExtra(mContext.getResources().getString(R.string.session_creation_from_group_activity_flag), true);
                 createFunding.putExtra(mContext.getResources().getString(R.string.session_creation_with_new_group_flag), false);
+                createFunding.putExtra("from_main_activity", false);
 
                 mContext.startActivity(createFunding);
 

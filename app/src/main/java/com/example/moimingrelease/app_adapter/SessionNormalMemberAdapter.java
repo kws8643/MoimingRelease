@@ -83,14 +83,14 @@ public class SessionNormalMemberAdapter extends RecyclerView.Adapter<SessionNorm
 
             }
             
-            cost = memberData.getPersonalCost() + " 원";
+            cost = AppExtraMethods.moneyToWonWon(memberData.getPersonalCost()) + " 원";
 
         }else{
 
             NonMoimingUserVO thisMember = memberData.getNmuUser();
 
             name = thisMember.getNmuName();
-            cost = thisMember.getNmuPersonalCost() + " 원";
+            cost = AppExtraMethods.moneyToWonWon(thisMember.getNmuPersonalCost()) + " 원";
 
             holder.imgCreator.setVisibility(View.GONE);
 

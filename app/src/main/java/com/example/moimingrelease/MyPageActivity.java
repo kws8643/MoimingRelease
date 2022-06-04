@@ -26,7 +26,7 @@ public class MyPageActivity extends AppCompatActivity {
     private TextView btnToUserInfo, textMyName, textLogout;
     private ImageView imgMyPf, btnBack;
 
-    private ConstraintLayout btnAlarmSetting, btnService, btnBankAccount;
+    private ConstraintLayout btnAppNotice, btnAlarmSetting, btnService, btnBankAccount;
 
     private CustomDialogCallBack logOutCallback = new CustomDialogCallBack() {
         @Override
@@ -45,6 +45,19 @@ public class MyPageActivity extends AppCompatActivity {
         initView();
 
         initParams();
+
+        btnAppNotice.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent toAppNotice = new Intent(MyPageActivity.this, MyPageAppNoticeActivity.class);
+
+                toAppNotice.putExtra(getResources().getString(R.string.moiming_user_data_key), curUser);
+
+                startActivity(toAppNotice);
+
+            }
+        });
 
         btnToUserInfo.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -121,6 +134,10 @@ public class MyPageActivity extends AppCompatActivity {
     private void initView() {
 
         btnBack = findViewById(R.id.btn_finish_my_page);
+
+        // 공지사항
+        btnAppNotice = findViewById(R.id.layout_app_notice);
+
 
         // 유저 정보 설정
         btnToUserInfo = findViewById(R.id.btn_to_user_info);

@@ -11,9 +11,10 @@
         android:id="@+id/layout_session_result"
         android:layout_width="match_parent"
         android:layout_height="70dp"
+        android:visibility="gone"
         android:layout_alignParentBottom="true"
         android:background="@color/moimingTheme"
-        android:visibility="gone">
+        >
 
         <TextView
             android:id="@+id/layout_result_ref"
@@ -199,6 +200,7 @@
                     android:inputType="number"
                     android:paddingLeft="16dp"
                     android:singleLine="true"
+                    android:maxLength="7"
                     android:textColor="@color/textDark"
                     android:textSize="20sp"
                     android:textStyle="bold"

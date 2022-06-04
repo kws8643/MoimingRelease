@@ -92,5 +92,7 @@ dependencies {
     // Sliding Panel Layout for Group Activity
     implementation 'com.sothree.slidinguppanel:library:3.4.0'
 
+    // Swipe Refresh
+    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
 
 }

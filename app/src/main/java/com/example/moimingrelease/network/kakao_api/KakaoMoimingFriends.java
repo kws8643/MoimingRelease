@@ -90,6 +90,7 @@ public class KakaoMoimingFriends {
 
                         // TODO: Search Algorithm 필요
                         //       친구가 600명인데 500명이 모이밍 유저라면..?
+                        ///      N^2
                         for (int i = 0; i < kakaoFriends.size(); i++) {
 
                             Friend thisFriend = kakaoFriends.get(i);
@@ -105,7 +106,6 @@ public class KakaoMoimingFriends {
                                     KakaoMoimingFriendsDTO kmfData = new KakaoMoimingFriendsDTO(memberData, thisFriend.getUuid());
                                     kmfList.add(kmfData);
                                 }
-
                             }
                         }
 

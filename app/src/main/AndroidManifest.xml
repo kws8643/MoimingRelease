@@ -3,7 +3,7 @@
     package="com.example.moimingrelease">
 
     <application
-        android:name=".KakaoLoginApplication"
+        android:name=".app_handler.MoimingApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -11,7 +11,10 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".WelcomeActivity"></activity>
+        <activity android:name=".MyPageAppNoticeActivity"></activity>
+        <activity android:name=".MoimingErrorActivity" />
+        <activity android:name=".GroupInfoActivity" />
+        <activity android:name=".WelcomeActivity" />
         <activity android:name=".MyPageBankAccountActivity" />
         <activity android:name=".MyPageServiceInfoActivity" />
         <activity android:name=".MyPageDeleteAccountActivity" />

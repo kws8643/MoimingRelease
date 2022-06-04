@@ -5,6 +5,7 @@ import com.example.moimingrelease.moiming_model.extras.MoimingGroupAndMembersDTO
 import com.example.moimingrelease.moiming_model.extras.MoimingMembersDTO;
 import com.example.moimingrelease.moiming_model.extras.SessionAndUserStatusDTO;
 import com.example.moimingrelease.moiming_model.request_dto.GroupAndSessionCreationDTO;
+import com.example.moimingrelease.moiming_model.request_dto.MoimingGroupEditInfoDto;
 import com.example.moimingrelease.moiming_model.request_dto.MoimingGroupRequestDTO;
 import com.example.moimingrelease.moiming_model.response_dto.MoimingGroupResponseDTO;
 
@@ -15,6 +16,7 @@ import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Path;
 
 public interface GroupRetrofitService {
@@ -40,7 +42,10 @@ public interface GroupRetrofitService {
     @POST("api/group/getGroupAndMembers") // GroupActivity 내 Refresh 용
     Observable<TransferModel<MoimingGroupAndMembersDTO>> getGroupAndMembers(@Body String groupUuid);
 
-    @POST("api/group/setNotice")
+    @POST("api/group/setNotice") // 그룹 공지 Refresh
     Observable<TransferModel<MoimingGroupResponseDTO>> groupNoticeRequest(@Body TransferModel<GroupNoticeDTO> requestModel);
+
+    @POST("api/group/update")
+    Observable<TransferModel<MoimingGroupResponseDTO>> editGroupInfo(@Body TransferModel<MoimingGroupEditInfoDto> requestModel);
 
 }

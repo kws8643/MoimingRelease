@@ -14,6 +14,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Parcelable;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.KeyEvent;
@@ -29,6 +32,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.moimingrelease.app_adapter.AppExtraMethods;
 import com.example.moimingrelease.app_adapter.MembersEditPersonalCostRecyclerAdapter;
 import com.example.moimingrelease.app_adapter.NmuEditPersonalCostRecyclerAdapter;
 import com.example.moimingrelease.app_adapter.RecyclerViewItemDecoration;
@@ -96,6 +100,7 @@ public class SessionCreationActivity extends AppCompatActivity {
 
     private TextView btnCreationFinish, btnPrevFunding;
     private ConstraintLayout layoutSetMembers, layoutSessionResult;
+
     private TextView btnChooseMembers, btnEditSessionName, btnEditCost, textCostType;
     private TextView textInviteCnt;
     private LinearLayout layoutUsersHolder;
@@ -114,6 +119,34 @@ public class SessionCreationActivity extends AppCompatActivity {
     public int fundingCost = 0;
 
     private List<CustomUserViewer> addedViewerList; // 없애고 생성하고를 위해
+
+    private String inputCostForEditText = "";
+
+
+    private TextWatcher moneyWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
+
+            if (!TextUtils.isEmpty(charSequence.toString()) && !charSequence.toString().equals(inputCostForEditText)) {
+
+                inputCostForEditText = AppExtraMethods.wonFormat.format(Double.parseDouble(charSequence.toString().replaceAll(",", "")));
+                inputCost.setText(inputCostForEditText);
+                inputCost.setSelection(inputCostForEditText.length());
+            }
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+
+        }
+    };
+
 
     private SessionCreationNmuNameChangeListener nmuNameChangeListener = new SessionCreationNmuNameChangeListener() { //바뀌는 값 실시간 반영
         @Override
@@ -217,6 +250,8 @@ public class SessionCreationActivity extends AppCompatActivity {
         initHorizontalView();
 
         COST_EDIT_USER_CNT = 0;
+
+        inputCost.addTextChangedListener(moneyWatcher);
 
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -332,7 +367,7 @@ public class SessionCreationActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 // 새로운 금액이 입력되는 것
-                String inputData = inputCost.getText().toString();
+                String inputData = AppExtraMethods.wonToNormal(inputCost.getText().toString());
 
                 if (inputData.isEmpty() || Integer.parseInt(inputData) == 0) {
 
@@ -449,7 +484,7 @@ public class SessionCreationActivity extends AppCompatActivity {
 
                                 if (sessionType == 1) {
 
-                                    totalCost = Integer.parseInt(inputCost.getText().toString());
+                                    totalCost = Integer.parseInt(AppExtraMethods.wonToNormal(inputCost.getText().toString()));
 
                                     int dividedN = (int) (totalCost / invitedCnt);
                                     int curUserCost = dividedN;
@@ -488,13 +523,13 @@ public class SessionCreationActivity extends AppCompatActivity {
 
                                     // 영수증 수정
                                     resultMemberCnt.setText(String.valueOf(invitedCnt));
-                                    resultPersonalCost.setText(String.valueOf(dividedN));
-                                    resultTotalCost.setText(String.valueOf(totalCost));
+                                    resultPersonalCost.setText(AppExtraMethods.moneyToWonWon(dividedN));
+                                    resultTotalCost.setText(AppExtraMethods.moneyToWonWon(totalCost));
 
                                 } else { // 모금일 경우
 
 
-                                    int personalFundingCost = Integer.parseInt(inputCost.getText().toString());
+                                    int personalFundingCost = Integer.parseInt(AppExtraMethods.wonToNormal(inputCost.getText().toString()));
 
                                     totalCost = personalFundingCost * invitedCnt;
 
@@ -519,8 +554,8 @@ public class SessionCreationActivity extends AppCompatActivity {
                                     }
 
                                     resultMemberCnt.setText(String.valueOf(invitedCnt));
-                                    resultPersonalCost.setText(String.valueOf(personalFundingCost));
-                                    resultTotalCost.setText(String.valueOf(totalCost));
+                                    resultPersonalCost.setText(AppExtraMethods.moneyToWonWon(personalFundingCost));
+                                    resultTotalCost.setText(AppExtraMethods.moneyToWonWon(totalCost));
                                 }
 
                                 membersAdapter.notifyDataSetChanged();
@@ -819,6 +854,7 @@ public class SessionCreationActivity extends AppCompatActivity {
 
     }
 
+    boolean fromMainActivity;
 
     private void receiveIntent() {
 
@@ -829,11 +865,13 @@ public class SessionCreationActivity extends AppCompatActivity {
         curUser = (MoimingUserVO) dataIntent.getExtras().getSerializable(getResources().getString(R.string.moiming_user_data_key));
         curGroupMembers = dataIntent.getParcelableArrayListExtra(GroupActivity.MOIMING_GROUP_MEMBERS_KEY);
         fromNewGroupCreation = dataIntent.getExtras().getBoolean(getResources().getString(R.string.session_creation_with_new_group_flag), false);
+        fromMainActivity = dataIntent.getExtras().getBoolean("from_main_activity", false);
 
         if (curUser.getBankName() == null || curUser.getBankNumber() == null) {
 
             showRegisterAccountDialog();
         }
+
         // 메인에서 바로 생성중일 경우.
         // 제어되어야 하는 것.
         // 1. 무조건 더치페이
@@ -1260,18 +1298,23 @@ public class SessionCreationActivity extends AppCompatActivity {
 
         //1. 모이밍 유저 것 해결.
         memberRecycler.setLayoutManager(membersLayoutManager);
-        membersAdapter = new MembersEditPersonalCostRecyclerAdapter(getApplicationContext(), totalCnt, membersSessionDataList, editCostListener, cancelCheckBoxListener, cntListener);
+        membersAdapter = new MembersEditPersonalCostRecyclerAdapter(getApplicationContext(), totalCnt, membersSessionDataList
+                , editCostListener, cancelCheckBoxListener, cntListener);
         memberRecycler.setAdapter(membersAdapter);
         memberRecycler.addItemDecoration(new RecyclerViewItemDecoration(this, 8));
 
+
         //2. 비모이머것 해결.
         if (sessionVO.getNmuList() != null) {
+
             LinearLayoutManager nmuLayoutManager = new LinearLayoutManager(this);
 
             nmuRecycler.setLayoutManager(nmuLayoutManager);
-            nmuAdapter = new NmuEditPersonalCostRecyclerAdapter(getApplicationContext(), totalCnt, nmuSessionDataList, editCostListener, cancelCheckBoxListener, cntListener, nmuNameChangeListener);
+            nmuAdapter = new NmuEditPersonalCostRecyclerAdapter(getApplicationContext(), totalCnt, nmuSessionDataList
+                    , editCostListener, cancelCheckBoxListener, cntListener, nmuNameChangeListener);
             nmuRecycler.setAdapter(nmuAdapter);
             nmuRecycler.addItemDecoration(new RecyclerViewItemDecoration(this, 8));
+
         }
     }
 
@@ -1281,10 +1324,10 @@ public class SessionCreationActivity extends AppCompatActivity {
         btnCreationFinish.setTextColor(getResources().getColor(R.color.moimingTheme, null));
         btnCreationFinish.setEnabled(true);
 
-        String personalCost = inputCost.getText().toString();
+        String personalCost = AppExtraMethods.wonToNormal(inputCost.getText().toString());
 
-        resultTotalCost.setText(String.valueOf(totalCost));
-        resultPersonalCost.setText(String.valueOf(personalCost));
+        resultTotalCost.setText(AppExtraMethods.moneyToWonWon(totalCost));
+        resultPersonalCost.setText(AppExtraMethods.moneyToWonWon(Integer.parseInt(personalCost)));
         resultMemberCnt.setText(String.valueOf(totalMemberCnt));
 
         if (isAllSame) {
@@ -1304,25 +1347,23 @@ public class SessionCreationActivity extends AppCompatActivity {
         // 새로 들어온대로 설정.
         // 1. 총 금액 // 2. 총 인원 // 3. 인원별 금액. //4. 수정 사항 발생시 +- 표시
         if (sessionType == 1) {
-            resultTotalCost.setText(String.valueOf(totalCost));
+            resultTotalCost.setText(AppExtraMethods.moneyToWonWon(totalCost));
 
             int totalCnt = inviteNmuCnt + sessionInvitedMembers.size() + 1;
             resultMemberCnt.setText(String.valueOf(totalCnt));
 
             int dividedN = (int) (totalCost / totalCnt);
-            resultPersonalCost.setText(String.valueOf(dividedN));
+            resultPersonalCost.setText(AppExtraMethods.moneyToWonWon(dividedN));
 
         } else {
 
             int totalCnt = inviteNmuCnt + sessionInvitedMembers.size() + 1;
-            int dividedN = Integer.parseInt(inputCost.getText().toString());
+            int dividedN = Integer.parseInt(AppExtraMethods.wonToNormal(inputCost.getText().toString()));
             int fundingTotalCost = totalCnt * dividedN;
 
-            resultTotalCost.setText(String.valueOf(fundingTotalCost));
-            resultPersonalCost.setText(String.valueOf(dividedN));
+            resultTotalCost.setText(AppExtraMethods.moneyToWonWon(fundingTotalCost));
+            resultPersonalCost.setText(AppExtraMethods.moneyToWonWon(dividedN));
             resultMemberCnt.setText(String.valueOf(totalCnt));
-
-
         }
     }
 
@@ -1331,8 +1372,8 @@ public class SessionCreationActivity extends AppCompatActivity {
         int totalMembers = membersSessionDataList.size() + nmuSessionDataList.size();
         int totalFundingCost = totalMembers * fundingCost;
 
-        resultTotalCost.setText(String.valueOf(totalFundingCost));
-        resultPersonalCost.setText(String.valueOf(fundingCost));
+        resultTotalCost.setText(AppExtraMethods.moneyToWonWon(totalFundingCost));
+        resultPersonalCost.setText(AppExtraMethods.moneyToWonWon(fundingCost));
 
         findViewById(R.id.view_edited_cost).setVisibility(View.GONE);
     }
@@ -1353,14 +1394,12 @@ public class SessionCreationActivity extends AppCompatActivity {
 
         }
 
-        resultTotalCost.setText(String.valueOf(totalCost));
+        resultTotalCost.setText(AppExtraMethods.moneyToWonWon(totalCost));
 /*
         } else { // 2. 금액 수정이 취소되는 경우.
 
             int prevEditedCost = editedCost;
             int diff = prevEditedCost - fundingCost;
-
-
         }*/
 
         findViewById(R.id.view_edited_cost).setVisibility(View.VISIBLE);
@@ -1370,8 +1409,8 @@ public class SessionCreationActivity extends AppCompatActivity {
 
     private void editReceiptDutchpay(boolean reset, int newDividedN) {
 
-        resultTotalCost.setText(String.valueOf(totalCost));
-        resultPersonalCost.setText(String.valueOf(newDividedN));
+        resultTotalCost.setText(AppExtraMethods.moneyToWonWon(totalCost));
+        resultPersonalCost.setText(AppExtraMethods.moneyToWonWon(newDividedN));
 
         if (reset) {
 
@@ -1501,7 +1540,7 @@ public class SessionCreationActivity extends AppCompatActivity {
 
         } else { // 모금일 경우
 
-            dividedN = Integer.parseInt(inputCost.getText().toString());
+            dividedN = Integer.parseInt(AppExtraMethods.wonToNormal(inputCost.getText().toString()));
             curUserCost = dividedN;
 
         }
@@ -2012,13 +2051,17 @@ public class SessionCreationActivity extends AppCompatActivity {
         int totalSessionCost;
         int singleCost;
         if (sessionType == 1) {
-            totalSessionCost = Integer.parseInt(inputCost.getText().toString());
+
+            String curText = inputCost.getText().toString();
+            String deleteWon = AppExtraMethods.wonToNormal(curText);
+            totalSessionCost = Integer.parseInt(deleteWon);
             // 조정 금액들을 포함해서 n빵 금액 저장
-            singleCost = Integer.parseInt(resultPersonalCost.getText().toString());
+
+            singleCost = Integer.parseInt(AppExtraMethods.wonToNormal(resultPersonalCost.getText().toString()));
         } else {
             totalSessionCost = totalCost;
             // 적혀있는 값이 정규!
-            singleCost = Integer.parseInt(inputCost.getText().toString());
+            singleCost = Integer.parseInt(AppExtraMethods.wonToNormal(inputCost.getText().toString()));
         }
         if (sessionName.isEmpty() || sessionMemberCnt == 0 || totalCost == 0) {
             Toast.makeText(getApplicationContext(), "제대로된 데이터를 형성할 수 없습니다. 입력을 확인해 주세요", Toast.LENGTH_SHORT).show();
@@ -2136,12 +2179,16 @@ public class SessionCreationActivity extends AppCompatActivity {
                     @Override
                     public void onNext(@NonNull TransferModel transferModel) {
 
-                        Toast.makeText(getApplicationContext(), "아마 생성 성공", Toast.LENGTH_SHORT).show();
 
                         // 새로운 세션을 생성한 경우 // 해당 액티비티로 돌아갈 경우 초기화를 담당한다.
                         // 바로 생성일 경우 초기화 안해도 됨.
-                        if (!fromNewGroupCreation) GroupActivity.SESSION_LIST_REFRESH_FLAG = true;
+                        // 기존 그룹에서 생성 중일 경우
 
+                        if (!fromNewGroupCreation) {
+                            if (!fromMainActivity) { // 메인에서 기존 그룹 선택한 경우는 GroupActivity 가 안켜져 있다.
+                                GroupActivity.SESSION_LIST_REFRESH_FLAG = true;
+                            }
+                        }
 
                     }
 

@@ -29,28 +29,27 @@
         android:id="@+id/text_session_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="24dp"
+        android:layout_marginLeft="76dp"
         android:layout_marginTop="19dp"
         android:lineSpacingExtra="9sp"
         android:text="세션 이름"
         android:textColor="@color/textDark"
         android:textSize="14sp"
         android:textStyle="bold"
-        app:layout_constraintLeft_toRightOf="@id/text_session_type"
+        app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/text_session_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="24dp"
         android:layout_marginTop="7dp"
         android:lineSpacingExtra="13sp"
         android:text="01.01.01"
         android:textColor="@color/textBoldGray"
         android:textSize="10sp"
         android:textStyle="normal"
-        app:layout_constraintLeft_toRightOf="@id/text_session_type"
+        app:layout_constraintLeft_toLeftOf="@id/text_session_name"
         app:layout_constraintTop_toBottomOf="@id/text_session_name" />
 
     <TextView

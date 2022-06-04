@@ -5,6 +5,9 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.OvalShape;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -67,6 +70,7 @@ public class MembersEditPersonalCostRecyclerAdapter extends RecyclerView.Adapter
 
     }
 
+
     @NonNull
     @NotNull
     @Override
@@ -98,7 +102,8 @@ public class MembersEditPersonalCostRecyclerAdapter extends RecyclerView.Adapter
         holder.userName.setText(memberDatas.getUserName());
 
         int userCharge = memberDatas.getUserCost();
-        holder.userCost.setText(String.valueOf(userCharge));
+        // 텍스트 세팅하는 곳
+        holder.userCost.setText(AppExtraMethods.moneyToWonWon(userCharge));
         Glide.with(context).load(memberDatas.getUserPfImg()).into(holder.imgUserProfile);
 
         holder.userCost.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -106,7 +111,7 @@ public class MembersEditPersonalCostRecyclerAdapter extends RecyclerView.Adapter
             public boolean onEditorAction(TextView view, int actionId, KeyEvent event) {
 
                 //TODO: 설정 금액 초과시.
-                String personalCostStr = view.getText().toString();
+                String personalCostStr = AppExtraMethods.wonToNormal(view.getText().toString());
 
                 if (personalCostStr.isEmpty()) {
 
@@ -181,7 +186,7 @@ public class MembersEditPersonalCostRecyclerAdapter extends RecyclerView.Adapter
                     MOIMING_EDIT_COST_USER_CNT -= 1;
 
                     holder.userCost.setBackgroundColor(Color.TRANSPARENT);
-                    holder.userCost.setText(String.valueOf(memberDatas.getUserCost()));
+                    holder.userCost.setText(AppExtraMethods.moneyToWonWon(memberDatas.getUserCost()));
                     holder.userCost.setEnabled(false);
                     int prevFundingCost = memberDatas.getUserCost();
 

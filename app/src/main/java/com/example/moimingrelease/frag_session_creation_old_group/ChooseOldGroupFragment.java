@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageView;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -35,6 +36,7 @@ public class ChooseOldGroupFragment extends Fragment {
     private ArrayList<MoimingGroupAndMembersDTO> curUserGroupAdapterList;
 
     private EditText searchGroup;
+    private ImageView btnFinish;
 
     private TextWatcher onSearchGroup = new TextWatcher() {
         @Override
@@ -127,6 +129,13 @@ public class ChooseOldGroupFragment extends Fragment {
 
         initRecyclerView();
 
+        btnFinish.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                activity.onBackPressed();
+            }
+        });
+
         return view;
 
     }
@@ -137,6 +146,8 @@ public class ChooseOldGroupFragment extends Fragment {
 
         searchGroup = view.findViewById(R.id.input_old_group_search);
         searchGroup.addTextChangedListener(onSearchGroup);
+
+        btnFinish = view.findViewById(R.id.btn_back_choose_group);
     }
 
     private void initParams() {

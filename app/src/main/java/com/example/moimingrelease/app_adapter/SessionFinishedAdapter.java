@@ -74,7 +74,7 @@ public class SessionFinishedAdapter extends RecyclerView.Adapter<SessionFinished
                 name = thisMember.getUserName();
             }
 
-            cost = data.getPersonalCost() + " 원";
+            cost = AppExtraMethods.moneyToWonWon(data.getPersonalCost()) + " 원";
 
         } else {
 
@@ -83,7 +83,7 @@ public class SessionFinishedAdapter extends RecyclerView.Adapter<SessionFinished
             NonMoimingUserVO thisNmu = data.getNmuUser();
 
             name = thisNmu.getNmuName();
-            cost = thisNmu.getNmuPersonalCost() + " 원";
+            cost = AppExtraMethods.moneyToWonWon(thisNmu.getNmuPersonalCost()) + " 원";
 
         }
 

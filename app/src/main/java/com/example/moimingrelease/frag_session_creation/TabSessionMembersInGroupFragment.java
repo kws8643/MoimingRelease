@@ -112,6 +112,16 @@ public class TabSessionMembersInGroupFragment extends Fragment {
 
         initRecyclerView();
 
+        // 한번 눌린 상태인 애들이 다시 안눌리도록 해야함
+        // //
+        btnSelectAll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                recyclerAdapter.addAllMember();
+            }
+        });
+
         return view;
     }
 
@@ -134,6 +144,7 @@ public class TabSessionMembersInGroupFragment extends Fragment {
 
         adapterMembersList = new ArrayList<>();
         adapterMembersList.addAll(rawMembersList);
+
 
 
     }

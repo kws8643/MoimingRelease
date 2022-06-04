@@ -98,12 +98,12 @@ public class GroupSessionViewAdapter extends RecyclerView.Adapter<GroupSessionVi
 
                 if (curUserStatus == 1) { // 송금 필요, 송금 확정 전 상태
 
-                    int curUserCost = singleDTO.getCurUserCost();
+                    String curUserCost = AppExtraMethods.moneyToWonWon(singleDTO.getCurUserCost()) + " 원";
 
                     String actionString = singleDTO.getCreatorName() + "에게 송금하기";
                     holder.action.setText(actionString);
                     holder.action.setTextColor(context.getResources().getColor(R.color.moimingOrange, null));
-                    holder.status.setText(String.valueOf(curUserCost) + " 원");
+                    holder.status.setText(curUserCost);
                     holder.status.setTextColor(context.getResources().getColor(R.color.moimingOrange, null));
 
                 } else if (curUserStatus == 3) { // 송금 확인 중
@@ -111,7 +111,7 @@ public class GroupSessionViewAdapter extends RecyclerView.Adapter<GroupSessionVi
                     int curUserCost = singleDTO.getCurUserCost();
 
                     String textStatus = "송금 확인 중";
-                    String textAction = curUserCost + " 원";
+                    String textAction = AppExtraMethods.moneyToWonWon(curUserCost) + " 원";
                     holder.action.setText(textAction);
                     holder.status.setText(textStatus);
                     holder.action.setTextColor(context.getResources().getColor(R.color.textBoldGray, null));
@@ -120,11 +120,11 @@ public class GroupSessionViewAdapter extends RecyclerView.Adapter<GroupSessionVi
 
                 } else if (curUserStatus == 2) { // 송금 완료
 
-                    int curUserCost = singleDTO.getCurUserCost();
+                    String curUserCost = AppExtraMethods.moneyToWonWon(singleDTO.getCurUserCost()) +  " 원";
 
                     holder.action.setText("송금 완료");
                     holder.action.setTextColor(context.getResources().getColor(R.color.textBoldGray, null));
-                    holder.status.setText(String.valueOf(curUserCost) + " 원");
+                    holder.status.setText(curUserCost);
                     holder.status.setTextColor(context.getResources().getColor(R.color.textBoldGray, null));
 
                 } else if (curUserStatus == 4) { // 미참여
@@ -172,7 +172,7 @@ public class GroupSessionViewAdapter extends RecyclerView.Adapter<GroupSessionVi
                 String actionString = "정산 완료";
                 holder.action.setText(actionString);
                 holder.action.setTextColor(context.getResources().getColor(R.color.textBoldGray, null));
-                holder.status.setText(curUserCost + " 원");
+                holder.status.setText(AppExtraMethods.moneyToWonWon(curUserCost) + " 원");
                 holder.status.setTextColor(context.getResources().getColor(R.color.textBoldGray, null));
 
             }

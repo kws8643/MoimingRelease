@@ -31,6 +31,7 @@
         android:inputType="number"
         android:lineSpacingExtra="9sp"
         android:singleLine="true"
+        android:maxLength="11"
         android:textSize="14sp"
         android:textStyle="normal"
         app:layout_constraintLeft_toLeftOf="parent"

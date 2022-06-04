@@ -10,10 +10,11 @@ public class GlobalRetrofit {
     // 싱글톤 Retrofit 객체.
     private static GlobalRetrofit INSTANCE = new GlobalRetrofit();
 
-//                        private static final String BASE_SERVER_URL = "http://10.0.2.2:8080/"; // for amulator
-    private static final String BASE_SERVER_URL = "http://192.168.0.25:8080/"; // in Home
+    private static final String BASE_SERVER_URL = "http://10.0.2.2:8080/"; // for amulator
+//    private static final String BASE_SERVER_URL = "http://192.168.0.25:8080/"; // in Home
 //    private static final String BASE_SERVER_URL = "http://172.30.1.48:8080/"; // in Study Cafe
-//    private static final String BASE_SERVER_URL = "http://172.30.1.56:8080/"; // in Cafe
+//    private static final String BASE_SERVER_URL = "http://172.30.1.17:8080/"; // in Cafe
+
 
     private Retrofit retrofit;
 
@@ -29,6 +30,8 @@ public class GlobalRetrofit {
                 .build();
 
     }
+
+
 
     public static GlobalRetrofit getInstance() {
 
@@ -54,6 +57,4 @@ public class GlobalRetrofit {
 
     // Retrofit 으로 create 함. -> Interface 를 생성해야 함.
     // extends GlobalRetrofitBase
-
-
 }

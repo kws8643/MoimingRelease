@@ -1,0 +1,324 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".GroupInfoActivity">
+
+    <ImageView
+        android:id="@+id/img_group_info_main_pf"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_marginTop="24dp"
+        android:background="@drawable/shape_oval_corner_main"
+        android:src="@drawable/img_sample_group"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/app_bar_group_info" />
+
+    <ImageView
+        android:id="@+id/btn_change_group_pf_img"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:src="@drawable/ic_change_pf_img"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/img_group_info_main_pf"
+        app:layout_constraintRight_toRightOf="@id/img_group_info_main_pf" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/info_edit_true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:visibility="gone"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/img_group_info_main_pf">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/layout_edit_group_name"
+            android:layout_width="296dp"
+            android:layout_height="48dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <EditText
+                android:id="@+id/input_edit_group_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text"
+                android:maxLength="30"
+                android:singleLine="true"
+                android:textColor="@color/textDark"
+                android:textSize="14sp"
+                app:layout_constraintTop_toBottomOf="@id/text_ref_1" />
+
+            <TextView
+                android:id="@+id/text_ref_1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="4dp"
+                android:lineSpacingExtra="13sp"
+                android:text="모임 이름"
+                android:textColor="@color/textOtherGray"
+                android:textSize="10sp"
+                android:textStyle="normal"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/layout_edit_group_desc"
+            android:layout_width="296dp"
+            android:layout_height="48dp"
+            android:layout_marginTop="32dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/layout_edit_group_name">
+
+            <EditText
+                android:id="@+id/input_edit_group_desc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text"
+                android:maxLength="50"
+                android:singleLine="true"
+                android:textColor="@color/textDark"
+                android:textSize="14sp"
+                app:layout_constraintTop_toBottomOf="@id/text_ref_2" />
+
+            <TextView
+                android:id="@+id/text_ref_2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="4dp"
+                android:lineSpacingExtra="13sp"
+                android:text="모임 한줄 소개"
+                android:textColor="@color/textOtherGray"
+                android:textSize="10sp"
+                android:textStyle="normal"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_edit_group_info"
+        android:layout_width="328dp"
+        android:visibility="gone"
+        android:layout_height="48dp"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/shape_light_main_bg"
+        android:lineSpacingExtra="8sp"
+        android:text="완 료"
+        android:textColor="@color/moimingWhite"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/info_edit_false"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:visibility="visible"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/img_group_info_main_pf">
+
+        <TextView
+            android:id="@+id/text_group_name_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:lineSpacingExtra="6sp"
+            android:text="누가 스타트업"
+            android:textColor="@color/textDark"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/text_group_desc_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:lineSpacingExtra="9sp"
+            android:text="앱 모이밍을 만드는 친구들"
+            android:textColor="@color/moimingBoldGray"
+            android:textSize="14sp"
+            android:textStyle="normal"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/text_group_name_info" />
+
+        <TextView
+            android:id="@+id/text_date_ref"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="34dp"
+            android:layout_marginTop="55dp"
+            android:lineSpacingExtra="9sp"
+            android:text="생성 일자"
+            android:textColor="@color/textBoldGray"
+            android:textSize="14sp"
+            android:textStyle="normal"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/text_group_desc_info" />
+
+
+        <TextView
+            android:id="@+id/text_group_created_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:lineSpacingExtra="9sp"
+            android:text="0000년 00월 00일"
+            android:textColor="@color/textDark"
+            android:textSize="14sp"
+            android:textStyle="normal"
+            app:layout_constraintBottom_toBottomOf="@id/text_date_ref"
+            app:layout_constraintHorizontal_bias="0.825"
+            app:layout_constraintLeft_toRightOf="@id/text_date_ref"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@id/text_date_ref"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <TextView
+            android:id="@+id/text_num_ref"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="36dp"
+            android:lineSpacingExtra="9sp"
+            android:text="모임원 수"
+            android:textColor="@color/textBoldGray"
+            android:textSize="14sp"
+            android:textStyle="normal"
+            app:layout_constraintLeft_toLeftOf="@id/text_date_ref"
+            app:layout_constraintTop_toBottomOf="@id/text_date_ref" />
+
+        <TextView
+            android:id="@+id/text_group_member_num"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="36dp"
+            android:lineSpacingExtra="9sp"
+            android:text="0명"
+            android:textColor="@color/textDark"
+            android:textSize="14sp"
+            android:textStyle="normal"
+            app:layout_constraintLeft_toLeftOf="@id/text_group_created_date"
+            app:layout_constraintTop_toBottomOf="@id/text_group_created_date" />
+
+
+        <TextView
+            android:id="@+id/text_payment_ref"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="36dp"
+            android:lineSpacingExtra="9sp"
+            android:text="회계 현황"
+            android:textColor="@color/textBoldGray"
+            android:textSize="14sp"
+            android:textStyle="normal"
+            app:layout_constraintLeft_toLeftOf="@id/text_num_ref"
+            app:layout_constraintTop_toBottomOf="@id/text_num_ref" />
+
+
+        <TextView
+            android:id="@+id/text_group_payment_cost"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="36dp"
+            android:lineSpacingExtra="9sp"
+            android:text="-000,000원"
+            android:textColor="@color/textDark"
+            android:textSize="14sp"
+            android:textStyle="normal"
+            app:layout_constraintLeft_toLeftOf="@id/text_group_member_num"
+            app:layout_constraintTop_toBottomOf="@id/text_group_member_num" />
+
+        <TextView
+            android:id="@+id/text_session_ref"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="36dp"
+            android:lineSpacingExtra="9sp"
+            android:text="정산활동 수"
+            android:textColor="@color/textBoldGray"
+            android:textSize="14sp"
+
+            android:textStyle="normal"
+            app:layout_constraintLeft_toLeftOf="@id/text_payment_ref"
+            app:layout_constraintTop_toBottomOf="@id/text_payment_ref" />
+
+        <TextView
+            android:id="@+id/text_session_cnt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="36dp"
+            android:lineSpacingExtra="9sp"
+            android:text="00개"
+            android:textColor="@color/textDark"
+            android:textSize="14sp"
+            android:textStyle="normal"
+            app:layout_constraintLeft_toLeftOf="@id/text_group_payment_cost"
+            app:layout_constraintTop_toBottomOf="@id/text_group_payment_cost" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/app_bar_group_info"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_alignParentTop="true"
+        android:background="@color/moimingWhite"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/btn_finish_group_info"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="16dp"
+            android:src="@drawable/ic_app_back"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+        <ImageView
+            android:id="@+id/btn_group_info_edit"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginRight="16dp"
+            android:src="@drawable/ic_edit_black"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+        <TextView
+            android:id="@+id/text_group_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:gravity="center_horizontal"
+            android:lineSpacingExtra="7sp"
+            android:text="모임 정보"
+            android:textColor="@color/textDark"
+            android:textSize="16sp"
+            android:textStyle="normal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -57,8 +57,7 @@ public class GroupPaymentViewAdapter extends RecyclerView.Adapter<GroupPaymentVi
         holder.textName.setText(paymentData.getPaymentName());
         holder.textDate.setText(transferDateToText(paymentData.getPaymentDate()));
 
-        String calculatedCost = String.valueOf(paymentViewData.getCalculatedCost());
-        calculatedCost += "원";
+        String calculatedCost = AppExtraMethods.moneyToWonWon(paymentViewData.getCalculatedCost()) + "원";
         holder.textCal.setText(calculatedCost);
 
         String paymentCost = "";
@@ -66,16 +65,16 @@ public class GroupPaymentViewAdapter extends RecyclerView.Adapter<GroupPaymentVi
         if (paymentData.getPaymentType()) { // 수입
 
             paymentCost += "+";
-            holder.textCost.setTextColor(ResourcesCompat.getColor(context.getResources(), R.color.textRed, null));
+            holder.textCost.setTextColor(ResourcesCompat.getColor(context.getResources(), R.color.textBlue, null));
 
         } else { //지출
 
             paymentCost += "-";
-            holder.textCost.setTextColor(ResourcesCompat.getColor(context.getResources(), R.color.textBlue, null));
+            holder.textCost.setTextColor(ResourcesCompat.getColor(context.getResources(), R.color.textRed, null));
 
         }
 
-        paymentCost = paymentData.getPaymentCost() + "원";
+        paymentCost += AppExtraMethods.moneyToWonWon(paymentData.getPaymentCost()) + "원";
         holder.textCost.setText(paymentCost);
 
         holder.layoutPayment.setOnLongClickListener(new View.OnLongClickListener() {

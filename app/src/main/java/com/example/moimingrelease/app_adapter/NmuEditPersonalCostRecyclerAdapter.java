@@ -109,14 +109,14 @@ public class NmuEditPersonalCostRecyclerAdapter extends RecyclerView.Adapter<Nmu
         });
 
         int userCharge = nmuDatas.getUserCost();
-        holder.userCost.setText(String.valueOf(userCharge));
+        holder.userCost.setText(AppExtraMethods.moneyToWonWon(userCharge));
 
 
         holder.userCost.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView view, int actionId, KeyEvent event) {
 
-                String personalCostStr = view.getText().toString();
+                String personalCostStr = AppExtraMethods.wonToNormal(view.getText().toString());
 
                 if (personalCostStr.isEmpty()) {
 
@@ -129,29 +129,16 @@ public class NmuEditPersonalCostRecyclerAdapter extends RecyclerView.Adapter<Nmu
                 } else {
 
                     int personalCost = Integer.parseInt(personalCostStr); // 바꾸려는 사람 금액.
+
                     // 누구를 얼마로 변경했는지 밖으로 전달한다.
-
-                    editCostListener.onFinishEditing(false, position, personalCost, userCharge);
+                    editCostListener.onFinishEditing(false
+                            , position, personalCost, userCharge);
                 }
-
-                /*NMU_EDIT_COST_USER_CNT = 0;
-
-                for (int i = 0; i < nmuList.size(); i++) {
-
-                    SessionNmuLinkerData data = nmuList.get(i);
-                    if (data.getIsEdited()) NMU_EDIT_COST_USER_CNT++;
-
-                }*/
 
                 setNmuEditCostUserCnt();
 
                 cntListener.editUserCnt(false);
 
-               /* Toast.makeText(context.getApplicationContext(), NMU_EDIT_COST_USER_CNT + ", "
-                        + MembersEditPersonalCostRecyclerAdapter.MOIMING_EDIT_COST_USER_CNT + ", "
-                        + String.valueOf(NMU_EDIT_COST_USER_CNT + MembersEditPersonalCostRecyclerAdapter.MOIMING_EDIT_COST_USER_CNT), Toast.LENGTH_SHORT).show();
-
-*/
                 return false;
             }
         });
@@ -177,17 +164,12 @@ public class NmuEditPersonalCostRecyclerAdapter extends RecyclerView.Adapter<Nmu
                         holder.userCost.setEnabled(true);
                     }
 
-                    /*Toast.makeText(context.getApplicationContext(), NMU_EDIT_COST_USER_CNT + ", "
-                            + MembersEditPersonalCostRecyclerAdapter.MOIMING_EDIT_COST_USER_CNT + ", "
-                            + String.valueOf(NMU_EDIT_COST_USER_CNT + MembersEditPersonalCostRecyclerAdapter.MOIMING_EDIT_COST_USER_CNT), Toast.LENGTH_SHORT).show();
-*/
                 } else { // 해제 시
 
-//                    SessionCreationActivity.COST_EDIT_USER_CNT -= 1;
                     NMU_EDIT_COST_USER_CNT -= 1;
 
                     holder.userCost.setBackgroundColor(Color.TRANSPARENT);
-                    holder.userCost.setText(String.valueOf(nmuDatas.getUserCost()));
+                    holder.userCost.setText(AppExtraMethods.moneyToWonWon(nmuDatas.getUserCost()));
                     holder.userCost.setEnabled(false);
                     int prevFundingCost = nmuDatas.getUserCost();
 
@@ -196,10 +178,6 @@ public class NmuEditPersonalCostRecyclerAdapter extends RecyclerView.Adapter<Nmu
 
                         cancelCheckBoxListener.onCancelCheckbox(false, position, prevFundingCost);
                     }
-
-                    Toast.makeText(context.getApplicationContext(), NMU_EDIT_COST_USER_CNT + ", "
-                            + MembersEditPersonalCostRecyclerAdapter.MOIMING_EDIT_COST_USER_CNT + ", "
-                            + String.valueOf(NMU_EDIT_COST_USER_CNT + MembersEditPersonalCostRecyclerAdapter.MOIMING_EDIT_COST_USER_CNT), Toast.LENGTH_SHORT).show();
 
                 }
 

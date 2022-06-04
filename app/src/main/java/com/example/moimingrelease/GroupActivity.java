@@ -225,9 +225,7 @@ public class GroupActivity extends AppCompatActivity {
                     isFiltered = true;
                     filterSessions(3);
                     break;
-
             }
-
         }
     };
 
@@ -543,6 +541,21 @@ public class GroupActivity extends AppCompatActivity {
             }
         });
 
+        btnGroupInfo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent viewInfoActivity = new Intent(GroupActivity.this, GroupInfoActivity.class);
+
+                int sessionCnt = sessionRawDataHolder.size();
+
+                viewInfoActivity.putExtra(getResources().getString(R.string.moiming_group_data_key), (Serializable) curGroup);
+                viewInfoActivity.putExtra("group_session_cnt", sessionCnt);
+
+                startActivityForResult(viewInfoActivity, 103);
+            }
+        });
+
         btnFinish.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -566,6 +579,7 @@ public class GroupActivity extends AppCompatActivity {
         textGroupName = findViewById(R.id.text_group_name);
         textGroupName.setText(curGroup.getGroupName());
 
+        btnGroupInfo = findViewById(R.id.btn_group_info);
         btnCreateSession = findViewById(R.id.btn_create_session);
         btnInviteMembers = findViewById(R.id.btn_invite_members);
         groupSessionViews = findViewById(R.id.session_recycler_view);
@@ -664,6 +678,16 @@ public class GroupActivity extends AppCompatActivity {
 
                 setNoticeView();
             }
+        } else if( requestCode == 103){ // 수정 정보 받아들인다.
+            if (resultCode == RESULT_OK){
+
+                curGroup = (MoimingGroupVO) data.getExtras().getSerializable(getResources().getString(R.string.moiming_group_data_key));
+
+                textGroupName.setText(curGroup.getGroupName());
+
+            }
+
+
         }
     }
 
@@ -991,17 +1015,13 @@ public class GroupActivity extends AppCompatActivity {
         // FLAG 판단을 통해 정보를 다시 받아온다.
         if (SESSION_LIST_REFRESH_FLAG) { // Refresh 가 필요한 경우
 
-            Toast.makeText(getApplicationContext(), "세션 리스트를 재생성합니다", Toast.LENGTH_SHORT).show();
-
             // 다시 불러올 것이기 때문에 초기화
             sessionRawDataHolder.clear();
             sessionAdapterData.clear();
 
             getGroupSessions();
 
-
         } else if (GROUP_INFO_REFRESH_FLAG) {
-
 
             getRefreshedGroupInfos();
         }
